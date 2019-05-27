@@ -69,9 +69,9 @@ public class SignIn extends AppCompatActivity {
                                 }
                                 Toast.makeText(SignIn.this, user.getName()+"님 환영합니다!!", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(SignIn.this, MainActivity.class);
-                                Login.setID(user.getId());
+                                Login.setID(ID);
                                 Login.setName(user.getName());
-                                Login.setPassword(user.getPassword());
+                                Login.setPassword(Password);
                                 Login.setPhone(user.getPhone());
                                 startActivity(intent);
                             }

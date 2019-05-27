@@ -3,6 +3,9 @@ package com.example.capstonee;
 import android.app.Activity;
 import android.widget.Toast;
 
+/**
+ * 뒤로가기 두 번 누를시 프로그램 종료시킴
+ */
 public class onBackPressedDouble {
     private long backKeyPressedTime = 0;
 
