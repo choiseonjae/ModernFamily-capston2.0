@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.capstonee"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -44,5 +44,8 @@ dependencies {
 
     //RecyclerView에 쓰이는 Picasso
     implementation 'com.squareup.picasso:picasso:2.5.2'
+
+    //내 정보 사진 둥글게
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
 }
 apply plugin: 'com.google.gms.google-services'

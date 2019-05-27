@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
 
 public class ShowPhotoActivity extends AppCompatActivity {
     private ImageView imageView;
@@ -18,12 +20,6 @@ public class ShowPhotoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String ImageUrl = intent.getExtras().getString("ImageUrl");
         imageView = findViewById(R.id.detailPhoto);
-        try{
-            Uri uri = Uri.parse(ImageUrl);
-            Log.d("URL", ImageUrl);
-            imageView.setImageURI(uri);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        Picasso.with(getApplicationContext()).load(ImageUrl).fit().centerInside().into(imageView);
     }
 }

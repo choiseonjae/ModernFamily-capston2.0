@@ -147,7 +147,7 @@ public class SignUp extends AppCompatActivity {
                                 User user = new User(id, phone, name, password, birth);
 
                                 table_user.child(edtId.getText().toString()).setValue(user);
-                                Toast.makeText(SignUp.this, "Sign up successfully!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignUp.this, "회원가입이 완료되었습니다!", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(SignUp.this, SignActivity.class);
                                 startActivity(intent);
                             }

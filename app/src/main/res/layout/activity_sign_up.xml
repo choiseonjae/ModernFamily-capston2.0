@@ -106,7 +106,7 @@
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/edtBirth"
                 android:hint="생년월일"
-                android:layout_weight="0.8"
+                android:layout_weight="0.75"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColorHint="@android:color/white"
@@ -120,12 +120,15 @@
                 />
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btnBirthChoose"
-                android:gravity="center_horizontal"
+                android:layout_gravity="center_vertical"
+                android:padding="10dp"
                 android:layout_marginLeft="10dp"
                 android:text="설정"
                 android:textColor="@android:color/white"
-                android:layout_weight="0.2"
+                android:layout_weight="0.25"
                 android:layout_width="0dp"
+                android:textSize="20dp"
+                android:backgroundTint="#7cfc00"
                 android:layout_height="wrap_content"
                 app:cornerRadius="4dp"/>
         </LinearLayout>
@@ -133,7 +136,9 @@
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnSignUp"
         android:text="회원가입"
+        android:textSize="24sp"
         android:textColor="@android:color/white"
+        android:backgroundTint="#32cd32"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
         android:layout_alignParentBottom="true"

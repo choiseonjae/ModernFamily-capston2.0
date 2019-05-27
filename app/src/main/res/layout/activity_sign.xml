@@ -14,16 +14,22 @@
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/join"
+            android:textSize="24sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#00ced1"
             android:text="회원가입" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/login"
+            android:textSize="24sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
+            android:backgroundTint="#d2691e"
+            android:textColor="@android:color/white"
             android:text="로그인" />
     </LinearLayout>
 </RelativeLayout>

@@ -38,7 +38,8 @@ public class SignIn extends AppCompatActivity {
 
         //Init Firebase
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference table_user = database.getReference("User");
+        //디비에 해당 아이디가 있는지 탐색하기 위한 DB 레퍼런스
+        final DatabaseReference IsIdExist = database.getReference("User");
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,41 +48,41 @@ public class SignIn extends AppCompatActivity {
                 mDialog.setMessage("잠시만 기다리세요...");
                 mDialog.show();
 
-                table_user.addValueEventListener(new ValueEventListener() {
+                IsIdExist.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        //아이디 존재 확인
-                        if (dataSnapshot.child(logId.getText().toString()).exists()) {
-                            //Get User information
-                            mDialog.dismiss();
-                            User user = dataSnapshot.child(logId.getText().toString()).getValue(User.class);
-                            // 비밀번호 동일
-                            if (user.getPassword().equals(logPassword.getText().toString())){
-                                String name = user.getName();
-                                Login.setID(user.getId());
-                                Log.d("Login1", Login.getUserID());
+                        String ID = logId.getText().toString();
+                        String Password = logPassword.getText().toString();
+                        Log.d("LOOOOG", dataSnapshot.toString());
+                        if(dataSnapshot.child(ID).exists()){
+                            //아이디 있음?
+                            User user = dataSnapshot.child(ID).getValue(User.class);
+                            if(Password.equals(user.getPassword())){
+                                //비밀번호 일치?
                                 if(edtCheck.isChecked()){
-                                    //phone, password 일치시, 자동 로그인에 필요한 정보
-                                    Log.d("LOG", "자동로그인!");
+                                    //자동로그인 할거임?
                                     SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
                                     SharedPreferences.Editor editor = pref.edit();
-                                    editor.putString("userID", logId.getText().toString());
-                                    editor.putString("userPassword", logPassword.getText().toString());
+                                    editor.putString("userID", ID);
+                                    editor.putString("userPassword", Password);
                                     editor.apply();
                                 }
-
-                                Toast.makeText(SignIn.this, name+"님 환영합니다!", Toast.LENGTH_SHORT).show();
-                                Intent homeIntent = new Intent(SignIn.this, MainActivity.class);
-
-                                startActivity(homeIntent);
-                                finish();
+                                Toast.makeText(SignIn.this, user.getName()+"님 환영합니다!!", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(SignIn.this, MainActivity.class);
+                                Login.setID(user.getId());
+                                Login.setName(user.getName());
+                                Login.setPassword(user.getPassword());
+                                Login.setPhone(user.getPhone());
+                                startActivity(intent);
                             }
-                            else
-                                Toast.makeText(SignIn.this, "비밀번호가 틀렸습니다 !!!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            mDialog.dismiss();
-                            Toast.makeText(SignIn.this, "가입되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
+                            else{
+                                Toast.makeText(SignIn.this, "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            //아이디 없음
+                            Toast.makeText(SignIn.this, "아이디가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
                         }
+                        mDialog.dismiss();
                     }
 
                     @Override

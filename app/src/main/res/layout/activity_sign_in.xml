@@ -56,13 +56,16 @@
             android:text="자동 로그인하기"
             android:textColor="@android:color/white"/>
     </LinearLayout>
+
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnSignIn"
         android:text="로그인"
+        android:textSize="24sp"
         android:textColor="@android:color/white"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
         android:layout_alignParentBottom="true"
+        android:backgroundTint="#6b8e23"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
