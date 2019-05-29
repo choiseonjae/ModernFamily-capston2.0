@@ -13,16 +13,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.capstonee.Model.Login;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class FragmentSetting extends Fragment {
     View v;
+    private ImageButton setInfo;
     TextView Username, Id;
 
     public FragmentSetting() { }
@@ -34,6 +34,7 @@ public class FragmentSetting extends Fragment {
         Username = v.findViewById(R.id.username);
         Username.setText(Login.getUserName());
         Id = v.findViewById(R.id.userid);
+        setInfo = v.findViewById(R.id.setInfo);
         Id.setText(Login.getUserID());
         LinearLayout logout = v.findViewById(R.id.logout);
         logout.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +64,21 @@ public class FragmentSetting extends Fragment {
                     }
                 });
                 alertdialog.show();
+            }
+        });
+        LinearLayout familyInfo = v.findViewById(R.id.familyInfo);
+        familyInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), FamilyInformation.class);
+                startActivity(intent);
+            }
+        });
+        setInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SetUserInformation.class);
+                startActivity(intent);
             }
         });
         return v;

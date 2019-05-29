@@ -50,5 +50,8 @@ dependencies {
 
     //Camera 허락
     implementation "gun0912.ted:tedpermission:2.2.2"
+
+    //JSON
+    implementation files('libs/json-simple-1.1.1.jar')
 }
 apply plugin: 'com.google.gms.google-services'

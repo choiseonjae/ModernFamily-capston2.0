@@ -1,12 +1,30 @@
 package com.example.capstonee.Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Picture {
+public class Picture implements Serializable {
 
     private ArrayList<String> person;
-    private String fileName, uploadID, uri, gpsProvider, location;
+    private String fileName, uploadID, uri, gpsProvider, location, pictureID;
     private double longitude, latitude, altitude;
+    private boolean deleted = false;
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public String getPictureID() {
+        return pictureID;
+    }
+
+    public void setPictureID(String pictureID) {
+        this.pictureID = pictureID;
+    }
 
     public String getUploadID() {
         return uploadID;

@@ -1,33 +1,24 @@
 package com.example.capstonee.Model;
 
 public class User {
-    private String Id;
     private String Phone;
     private String Name;
     private String Password;
     private String BirthDate;
     private Boolean Visited;
-    private String familyID;
+    private String FamilyID;
 
     private User(){}
 
-    public User(String id, String phone, String name, String password, String birthDate, Boolean visited, String familyID) {
-        Id = id;
+    public User(String phone, String name, String password, String birthDate, Boolean visited, String familyID) {
         Phone = phone;
         Name = name;
         Password = password;
         BirthDate = birthDate;
         Visited = visited;
-        familyID = familyID;
+        FamilyID = familyID;
     }
 
-    public String getId() {
-        return Id;
-    }
-
-    public void setId(String id) {
-        Id = id;
-    }
 
     public String getName() {
         return Name;
@@ -57,7 +48,7 @@ public class User {
 
     public void setVisited(Boolean visited) { Visited = visited; }
 
-    public String getFamilyID() { return familyID; }
+    public String getFamilyID() { return FamilyID; }
 
-    public void setFamilyID(String familyID) { this.familyID = familyID; }
+    public void setFamilyID(String familyID) { FamilyID = familyID; }
 }

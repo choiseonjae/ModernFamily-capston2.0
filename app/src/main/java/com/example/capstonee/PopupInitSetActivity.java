@@ -28,6 +28,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+/***
+ *  팝업창이 뜨고 난 후 카메라냐 앨범이냐 선택할 때 뜨는 창
+ */
 public class PopupInitSetActivity extends Activity {
     Button PhotoButton, GalButton, UpCancelButton;
     private Boolean isPermission = true;

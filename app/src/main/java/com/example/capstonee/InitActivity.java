@@ -46,6 +46,7 @@ public class InitActivity extends AppCompatActivity {
                     Login.setName(user.getName());
                     Login.setPassword(user.getPassword());
                     Login.setPhone(user.getPhone());
+                    Login.setBirth(user.getBirthDate());
                     Login.setVisit(user.getVisited());
                     Login.setFamilyID(user.getFamilyID());
                 }

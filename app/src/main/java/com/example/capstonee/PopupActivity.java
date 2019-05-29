@@ -20,7 +20,6 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.capstonee.Model.ImageUpload;
@@ -36,6 +35,9 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 
+/***
+ *  첫 회원가입 후 로그인 시 뜨는 팝업창
+ */
 public class PopupActivity extends Activity {
 
     EditText relView;
@@ -51,6 +53,7 @@ public class PopupActivity extends Activity {
     private ProgressDialog dialog;
     public static final String FB_STORAGE_PATH = "image/";
     public static final String FB_DATABASE_PATH = "image";
+    public static final int POP_RESULT = 9876;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +85,7 @@ public class PopupActivity extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent();
                         intent.putExtra("keep", false);
-                        setResult(RESULT_OK, intent);
+                        setResult(POP_RESULT, intent);
                         finish();
                     }
                 }).setNegativeButton("돌아가기", new DialogInterface.OnClickListener() {
@@ -107,7 +110,7 @@ public class PopupActivity extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent();
                         intent.putExtra("keep", true);
-                        setResult(RESULT_OK, intent);
+                        setResult(POP_RESULT, intent);
                         //파이어베이스에 사진 업로드
                         UploadPhotoinFB();
                     }

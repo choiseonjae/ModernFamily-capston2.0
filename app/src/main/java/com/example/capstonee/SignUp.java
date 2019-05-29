@@ -131,6 +131,10 @@ public class SignUp extends AppCompatActivity {
                     Toast.makeText(SignUp.this, "모든 정보를 다 입력하지 않았습니다.", Toast.LENGTH_SHORT).show();
                     mDialog.dismiss();
                 }
+                else if(!password.equals(edtPassword2.getText().toString())){
+                    Toast.makeText(SignUp.this, "비밀번호가 맞지 않습니다.", Toast.LENGTH_SHORT).show();
+                    mDialog.dismiss();
+                }
                 else {
                     // 아이디, 이름, 번호 다 입력했는지 체크
                     table_user.child(edtId.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -144,9 +148,9 @@ public class SignUp extends AppCompatActivity {
                                 Toast.makeText(SignUp.this, "중복된 ID가 있습니다.", Toast.LENGTH_SHORT).show();
                             } else {
                                 mDialog.dismiss();
-                                User user = new User(id, phone, name, password, birth, false, "");
+                                User user = new User(phone, name, password, birth, false, "");
 
-                                table_user.child(edtId.getText().toString()).setValue(user);
+                                table_user.child(id).setValue(user);
                                 Toast.makeText(SignUp.this, "회원가입이 완료되었습니다!", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(SignUp.this, SignActivity.class);
                                 startActivity(intent);
