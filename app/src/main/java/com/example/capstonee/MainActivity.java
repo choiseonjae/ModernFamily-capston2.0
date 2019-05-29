@@ -1,9 +1,18 @@
 package com.example.capstonee;
 
+import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.example.capstonee.Model.Login;
+import com.example.capstonee.Model.User;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
@@ -35,8 +44,35 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_chat_black_24dp);
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_place_black_24dp);
         tabLayout.getTabAt(4).setIcon(R.drawable.ic_settings_black_24dp);
+
+        if(!isVisited()){
+            //Init Firebase
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            //DB 레퍼런스 가져오기
+            final DatabaseReference reference = database.getReference("User");
+            //첫방문이니, visited=false인데 이걸 true로 바꿔줌
+            //reference.child(Login.getUserID()).child("visited").setValue(true);
+            Intent intent = new Intent(this, PopupActivity.class);
+            startActivityForResult(intent, 1);
+        }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_OK){
+            Boolean keep = (Boolean) data.getBooleanExtra("keep", false);
+            if(keep){
+                Intent intent = new Intent(this, PopupActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        }else{
+            Toast.makeText(this, "설정이 완료되었습니다!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public boolean isVisited(){
+        return Login.getUserVisit();
+    }
     @Override
     public void onBackPressed() {
         obpd.onBackPressed();

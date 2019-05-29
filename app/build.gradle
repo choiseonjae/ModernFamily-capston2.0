@@ -47,5 +47,8 @@ dependencies {
 
     //내 정보 사진 둥글게
     implementation 'de.hdodenhof:circleimageview:3.0.0'
+
+    //Camera 허락
+    implementation "gun0912.ted:tedpermission:2.2.2"
 }
 apply plugin: 'com.google.gms.google-services'

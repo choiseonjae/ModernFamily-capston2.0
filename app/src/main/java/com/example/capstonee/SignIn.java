@@ -73,6 +73,8 @@ public class SignIn extends AppCompatActivity {
                                 Login.setName(user.getName());
                                 Login.setPassword(Password);
                                 Login.setPhone(user.getPhone());
+                                Login.setVisit(user.getVisited());
+                                Login.setFamilyID(user.getFamilyID());
                                 startActivity(intent);
                             }
                             else{

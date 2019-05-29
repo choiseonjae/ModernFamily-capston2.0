@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#eeeeee"
+    android:orientation="vertical"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content">
+
+    <!-- //end 타이틀바 -->
+    <!-- 닫기 버튼 -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/PhotoButton"
+            android:text="카메라"
+            android:textSize="15sp"
+            android:textColor="#ff7a00"
+            android:padding="8dp"
+            android:gravity="center"
+            android:background="#00000000"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp" />
+        <Button
+            android:id="@+id/GalButton"
+            android:text="갤러리"
+            android:textSize="15sp"
+            android:textColor="#ff7a00"
+            android:padding="8dp"
+            android:gravity="center"
+            android:background="#00000000"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp" />
+        <Button
+            android:id="@+id/UpCancelButton"
+            android:text="취소"
+            android:textSize="15sp"
+            android:textColor="#ff7a00"
+            android:padding="8dp"
+            android:gravity="center"
+            android:background="#00000000"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp" />
+    </LinearLayout>
+    <!--// 닫기 버튼 -->
+</LinearLayout>

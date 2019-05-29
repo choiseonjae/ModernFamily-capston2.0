@@ -6,15 +6,19 @@ public class User {
     private String Name;
     private String Password;
     private String BirthDate;
+    private Boolean Visited;
+    private String familyID;
 
     private User(){}
 
-    public User(String id, String phone, String name, String password, String birthDate) {
+    public User(String id, String phone, String name, String password, String birthDate, Boolean visited, String familyID) {
         Id = id;
         Phone = phone;
         Name = name;
         Password = password;
         BirthDate = birthDate;
+        Visited = visited;
+        familyID = familyID;
     }
 
     public String getId() {
@@ -48,4 +52,12 @@ public class User {
     public String getBirthDate() { return BirthDate; }
 
     public void setBirthDate(String birthDate) { BirthDate = birthDate; }
+
+    public Boolean getVisited() { return Visited; }
+
+    public void setVisited(Boolean visited) { Visited = visited; }
+
+    public String getFamilyID() { return familyID; }
+
+    public void setFamilyID(String familyID) { this.familyID = familyID; }
 }

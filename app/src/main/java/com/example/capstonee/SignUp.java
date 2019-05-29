@@ -91,9 +91,9 @@ public class SignUp extends AppCompatActivity {
                     public void onDateSet(DatePicker view, int year, int month, int day) {
                         String birth;
                         if (month < 10)
-                            birth = Integer.toString(year) + "0" + Integer.toString(month + 1);
-                        else birth = Integer.toString(year) + Integer.toString(month + 1);
-                        if (day < 10) birth += "0" + Integer.toString(day);
+                            birth = year + "0" + (month + 1);
+                        else birth = year + "" +(month + 1);
+                        if (day < 10) birth += "0" + day;
                         else birth += Integer.toString(day);
                         edtBirth.setText(birth);
                     }
@@ -144,7 +144,7 @@ public class SignUp extends AppCompatActivity {
                                 Toast.makeText(SignUp.this, "중복된 ID가 있습니다.", Toast.LENGTH_SHORT).show();
                             } else {
                                 mDialog.dismiss();
-                                User user = new User(id, phone, name, password, birth);
+                                User user = new User(id, phone, name, password, birth, false, "");
 
                                 table_user.child(edtId.getText().toString()).setValue(user);
                                 Toast.makeText(SignUp.this, "회원가입이 완료되었습니다!", Toast.LENGTH_SHORT).show();
