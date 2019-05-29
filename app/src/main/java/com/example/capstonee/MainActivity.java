@@ -3,6 +3,7 @@ package com.example.capstonee;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
     private onBackPressedDouble obpd;
+    private static final int POP_RESULT = 9876;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,13 +61,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK){
+        if(resultCode == POP_RESULT){
             Boolean keep = (Boolean) data.getBooleanExtra("keep", false);
             if(keep){
                 Intent intent = new Intent(this, PopupActivity.class);
                 startActivityForResult(intent, 1);
             }
-        }else{
+        }
+        //else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        //    ((FragmentAlbum)getSupportFragmentManager()UploadPicture_alert();
+        //}
+        else{
             Toast.makeText(this, "설정이 완료되었습니다!", Toast.LENGTH_SHORT).show();
         }
     }
