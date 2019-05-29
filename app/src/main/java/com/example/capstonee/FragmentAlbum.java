@@ -45,6 +45,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
+
 public class FragmentAlbum extends Fragment {
     //Album
     View v;
@@ -122,7 +124,7 @@ public class FragmentAlbum extends Fragment {
                 .setPermissionListener(permissionListener)
                 .setRationaleMessage(getResources().getString(R.string.permission_2))
                 .setDeniedMessage(getResources().getString(R.string.permission_1))
-                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION)
                 .check();
     }
     @Override
@@ -146,6 +148,13 @@ public class FragmentAlbum extends Fragment {
 
         } catch (IOException e) { }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)
+            UploadPicture_alert();
+    }
+
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "TEST_" + timeStamp + "_";
@@ -216,6 +225,7 @@ public class FragmentAlbum extends Fragment {
                             picture.setUri(photoUri.toString());
                             picture.setDeleted(false);
 
+                            Log.v("간닷", Login.getUserID());
                             pictureRef.setValue(picture);
 
                             if (picture.getLatitude() != -1) {
@@ -234,17 +244,13 @@ public class FragmentAlbum extends Fragment {
                                             e.printStackTrace();
                                         }
                                     }
-                                }
-                                );
+                                });
                                 thread.start();
                             }
-
                             Toast.makeText(getContext(), "업로드 완료!", Toast.LENGTH_SHORT).show();
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
                     }
                 })
                 //실패시
