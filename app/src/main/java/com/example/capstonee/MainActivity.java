@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == POP_RESULT){
             Boolean keep = (Boolean) data.getBooleanExtra("keep", false);
             if(keep){
@@ -68,11 +69,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, 1);
             }
         }
-        //else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-        //    ((FragmentAlbum)getSupportFragmentManager()UploadPicture_alert();
-        //}
+//        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+//            ((FragmentAlbum)getSupportFragmentManager().findFragmentByTag()).UploadPicture_alert();
+//        }
         else{
-            Toast.makeText(this, "설정이 완료되었습니다!", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "설정이 완료되었습니다!", Toast.LENGTH_SHORT).show();
         }
     }
 

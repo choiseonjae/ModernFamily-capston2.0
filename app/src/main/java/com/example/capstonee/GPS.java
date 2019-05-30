@@ -75,38 +75,32 @@ public class GPS extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    0);
+            ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         } else {
-//            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//
-//            final String provider;
-//            final double longitude;
-//            final double latitude;
-//            final double altitude;
-//
-//            if(location!= null){
-//                provider = location.getProvider();
-//                latitude = location.getLatitude();
-//                longitude = location.getLongitude();
-//                altitude = location.getAltitude();
-//            }else {
-//                provider = "제공 하지 못함.";
-//                latitude = -1;
-//                longitude = -1;
-//                altitude = -1;
-//            }
+            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            final String provider;
+            final double longitude;
+            final double latitude;
+            final double altitude;
+
+            if(location!= null){
+                provider = location.getProvider();
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                altitude = location.getAltitude();
+            }else {
+                provider = "제공 하지 못함.";
+                latitude = -1;
+                longitude = -1;
+                altitude = -1;
+            }
 
             // 네트워킹에서는 강제로 분리 왜냐하면 네트워크 받아오는 동안 프로그램이 멈추니까
             // 프로그램에서 자체적으로 Thread를 사용하게 만든 거 같다.
             Log.e("Thread 시전","??");
 
-//            while(locationValue.equals(""))
-//            {
-//                Log.e("S!!!!","S");
-//            }
-
-            //return new String[]{provider, longitude + "", latitude + "", altitude + ""};
+            return new String[]{provider, longitude + "", latitude + "", altitude + ""};
 
 
         }
