@@ -15,7 +15,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FamilyInformation"></activity>
+        <activity
+            android:name=".FindMyFamilyActivity"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity android:name=".FamilyInformation" />
         <activity
             android:name=".PopupInitSetActivity"
             android:theme="@android:style/Theme.Dialog" />

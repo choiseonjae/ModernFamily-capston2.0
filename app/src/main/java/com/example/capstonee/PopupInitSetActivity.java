@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -45,6 +46,7 @@ public class PopupInitSetActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_popup_init_set);
         PhotoButton = findViewById(R.id.PhotoButton);
         GalButton = findViewById(R.id.GalButton);
@@ -213,7 +215,6 @@ public class PopupInitSetActivity extends Activity {
      *  tempFile 을 bitmap 으로 변환 후 ImageView 에 설정한다.
      */
     private void setImage() {
-
         Intent intent = new Intent();
         intent.putExtra("tempFile", tempFile);
         intent.putExtra("photoUri", photoUri);

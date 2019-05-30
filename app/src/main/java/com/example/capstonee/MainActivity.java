@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             final DatabaseReference reference = database.getReference("User");
             //첫방문이니, visited=false인데 이걸 true로 바꿔줌
             //reference.child(Login.getUserID()).child("visited").setValue(true);
-            Intent intent = new Intent(this, PopupActivity.class);
+            Intent intent = new Intent(this, FindMyFamilyActivity.class);
             startActivityForResult(intent, 1);
         }
     }
@@ -62,18 +62,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == POP_RESULT){
+        if(requestCode == 1 && resultCode == RESULT_CANCELED){
             Boolean keep = (Boolean) data.getBooleanExtra("keep", false);
             if(keep){
                 Intent intent = new Intent(this, PopupActivity.class);
                 startActivityForResult(intent, 1);
             }
-        }
-//        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-//            ((FragmentAlbum)getSupportFragmentManager().findFragmentByTag()).UploadPicture_alert();
-//        }
-        else{
-//            Toast.makeText(this, "설정이 완료되었습니다!", Toast.LENGTH_SHORT).show();
         }
     }
 
