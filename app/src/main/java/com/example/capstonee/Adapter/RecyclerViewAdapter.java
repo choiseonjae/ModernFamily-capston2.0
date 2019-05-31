@@ -1,4 +1,4 @@
-package com.example.capstonee;
+package com.example.capstonee.Adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.capstonee.Model.Chatting;
+import com.example.capstonee.R;
 
 import java.util.List;
 

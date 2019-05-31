@@ -1,4 +1,4 @@
-package com.example.capstonee;
+package com.example.capstonee.Fragment;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -18,7 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.capstonee.FamilyInformation;
 import com.example.capstonee.Model.Login;
+import com.example.capstonee.R;
+import com.example.capstonee.SetUserInformation;
+import com.example.capstonee.SignActivity;
 
 public class FragmentSetting extends Fragment {
     View v;

@@ -1,4 +1,4 @@
-package com.example.capstonee;
+package com.example.capstonee.Album;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -24,9 +24,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
+import com.example.capstonee.Adapter.RecyclerPhotoViewAdapter;
+import com.example.capstonee.GPS;
 import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.Login;
 import com.example.capstonee.Model.Picture;
+import com.example.capstonee.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -47,7 +50,7 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
-public class FragmentAlbum extends Fragment {
+public class FragmentSeletedAlbum extends Fragment {
     //Album
     View v;
     RecyclerView recyclerView;
@@ -59,7 +62,7 @@ public class FragmentAlbum extends Fragment {
     private static final int REQUEST_IMAGE_CAPTURE = 672;
     private Uri photoUri;
 
-    public FragmentAlbum() {
+    public FragmentSeletedAlbum() {
     }
 
     @Nullable
@@ -94,7 +97,7 @@ public class FragmentAlbum extends Fragment {
             public void onClick(View v) {
                 anim();
                 Log.v("알림", "사진촬영 선택");
-                if(isPermission) openCamera();
+                if (isPermission) openCamera();
             }
         });
         fab2.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +110,8 @@ public class FragmentAlbum extends Fragment {
         });
         return v;
     }
-    private void tedPermission(){
+
+    private void tedPermission() {
         PermissionListener permissionListener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
@@ -127,11 +131,13 @@ public class FragmentAlbum extends Fragment {
                 .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION)
                 .check();
     }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
     }
+
     private void openCamera() {
         try {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -146,12 +152,13 @@ public class FragmentAlbum extends Fragment {
                 }
             }
 
-        } catch (IOException e) { }
+        } catch (IOException e) {
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)
             UploadPicture_alert();
     }
 
@@ -166,6 +173,7 @@ public class FragmentAlbum extends Fragment {
         );
         return image;
     }
+
     // 사진 업로드 할 지 물어보는 알람
     public void UploadPicture_alert() {
 
@@ -272,6 +280,7 @@ public class FragmentAlbum extends Fragment {
                     }
                 });
     }
+
     private void getData() {
         // 내 앨범 데이터 참조 가져오기
         Log.d("LOGIGIN", Login.getUserID());
@@ -279,10 +288,10 @@ public class FragmentAlbum extends Fragment {
         albumDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     // DB에 추가된 picture 정보를 가져온다.
                     Picture picture = snapshot.getValue(Picture.class);
-                    Log.d("picture info", picture.getFileName()+" "+picture.getUri());
+                    Log.d("picture info", picture.getFileName() + " " + picture.getUri());
                     // 해당 파일은 내 ID / 파일 이름 에 존재
                     String filePath = Login.getUserID() + "/" + picture.getFileName();
                     // 그 파일의 참조 가져옴
@@ -311,6 +320,7 @@ public class FragmentAlbum extends Fragment {
             }
         });
     }
+
     public void anim() {
 
         if (isFabOpen) {

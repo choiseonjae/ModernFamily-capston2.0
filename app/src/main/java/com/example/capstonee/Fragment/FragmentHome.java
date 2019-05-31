@@ -1,4 +1,4 @@
-package com.example.capstonee;
+package com.example.capstonee.Fragment;
 
 import android.Manifest;
 import android.content.Intent;
@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.example.capstonee.R;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 

@@ -1,31 +1,36 @@
-package com.example.capstonee;
+package com.example.capstonee.Adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.User;
+import com.example.capstonee.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
-public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ItemViewHolder> {
+public class RoleAdapter extends RecyclerView.Adapter<RoleAdapter.ItemViewHolder> {
     // adapter에 들어갈 list 입니다.
-    ArrayList<String> familyMemberIDList = new ArrayList<>();
+    ArrayList<String[]> familyMemberIDList = new ArrayList<>();
     Context context;
     View view;
 
-    public FamilyAdapter(Context context) {
+    public RoleAdapter(Context context) {
         this.context = context;
     }
 
@@ -35,7 +40,7 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ItemViewHo
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // LayoutInflater를 이용하여 전 단계에서 만들었던 item.xml을 inflate 시킵니다.
         // return 인자는 ViewHolder 입니다.
-        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.family_list_item, parent, false);
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.role_item, parent, false);
         return new ItemViewHolder(view);
     }
 
@@ -51,12 +56,13 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ItemViewHo
         return familyMemberIDList.size();
     }
 
-    public void addItem(String value) {
+    public void addItem(String role, String pictureUri) {
         // 외부에서 item을 추가시킬 함수입니다.
-        familyMemberIDList.add(value);
+
+        familyMemberIDList.add(new String[]{role, pictureUri});
     }
 
-    public void remove(String userID){
+    public void remove(String userID) {
         familyMemberIDList.remove(familyMemberIDList.indexOf(userID));
     }
 
@@ -64,27 +70,52 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ItemViewHo
     // 여기서 subView를 setting 해줍니다.
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        private String familyMemberID;
-        private TextView familyTitle_textView;
+        private String role, pictureUri;
+        private TextView role_textView;
+        private ImageView role_imageView;
 
         ItemViewHolder(View view) {
             super(view);
 
-            familyTitle_textView = view.findViewById(R.id.user_id);
+            role_textView = view.findViewById(R.id.role_text_view);
+            role_imageView = view.findViewById(R.id.role_image_view);
 
-            view.setOnLongClickListener(new View.OnLongClickListener() {
+            // 짧게 누를 시
+            view.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onLongClick(View v) {
-                    familyAdd_alert(familyMemberID);
-                    return false;
+                public void onClick(View v) {
+
                 }
             });
 
+
+            // 오래 누르면
+//            view.setOnLongClickListener(new View.OnLongClickListener() {
+//                @Override
+//                public boolean onLongClick(View v) {
+//                    familyAdd_alert(familyMemberID);
+//                    return false;
+//                }
+//            });
+
         }
 
-        void onBind(String familyMemberID) {
-            this.familyMemberID = familyMemberID;
-            familyTitle_textView.setText(familyMemberID);
+        void onBind(String[] value) {
+            //잠시 로그 확인
+            Log.e("role, uri", Arrays.toString(value));
+
+            // 값 저장
+            role = value[0];
+            pictureUri = value[1];
+
+            // 화면에 보여주기
+            role_textView.setText(role);
+
+            ViewGroup.LayoutParams lp = role_imageView.getLayoutParams();
+            lp.width = context.getResources().getDisplayMetrics().widthPixels;
+            lp.height = lp.width / 2;
+
+            Picasso.with(context).load(pictureUri).fit().into(role_imageView);
         }
 
     }
@@ -113,8 +144,8 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ItemViewHo
                         familyRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                for(DataSnapshot d : dataSnapshot.getChildren())
-                                    if(d.getValue().toString().equals(familyMemberID))
+                                for (DataSnapshot d : dataSnapshot.getChildren())
+                                    if (d.getValue().toString().equals(familyMemberID))
                                         familyRef.child(d.getKey()).removeValue();
                             }
 

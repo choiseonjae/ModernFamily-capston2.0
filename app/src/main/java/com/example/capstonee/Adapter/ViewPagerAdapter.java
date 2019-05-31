@@ -1,4 +1,4 @@
-package com.example.capstonee;
+package com.example.capstonee.Adapter;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
