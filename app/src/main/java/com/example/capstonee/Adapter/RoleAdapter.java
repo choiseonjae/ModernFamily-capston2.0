@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.capstonee.Model.Infomation;
@@ -28,9 +29,9 @@ import java.util.Arrays;
 
 public class RoleAdapter extends RecyclerView.Adapter<RoleAdapter.ItemViewHolder> {
     // adapter에 들어갈 list 입니다.
-    ArrayList<String[]> familyMemberIDList = new ArrayList<>();
-    Context context;
-    View view;
+    private ArrayList<String[]> familyMemberIDList = new ArrayList<>();
+    private Context context;
+    private View view;
 
     public RoleAdapter(Context context) {
         this.context = context;
@@ -73,6 +74,7 @@ public class RoleAdapter extends RecyclerView.Adapter<RoleAdapter.ItemViewHolder
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
         private String role, pictureUri;
+        private LinearLayout linearLayout;
         private TextView role_textView;
         private ImageView role_imageView;
 
@@ -81,9 +83,9 @@ public class RoleAdapter extends RecyclerView.Adapter<RoleAdapter.ItemViewHolder
 
             role_textView = view.findViewById(R.id.role_text_view);
             role_imageView = view.findViewById(R.id.role_image_view);
-
+            linearLayout = view.findViewById(R.id.role_linearlayout);
             // 짧게 누를 시
-            view.setOnClickListener(new View.OnClickListener() {
+            linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, SelectedRoleAlbum.class);

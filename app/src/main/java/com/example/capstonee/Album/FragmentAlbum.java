@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,18 +21,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import com.example.capstonee.Adapter.FamilyAdapter;
-import com.example.capstonee.Adapter.RecyclerPhotoViewAdapter;
 import com.example.capstonee.Adapter.RoleAdapter;
 import com.example.capstonee.GPS;
 import com.example.capstonee.Model.Infomation;
@@ -58,8 +56,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import static android.app.Activity.RESULT_OK;
 
 // 현재 가지고 있는 Role 들을 보여줌.
 public class FragmentAlbum extends Fragment {
@@ -401,6 +397,11 @@ public class FragmentAlbum extends Fragment {
         builder.show();
     }
 
+    public String getImageExt(Uri uri) {
+        ContentResolver contentResolver = getActivity().getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
 
     // 사진 업로드
     private void uploadPicture() {
@@ -409,11 +410,13 @@ public class FragmentAlbum extends Fragment {
         progressDialog.setTitle("업로드중...");
         progressDialog.show();
 
-        // 현재 시간 + png
-        final String filename = new SimpleDateFormat("yyyyMMHH_mmss").format(new Date());
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMHH_mmss");
+        final String filename = sdf.format(date);
 
         // 사용자 폴더에 사진 파일 저장을 위한 서버 저장 공간 참조 가져옴.
-        StorageReference storageRef = Infomation.getAlbum(Login.getUserID() + "/" + filename);
+        StorageReference storageRef = Infomation.getAlbum(Login.getUserID() + "/" + filename + "." +getImageExt(photoUri));
 
         // 서버에 사진 업로드
         storageRef.putFile(photoUri)

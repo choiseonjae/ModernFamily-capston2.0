@@ -38,6 +38,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /***
  *  첫 회원가입 후 로그인 시 뜨는 팝업창
@@ -55,8 +57,9 @@ public class PopupActivity extends Activity {
     private DatabaseReference mDatabaseRef;
     private File tempFile;
     private ProgressDialog dialog;
-    public static final String FB_STORAGE_PATH = "image/";
-    public static final String FB_DATABASE_PATH = "image";
+    private static int familyCount = 1;
+    public static final String FB_STORAGE_PATH = "Main/";
+    public static final String FB_DATABASE_PATH = "Main";
     public static final int POP_RESULT = 9876;
 
     @Override
@@ -166,7 +169,11 @@ public class PopupActivity extends Activity {
             dialog = new ProgressDialog(this);
             dialog.setTitle("사진을 업로드 중입니다...");
             dialog.show();
-            final String filename = System.currentTimeMillis() + "";
+            long now = System.currentTimeMillis();
+            Date date = new Date(now);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMHH_mmss");
+            final String filename = sdf.format(date);
+
             //Get the storage reference
             final StorageReference ref = mStorageRef.child(FB_STORAGE_PATH + Login.getUserID() + "/" + filename + "." + getImageExt(imgUri));
 
@@ -180,7 +187,6 @@ public class PopupActivity extends Activity {
                                 public void onSuccess(Uri uri) {
                                     downloadUrl = uri.toString();
                                     ImageUpload imageUpload = new ImageUpload(filename, downloadUrl, family);
-                                    Toast.makeText(PopupActivity.this, filename, Toast.LENGTH_SHORT).show();
                                     mDatabaseRef.child(filename).setValue(imageUpload);
                                     Log.v("된거야?", imageUpload.getUrl() + " " + imageUpload.getName() + " " + imageUpload.getFamily());
 
@@ -189,7 +195,7 @@ public class PopupActivity extends Activity {
                                     ContentValues contentValues = new ContentValues();
                                     contentValues.put("filename", filename + "." + getImageExt(imgUri));
                                     contentValues.put("ui", Login.getUserID());
-                                    contentValues.put("fr", imageUpload.getFamily());
+                                    contentValues.put("fr", familyCount++);
 
                                     NetworkTask networkTask = new NetworkTask(url, contentValues);
                                     networkTask.execute();

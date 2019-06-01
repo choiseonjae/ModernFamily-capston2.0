@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean isVisited(){
         return Login.getUserVisit();
     }
+
     @Override
     public void onBackPressed() {
         obpd.onBackPressed();

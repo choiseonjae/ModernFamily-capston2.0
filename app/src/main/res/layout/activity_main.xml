@@ -10,9 +10,9 @@
         android:id="@+id/tablayout_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="#F69042"
         app:tabGravity="fill"
-        app:tabIndicatorColor="@color/colorAccent"
+        app:tabIndicatorColor="#F2A405"
         app:tabMode="fixed" />
 
     <android.support.v4.view.ViewPager

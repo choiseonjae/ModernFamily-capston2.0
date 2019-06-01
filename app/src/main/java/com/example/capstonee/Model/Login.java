@@ -1,5 +1,7 @@
 package com.example.capstonee.Model;
 
+import java.util.HashMap;
+
 public class Login {
     private static String MY_ID;
     private static String MY_NAME;
@@ -8,6 +10,11 @@ public class Login {
     private static boolean MY_VISIT;
     private static String MY_BIRTH;
     private static String MY_FAMILYID;
+    // 아빠, 엄마, 나, 동생이 있으면 각자 숫자를 매겨줄 필요가 있음
+    // 왜냐면 리눅스에서 한글명으로 저장이 안 되는데, 어플에선 입력값을 한글로 받아야 함.
+    // 그러니 영어를 사용하지 않으므로 영어로 파일 저장은 무리가 있고
+    // 숫자로 대신
+    private static HashMap<String, Integer> MY_REL = new HashMap<String, Integer>();
 
     private static class LoginHolder{
         static final Login INSTANCE = new Login();
@@ -22,6 +29,7 @@ public class Login {
     public static boolean getUserVisit(){ return MY_VISIT; }
     public static String getUserBirth(){ return MY_BIRTH; }
     public static String getUserFamilyID(){ return MY_FAMILYID; }
+    public static HashMap<String, Integer> getHashMap() { return MY_REL; }
     public static void setID(String ID){
         MY_ID = ID;
     }
