@@ -111,7 +111,6 @@ public class PopupActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent();
-                        intent.putExtra("keep", true);
                         setResult(POP_RESULT, intent);
                         //파이어베이스에 사진 업로드
                         UploadPhotoinFB();
@@ -164,7 +163,7 @@ public class PopupActivity extends Activity {
 
                                     // 문제점 : 이러면 매번 사진을 올릴 때 업데이트가 되는데 마지막에 종료 버튼 누를 때 하는게 좋지 않겠나?
                                     // Family DB 에 사용자 ID로 역할 폴더에 사진 추가
-                                    Infomation.getDatabase("Family").child(Login.getUserID()).child(family).child(title).setValue(downloadUrl);
+                                    Infomation.getDatabase("Family").child(Login.getUserID()).child(family).child("a").setValue(downloadUrl);
                                     // User DB : 현재 사용자의 family ID를 설정
                                     Infomation.getDatabase("User").child(Login.getUserID()).child("familyID").setValue(Login.getUserID());
 

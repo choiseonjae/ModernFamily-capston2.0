@@ -1,13 +1,16 @@
 package com.example.capstonee.Model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Chat {
 
-    private String sender, message , uri , time;
-    private int noRead;
+    private String sender, message, uri, time;
+    private Map<String, Integer> reader;
 
-    public Chat(){
+    public Chat() {
         sender = message = uri = time = "";
-        noRead = 0;
+        reader = new HashMap<>();
     }
 
     public String getSender() {
@@ -42,12 +45,12 @@ public class Chat {
         this.time = time;
     }
 
-    public int getNoRead() {
-        return noRead;
+    public void setReader(Map<String, Integer> reader) {
+        this.reader = reader;
     }
 
-    public void setNoRead(int noRead) {
-        this.noRead = noRead;
+    public Map<String, Integer> getReader() {
+        return reader;
     }
 }
 

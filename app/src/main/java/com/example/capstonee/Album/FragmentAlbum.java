@@ -67,6 +67,7 @@ public class FragmentAlbum extends Fragment {
     private Boolean isPermission = true;
     private static final int REQUEST_IMAGE_CAPTURE = 672;
     private Uri photoUri;
+    private DatabaseReference gpsRef;
 
     public FragmentAlbum() {
     }
@@ -148,7 +149,7 @@ public class FragmentAlbum extends Fragment {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
                 // 현재 역할 한 분
-                String role = dataSnapshot.getKey().toString();
+                String role = dataSnapshot.getKey();
 
                 // 역할 -> key : 사진 제목, value : 사진 uri
                 String uri = dataSnapshot.getChildren().iterator().next().getValue().toString();
@@ -334,7 +335,7 @@ public class FragmentAlbum extends Fragment {
                             // 현재 시간 + 사진의 이름
                             String time = Infomation.currentTime();
 
-                            final DatabaseReference pictureRef = Infomation.getAlbumData(Login.getUserID()).child(time);
+                            final DatabaseReference pictureRef = Infomation.getAlbumData(Login.getUserID()).push();
 
                             final Picture picture = new Picture();
                             picture.setFileName(filename);
@@ -361,6 +362,29 @@ public class FragmentAlbum extends Fragment {
                                             String location = GPS.getAdrress(picture.getLatitude(), picture.getLongitude());
                                             Log.e("location", location);
                                             picture.setLocation(location);
+
+                                            // 위치 쪼개기
+                                            String[] gpsDivide = location.split(" ");
+                                            gpsRef = Infomation.getDatabase("GPS");
+                                            for(int i = 0; i < gpsDivide.length; i++) {
+                                                gpsRef = gpsRef.child(gpsDivide[i]);
+                                            }
+
+                                            // 위치 추가
+                                            gpsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                    if(dataSnapshot.exists())
+                                                        gpsRef.setValue(Integer.parseInt(dataSnapshot.getValue().toString()) + 1);
+                                                    else
+                                                        gpsRef.setValue(1);
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                }
+                                            });
                                             pictureRef.setValue(picture);
 
 

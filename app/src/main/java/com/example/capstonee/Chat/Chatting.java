@@ -4,18 +4,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.example.capstonee.Adapter.RoleAdapter;
 import com.example.capstonee.Model.Chat;
 import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.Login;
@@ -27,7 +24,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Chatting extends Fragment {
 
@@ -50,13 +50,12 @@ public class Chatting extends Fragment {
             public void onClick(View v) {
                 EditText writeEdit = (EditText) view.findViewById(R.id.write_edit);
 
-                Log.e("채팅 창 존재 : ", (writeEdit == null) + "");
 
                 // 사용자가 쓴 거 찾음.
                 String message = writeEdit.getText().toString();
 
                 // 사용자가 타이핑 함.
-                if(!message.equals("")){
+                if (!message.equals("")) {
                     // 초기화
                     writeEdit.setText("");
                     // 현재 시간
@@ -66,16 +65,15 @@ public class Chatting extends Fragment {
                     Chat chat = new Chat();
                     chat.setSender(Login.getUserID());
                     chat.setMessage(message);
-                    // 하드 코딩
-                    chat.setNoRead(4);
                     chat.setTime(time);
 
-                    Log.e(" Family ID : ",Login.getUserFamilyID());
+                    Log.e(" Family ID : ", Login.getUserFamilyID());
 
                     // 해당 User 의 패밀리 ID
                     Infomation.getDatabase("Chat").child(Login.getUserFamilyID()).push().setValue(chat);
-                }
 
+
+                }
 
 
             }
@@ -101,7 +99,7 @@ public class Chatting extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    private void getData(){
+    private void getData() {
 
         // 로그 확인
         Log.e("Log Family ID : ", Login.getUserFamilyID());
@@ -114,8 +112,25 @@ public class Chatting extends Fragment {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
+                String key = dataSnapshot.getKey();
                 // 채팅 하나 객체
                 Chat chat = dataSnapshot.getValue(Chat.class);
+
+                // 맵으로 추가 지렸딷;
+                Log.e("채팅 하나의 모든 정보 : ", chat.getReader().toString());
+                Log.e("채팅 하나의 모든 정보 : ", chat.getMessage());
+
+                // 내가 보낸 거 아니면 읽은 사람 표시 + 한번 표시 하면 표시 하지 않음.
+                if (!chat.getSender().equals(Login.getUserID()) && !chat.getReader().containsKey(Login.getUserID())) {
+
+                    Map<String, Integer> map = chat.getReader();
+
+                    // 로그 확인
+                    Log.e("읽은 사람 : ", map.toString());
+
+                    map.put(Login.getUserID(), 1);
+                    chatRef.child(key).child("reader").setValue(map);
+                }
 
                 // 어뎁터에 추가
                 adapter.add(chat);
@@ -125,8 +140,11 @@ public class Chatting extends Fragment {
 
             }
 
+            // 채팅 데이터가 변경 되었을 때 -> 추가 아님 변경 -> 읽은 사람 생김.
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                // 로그 확인
+                Log.e("데이터 : ", dataSnapshot.toString());
 
             }
 

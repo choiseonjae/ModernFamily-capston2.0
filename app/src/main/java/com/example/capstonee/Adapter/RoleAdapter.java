@@ -3,6 +3,7 @@ package com.example.capstonee.Adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.User;
 import com.example.capstonee.R;
+import com.example.capstonee.SelectedRoleAlbum;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -84,7 +86,9 @@ public class RoleAdapter extends RecyclerView.Adapter<RoleAdapter.ItemViewHolder
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent = new Intent(context, SelectedRoleAlbum.class);
+                    intent.putExtra("role", role);
+                    context.startActivity(intent);
                 }
             });
 

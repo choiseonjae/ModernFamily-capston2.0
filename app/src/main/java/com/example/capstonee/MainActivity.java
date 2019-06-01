@@ -5,6 +5,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.capstonee.Adapter.ViewPagerAdapter;
 import com.example.capstonee.Album.FragmentAlbum;
@@ -66,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         // 요구 코드 1 && 결과 반환이 취소 -> 가입한 가족이 없고, 현재 사용자가 가족 중 최초 가입자
         if(requestCode == 1 && resultCode == RESULT_CANCELED){
-            Boolean keep = (Boolean) data.getBooleanExtra("keep", false);
+            Boolean keep = (Boolean) data.getBooleanExtra("keep", true);
+            Log.e("오나?", keep+"");
             if(keep){
                 Intent intent = new Intent(this, PopupActivity.class);
                 startActivityForResult(intent, 1);
