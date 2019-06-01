@@ -29,7 +29,7 @@ public class FragmentChat extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.chat_fragment, container, false);
-        recyclerView = v.findViewById(R.id.chat_recyclerview);
+        recyclerView = v.findViewById(R.id.chat_recycler_view);
         RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(getContext(), lstChatting);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(recyclerViewAdapter);

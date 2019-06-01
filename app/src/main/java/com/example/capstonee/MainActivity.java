@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.example.capstonee.Adapter.ViewPagerAdapter;
 import com.example.capstonee.Album.FragmentAlbum;
+import com.example.capstonee.Chat.Chatting;
 import com.example.capstonee.Fragment.FragmentChat;
 import com.example.capstonee.Fragment.FragmentHome;
 import com.example.capstonee.Fragment.FragmentLocation;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         adapter.AddFragment(new FragmentHome(), "");
         adapter.AddFragment(new FragmentAlbum(), "");
-        adapter.AddFragment(new FragmentChat(), "");
+        adapter.AddFragment(new Chatting(), "");
         adapter.AddFragment(new FragmentLocation(), "");
         adapter.AddFragment(new FragmentSetting(), "");
         viewPager.setAdapter(adapter);
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             //DB 레퍼런스 가져오기
             final DatabaseReference reference = database.getReference("User");
             //첫방문이니, visited=false인데 이걸 true로 바꿔줌
-            //reference.child(Login.getUserID()).child("visited").setValue(true);
+//            reference.child(Login.getUserID()).child("visited").setValue(true);
             Intent intent = new Intent(this, FindMyFamilyActivity.class);
             startActivityForResult(intent, 1);
         }

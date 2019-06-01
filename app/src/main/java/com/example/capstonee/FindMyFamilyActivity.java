@@ -79,6 +79,11 @@ public class FindMyFamilyActivity extends Activity {
                                     // true 로 바꿔주면 더 이상 로그인시 팝업창이 뜨지 않음.
                                     intent.putExtra("keep", false);
                                     setResult(RESULT_OK, intent);
+
+                                    // 이제 첫 로그인 아님
+                                    final DatabaseReference reference = Infomation.getDatabase("User");
+                                    reference.child(Login.getUserID()).child("visited").setValue(true);
+
                                     finish();
 
                                 }

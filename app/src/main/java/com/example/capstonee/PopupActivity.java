@@ -160,12 +160,19 @@ public class PopupActivity extends Activity {
                                     mDatabaseRef.child(title).setValue(imageUpload);
                                     Log.v("된거야?", imageUpload.getUrl()+ " " +imageUpload.getName()+ " " +imageUpload.getFamily());
 
-                                    // 선재 코드 추가
+                                    // 선재 코드 추가/////////////////////////////////////////////////////////////////////
+
                                     // 문제점 : 이러면 매번 사진을 올릴 때 업데이트가 되는데 마지막에 종료 버튼 누를 때 하는게 좋지 않겠나?
                                     // Family DB 에 사용자 ID로 역할 폴더에 사진 추가
                                     Infomation.getDatabase("Family").child(Login.getUserID()).child(family).child(title).setValue(downloadUrl);
                                     // User DB : 현재 사용자의 family ID를 설정
                                     Infomation.getDatabase("User").child(Login.getUserID()).child("familyID").setValue(Login.getUserID());
+
+                                    // 이제 첫 로그인 아님 + 이것도 매번 하는 건 좀 그런데;;;
+                                    final DatabaseReference reference = Infomation.getDatabase("User");
+                                    reference.child(Login.getUserID()).child("visited").setValue(true);
+                                    /////////////////////////////////////////////////////////////////////////////////////
+
                                 }
                             });
                         }
