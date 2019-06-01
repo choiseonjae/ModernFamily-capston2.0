@@ -1,11 +1,15 @@
 package com.example.capstonee.Album;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -34,6 +38,7 @@ import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.Login;
 import com.example.capstonee.Model.Picture;
 import com.example.capstonee.R;
+import com.example.capstonee.RequestHttpURLConnection;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
@@ -46,6 +51,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,12 +68,15 @@ public class FragmentAlbum extends Fragment {
     RecyclerView recyclerView;
     RoleAdapter adapter;
     private Animation fab_open, fab_close;
-    private Boolean isFabOpen = false;
+    private boolean isFabOpen = false;
     private FloatingActionButton fab, fab1, fab2;
-    private Boolean isPermission = true;
-    private static final int REQUEST_IMAGE_CAPTURE = 672;
+    private boolean isPermission = true;
+    private static final int PICK_FROM_ALBUM = 1;
+    private static final int PICK_FROM_CAMERA = 2;
     private Uri photoUri;
     private DatabaseReference gpsRef;
+    private DatabaseReference pictureRef;
+    private File tempFile;
 
     public FragmentAlbum() {
     }
@@ -113,11 +122,109 @@ public class FragmentAlbum extends Fragment {
             @Override
             public void onClick(View v) {
                 anim();
-                Toast.makeText(getContext(), "Modify or Delete", Toast.LENGTH_SHORT).show();
-
+                Log.v("알림", "갤러리 선택");
+                if (isPermission) goToAlbum();
             }
         });
         return view;
+    }
+
+    //갤러리 열어줘
+    private void goToAlbum() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+        startActivityForResult(intent, PICK_FROM_ALBUM);
+    }
+
+    // 디바이스 사용자로 부터 얻어야할 권한 설정
+    private void tedPermission() {
+        PermissionListener permissionListener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                isPermission = true;
+            }
+
+            @Override
+            public void onPermissionDenied(List<String> deniedPermissions) {
+                isPermission = false;
+            }
+        };
+
+        TedPermission.with(getActivity())
+                .setPermissionListener(permissionListener)
+                .setRationaleMessage(getResources().getString(R.string.permission_2))
+                .setDeniedMessage(getResources().getString(R.string.permission_1))
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION)
+                .check();
+    }
+
+    //카메라 실행
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        try {
+            tempFile = createImageFile();
+        } catch (IOException e) {
+            Toast.makeText(getActivity(), "이미지 처리 오류", Toast.LENGTH_SHORT).show();
+            getActivity().finish();
+            e.printStackTrace();
+        }
+        if (tempFile != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                photoUri = FileProvider.getUriForFile(getActivity(), "com.example.capstonee.provider", tempFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                startActivityForResult(intent, PICK_FROM_CAMERA);
+            } else {
+                photoUri = Uri.fromFile(tempFile);
+                Log.d("NOT OVER NOUGAR", "takePhoto photoUri : " + photoUri);
+
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                startActivityForResult(intent, PICK_FROM_CAMERA);
+            }
+        }
+    }
+
+    // 이미지 크롭
+    private void cropImage(Uri photoUri) {
+        Log.d("Tag", "TEMPFILE : " + tempFile);
+        if (tempFile == null) {
+            try {
+                tempFile = createImageFile();
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "이미지 처리 오류!", Toast.LENGTH_SHORT).show();
+                getActivity().finish();
+                e.printStackTrace();
+            }
+        }
+        Uri savingUri = Uri.fromFile(tempFile);
+        Crop.of(photoUri, savingUri).asSquare().start(getContext(), this);
+    }
+
+    // 사진 업로드 후 VM에 URL 보내는 곳
+    public class NetworkTask extends AsyncTask<Void, Void, String> {
+        private String url;
+        private ContentValues values;
+
+        private NetworkTask(String url, ContentValues values) {
+            this.url = url;
+            this.values = values;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            String result;
+            RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
+            result = requestHttpURLConnection.request(url, values);
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            pictureRef.child("relation").setValue(s);
+            Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+        }
     }
 
     // 선재 코드
@@ -224,72 +331,57 @@ public class FragmentAlbum extends Fragment {
 //        });
     }
 
-    // 디바이스 사용자로 부터 얻어야할 권한 설정
-    private void tedPermission() {
-        PermissionListener permissionListener = new PermissionListener() {
-            @Override
-            public void onPermissionGranted() {
-                isPermission = true;
-            }
+    // 이미지 파일 생성
+    private File createImageFile() throws IOException {
+        long now = System.currentTimeMillis();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date(now));
+        String imageFileName = "TEST_" + timeStamp + "_";
+        File storageDir = new File(Environment.getExternalStorageDirectory() + "/Album/");
+        if (!storageDir.exists()) storageDir.mkdirs();
 
-            @Override
-            public void onPermissionDenied(List<String> deniedPermissions) {
-                isPermission = false;
-            }
-        };
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+        Log.d("createImage", "createIMAGEFILE : " + image.getAbsolutePath());
 
-        TedPermission.with(getActivity())
-                .setPermissionListener(permissionListener)
-                .setRationaleMessage(getResources().getString(R.string.permission_2))
-                .setDeniedMessage(getResources().getString(R.string.permission_1))
-                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION)
-                .check();
+        return image;
     }
 
-    // 카메라 동작
-    private void openCamera() {
-        try {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-                File photoFile = null;
-                photoFile = createImageFile();
-
-                if (photoFile != null) {
-                    photoUri = FileProvider.getUriForFile(getActivity(), "com.example.capstonee.provider", photoFile);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                    startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
-                }
-            }
-
-        } catch (IOException e) {
-        }
-    }
-
-    // 현재 Fragment 에서 어떤 행위 후 돌아오는 결과를 해당 메소드에서 받음
-    // 여기서는 사진 업로드 알람 뜨게 하려고
-    // 근데 사실 정확하게는 Fragment 는 onActivityResult 를 받을 수 없음.
+    //카메라나 갤러리에서 사진 가져온 거 처리해주는 부분
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)
-            UploadPicture_alert();
-    }
+        if (resultCode != Activity.RESULT_OK) {
+            Toast.makeText(getActivity(), "취소 되었습니다.", Toast.LENGTH_SHORT).show();
 
-    // 사진 촬영 후 해당 사진 정보를 File 로 생성
-    private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "TEST_" + timeStamp + "_";
-        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
-        return image;
+            if (tempFile != null) {
+                if (tempFile.exists()) {
+                    if (tempFile.delete()) {
+                        Log.e("TAG", tempFile.getAbsolutePath() + " 삭제 성공");
+                        tempFile = null;
+                    }
+                }
+            }
+            return;
+        }
+        switch (requestCode) {
+            case PICK_FROM_ALBUM: {
+                photoUri = data.getData();
+                Log.d("CAMERA", "PICK_FROM_ALBUM photoUri : " + photoUri);
+                cropImage(photoUri);
+                break;
+            }
+            case PICK_FROM_CAMERA: {
+                photoUri = Uri.fromFile(tempFile);
+                Log.d("ALBUM", "takePhoto photoUri : " + photoUri);
+                cropImage(photoUri);
+                break;
+            }
+            case Crop.REQUEST_CROP: {
+                UploadPicture_alert();
+            }
+        }
     }
 
     // 사진 업로드 할 지 물어보는 알람
     public void UploadPicture_alert() {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("사진 업로드");
         builder.setMessage("사진을 Cloud에 업로드 하시겠습니까?\n'아니오' 선택 시 사진은 삭제됩니다.");
@@ -308,6 +400,7 @@ public class FragmentAlbum extends Fragment {
 
         builder.show();
     }
+
 
     // 사진 업로드
     private void uploadPicture() {
@@ -335,7 +428,7 @@ public class FragmentAlbum extends Fragment {
                             // 현재 시간 + 사진의 이름
                             String time = Infomation.currentTime();
 
-                            final DatabaseReference pictureRef = Infomation.getAlbumData(Login.getUserID()).push();
+                            pictureRef = Infomation.getAlbumData(Login.getUserID()).push();
 
                             final Picture picture = new Picture();
                             picture.setFileName(filename);
@@ -366,7 +459,7 @@ public class FragmentAlbum extends Fragment {
                                             // 위치 쪼개기
                                             String[] gpsDivide = location.split(" ");
                                             gpsRef = Infomation.getDatabase("GPS");
-                                            for(int i = 0; i < gpsDivide.length; i++) {
+                                            for (int i = 0; i < gpsDivide.length; i++) {
                                                 gpsRef = gpsRef.child(gpsDivide[i]);
                                             }
 
@@ -374,7 +467,7 @@ public class FragmentAlbum extends Fragment {
                                             gpsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                    if(dataSnapshot.exists())
+                                                    if (dataSnapshot.exists())
                                                         gpsRef.setValue(Integer.parseInt(dataSnapshot.getValue().toString()) + 1);
                                                     else
                                                         gpsRef.setValue(1);
@@ -396,6 +489,14 @@ public class FragmentAlbum extends Fragment {
                                 thread.start();
                             }
                             Toast.makeText(getContext(), "업로드 완료!", Toast.LENGTH_SHORT).show();
+                            String url = "http://34.97.246.11/recognition.py";
+
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put("filename", filename);
+                            contentValues.put("ui", Login.getUserID());
+
+                            NetworkTask networkTask = new NetworkTask(url, contentValues);
+                            networkTask.execute();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

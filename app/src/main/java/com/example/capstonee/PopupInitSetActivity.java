@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,8 +41,8 @@ public class PopupInitSetActivity extends Activity {
     private File tempFile;
     private Uri photoUri;
     private String imageFileName;
+    boolean isCamera = false;
     private static final String TAG = "알림";
-    //private Boolean isCamera = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,40 +123,72 @@ public class PopupInitSetActivity extends Activity {
             }
             return;
         }
-        if (requestCode == PICK_FROM_ALBUM && data != null && data.getData() != null) {
-            photoUri = data.getData();
-            Log.d(TAG, "PICK_FROM_ALBUM photoUri : " + photoUri);
-            Cursor cursor = null;
-            try {
-                /*
-                 *  Uri 스키마를
-                 *  content:/// 에서 file:/// 로  변경한다.
-                 */
-                String[] proj = { MediaStore.Images.Media.DATA };
-                assert photoUri != null;
-                cursor = getContentResolver().query(photoUri, proj, null, null, null);
-
-                assert cursor != null;
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-                cursor.moveToFirst();
-                tempFile = new File(cursor.getString(column_index));
-                Log.d(TAG, "tempFile Uri : " + Uri.fromFile(tempFile));
-            } finally {
-                if (cursor != null) {
-                    cursor.close();
-                }
+        switch (requestCode) {
+            case PICK_FROM_ALBUM: {
+                photoUri = data.getData();
+                Log.d("CAMERA", "PICK_FROM_ALBUM photoUri : " + photoUri);
+                cropImage(photoUri);
+                break;
             }
-            setImage();
-        } else if (requestCode == PICK_FROM_CAMERA) {
-            setImage();
+            case PICK_FROM_CAMERA: {
+                photoUri = Uri.fromFile(tempFile);
+                Log.d("ALBUM", "takePhoto photoUri : " + photoUri);
+                cropImage(photoUri);
+                break;
+            }
+            case Crop.REQUEST_CROP: {
+                setImage();
+            }
         }
+//        if (requestCode == PICK_FROM_ALBUM && data != null && data.getData() != null) {
+//            photoUri = data.getData();
+//            Log.d(TAG, "PICK_FROM_ALBUM photoUri : " + photoUri);
+//            Cursor cursor = null;
+//            try {
+//                /*
+//                 *  Uri 스키마를
+//                 *  content:/// 에서 file:/// 로  변경한다.
+//                 */
+//                String[] proj = { MediaStore.Images.Media.DATA };
+//                assert photoUri != null;
+//                cursor = getContentResolver().query(photoUri, proj, null, null, null);
+//
+//                assert cursor != null;
+//                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//
+//                cursor.moveToFirst();
+//                tempFile = new File(cursor.getString(column_index));
+//                Log.d(TAG, "tempFile Uri : " + Uri.fromFile(tempFile));
+//            } finally {
+//                if (cursor != null) {
+//                    cursor.close();
+//                }
+//            }
+//            setImage();
+//        } else if (requestCode == PICK_FROM_CAMERA) {
+//            setImage();
+//        }
+    }
+    // 이미지 크롭
+    private void cropImage(Uri photoUri){
+        Log.d("Tag", "TEMPFILE : " +tempFile);
+        if(tempFile == null){
+            try{
+                tempFile = createImageFile();
+            }catch(Exception e){
+                Toast.makeText(this, "이미지 처리 오류!", Toast.LENGTH_SHORT).show();
+                finish();
+                e.printStackTrace();
+            }
+        }
+        Uri savingUri = Uri.fromFile(tempFile);
+        Crop.of(photoUri, savingUri).asSquare().start(this);
     }
     /**
      *  앨범에서 이미지 가져오기
      */
     private void goToAlbum() {
-        //isCamera = false;
+        isCamera = false;
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
         startActivityForResult(intent, PICK_FROM_ALBUM);
@@ -166,7 +199,7 @@ public class PopupInitSetActivity extends Activity {
      *  카메라에서 이미지 가져오기
      */
     private void takePhoto() {
-        //isCamera = true;
+        isCamera = true;
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         try {
@@ -219,6 +252,7 @@ public class PopupInitSetActivity extends Activity {
         intent.putExtra("tempFile", tempFile);
         intent.putExtra("photoUri", photoUri);
         intent.putExtra("imageFileName", imageFileName);
+        intent.putExtra("isCamera", isCamera);
         tempFile = null;
         setResult(RESULT_OK, intent);
         finish();

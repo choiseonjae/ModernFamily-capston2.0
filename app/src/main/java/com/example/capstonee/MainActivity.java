@@ -65,10 +65,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // 요구 코드 1 && 결과 반환이 취소 -> 가입한 가족이 없고, 현재 사용자가 가족 중 최초 가입자
-        if(requestCode == 1 && resultCode == RESULT_CANCELED){
-            Boolean keep = (Boolean) data.getBooleanExtra("keep", true);
-            Log.e("오나?", keep+"");
+        if(requestCode == 1 && resultCode == RESULT_CANCELED) {
+            Intent intent = new Intent(this, PopupActivity.class);
+            startActivityForResult(intent, 1);
+        }else if(requestCode == 1 && resultCode == POP_RESULT){
+            Boolean keep = (Boolean) data.getBooleanExtra("keep", false);
             if(keep){
                 Intent intent = new Intent(this, PopupActivity.class);
                 startActivityForResult(intent, 1);
