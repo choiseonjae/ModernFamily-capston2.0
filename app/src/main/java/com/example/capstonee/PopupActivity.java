@@ -58,8 +58,8 @@ public class PopupActivity extends Activity {
     private File tempFile;
     private ProgressDialog dialog;
     public static final String FB_STORAGE_PATH = "Main/";
-    public static final String FB_DATABASE_PATH = "Main";
     public static final int POP_RESULT = 9876;
+    private String filename;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,11 +170,11 @@ public class PopupActivity extends Activity {
             dialog.show();
             long now = System.currentTimeMillis();
             Date date = new Date(now);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMDD_HHmmss");
-            final String filename = sdf.format(date);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            filename = sdf.format(date)+ "." +getImageExt(imgUri);
 
             //Get the storage reference
-            final StorageReference ref = mStorageRef.child(FB_STORAGE_PATH + Login.getUserID() + "/" + filename + "." + getImageExt(imgUri));
+            final StorageReference ref = mStorageRef.child(FB_STORAGE_PATH + Login.getUserID() + "/" + filename);
 
             //Add file to reference
             ref.putFile(imgUri)
@@ -187,12 +187,12 @@ public class PopupActivity extends Activity {
                                     downloadUrl = uri.toString();
                                     ImageUpload imageUpload = new ImageUpload(filename, downloadUrl, family);
                                     int fcount = Login.getUserFamilyCount();
-                                    mDatabaseRef.child(Login.getUserID()).child(fcount+"").setValue(imageUpload);
+                                    mDatabaseRef.child(Login.getUserID()).child(Integer.toString(fcount)).setValue(imageUpload);
                                     Log.v("된거야?", imageUpload.getUrl() + " " + imageUpload.getName() + " " + imageUpload.getFamily());
 
                                     String url = "http://34.97.246.11/makedir.py";
                                     ContentValues contentValues = new ContentValues();
-                                    contentValues.put("filename", filename + "." + getImageExt(imgUri));
+                                    contentValues.put("filename", filename);
                                     contentValues.put("ui", Login.getUserFamilyID());
                                     contentValues.put("fr", fcount);
 

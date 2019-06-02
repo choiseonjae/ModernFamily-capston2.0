@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="#F69042"
         app:tabGravity="fill"
-        app:tabIndicatorColor="#F2A405"
+        app:tabIndicatorColor="#F9C400"
         app:tabMode="fixed" />
 
     <android.support.v4.view.ViewPager

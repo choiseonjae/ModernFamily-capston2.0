@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_place_black_24dp);
         tabLayout.getTabAt(4).setIcon(R.drawable.ic_settings_black_24dp);
 
-        if(!isVisited()){
+        if(isNeverVisited()){
             Intent intent = new Intent(this, FindMyFamilyActivity.class);
             startActivityForResult(intent, 1);
         }
@@ -71,9 +71,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean isVisited(){
+    public boolean isNeverVisited(){
         //첫 로그인 시 UserFamilyID = ""
-        return !Login.getUserFamilyID().equals("");
+        return Login.getUserFamilyID().equals("");
     }
 
     @Override
