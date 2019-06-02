@@ -92,19 +92,8 @@ public class FragmentAlbum extends Fragment {
         // view 에 보일 recycler view adapter 설정
         initAdapter();
 
-        // 데이터의 추가 삭제 이동 시 어뎁터의 변화
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("role").child(Login.getUserFamilyID());
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                childrenCount = dataSnapshot.getChildrenCount();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        childrenCount = Login.getUserFamilyCount();
+        Log.e("chicount = ", childrenCount+"");
         if(childrenCount > 0) getData();
 
 
@@ -308,9 +297,9 @@ public class FragmentAlbum extends Fragment {
         roleRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot){
-                for(int i=1; i<=Login.getUserFamilyCount(); i++) {
-                    ImageUpload imageUpload = dataSnapshot.child(Integer.toString(i)).getValue(ImageUpload.class);
-                                        // 현재 역할 한 분
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    ImageUpload imageUpload = snapshot.getValue(ImageUpload.class);
+                    // 현재 역할 한 분
                     String role = imageUpload.getFamily();
                     String uri = imageUpload.getUrl();
 

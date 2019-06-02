@@ -1,8 +1,6 @@
 package com.example.capstonee.Adapter;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -14,14 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.capstonee.Model.Infomation;
-import com.example.capstonee.Model.User;
 import com.example.capstonee.R;
 import com.example.capstonee.SelectedRoleAlbum;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -119,74 +111,73 @@ public class RoleAdapter extends RecyclerView.Adapter<RoleAdapter.ItemViewHolder
 
             ViewGroup.LayoutParams lp = role_imageView.getLayoutParams();
             lp.width = context.getResources().getDisplayMetrics().widthPixels;
-            lp.height = lp.width / 2;
+            lp.height = context.getResources().getDisplayMetrics().heightPixels;
 
             Picasso.with(context).load(pictureUri).fit().into(role_imageView);
         }
 
     }
 
-    private void familyAdd_alert(final String familyMemberID) {
-        final AlertDialog.Builder ad = new AlertDialog.Builder(context);
-
-        ad.setTitle("가족 삭제");       // 제목 설정
-        ad.setMessage("선택한 가족을 퇴출시키겠습니까?\n한번 퇴출된 가족은 되돌릴 수 없습니다.");   // 내용 설정
-
-        // 확인 버튼 설정
-        ad.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                final DatabaseReference userRef = Infomation.getDatabase("User").child(familyMemberID);
-                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        String familyID = user.getFamilyID();
-                        user.setFamilyID("");
-                        userRef.setValue(user);
-
-                        // family DB 삭제
-                        final DatabaseReference familyRef = Infomation.getDatabase("Family").child(familyID);
-                        familyRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                for (DataSnapshot d : dataSnapshot.getChildren())
-                                    if (d.getValue().toString().equals(familyMemberID))
-                                        familyRef.child(d.getKey()).removeValue();
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-            }
-        });
-
-        // 취소 버튼 설정
-        ad.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            private DialogInterface dialog;
-            private int which;
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                this.dialog = dialog;
-                this.which = which;
-            }
-        });
-
-        // 창 띄우기
-        ad.show();
-
-    }
+//    private void familyAdd_alert(final String familyMemberID) {
+//        final AlertDialog.Builder ad = new AlertDialog.Builder(context);
+//
+//        ad.setTitle("가족 삭제");       // 제목 설정
+//        ad.setMessage("선택한 가족을 퇴출시키겠습니까?\n한번 퇴출된 가족은 되돌릴 수 없습니다.");   // 내용 설정
+//
+//        // 확인 버튼 설정
+//        ad.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                final DatabaseReference userRef = Infomation.getDatabase("User").child(familyMemberID);
+//                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        User user = dataSnapshot.getValue(User.class);
+//                        String familyID = user.getFamilyID();
+//                        user.setFamilyID("");
+//                        userRef.setValue(user);
+//
+//                        // family DB 삭제
+//                        final DatabaseReference familyRef = Infomation.getDatabase("Family").child(familyID);
+//                        familyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                for (DataSnapshot d : dataSnapshot.getChildren())
+//                                    if (d.getValue().toString().equals(familyMemberID))
+//                                        familyRef.child(d.getKey()).removeValue();
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                            }
+//                        });
+//
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+//            }
+//        });
+//
+//        // 취소 버튼 설정
+//        ad.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//            private DialogInterface dialog;
+//            private int which;
+//
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                this.dialog = dialog;
+//                this.which = which;
+//            }
+//        });
+//
+//        // 창 띄우기
+//        ad.show();
+//     }
 
 }
