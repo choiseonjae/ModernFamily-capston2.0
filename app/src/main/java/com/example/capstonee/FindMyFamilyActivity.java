@@ -39,6 +39,7 @@ public class FindMyFamilyActivity extends Activity {
         noIDButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Login.setFamilyID(Login.getUserID());
                 Intent intent = new Intent();
                 intent.putExtra("keep", true);
                 setResult(RESULT_CANCELED, intent);

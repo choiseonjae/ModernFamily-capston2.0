@@ -57,7 +57,6 @@ public class PopupActivity extends Activity {
     private DatabaseReference mDatabaseRef;
     private File tempFile;
     private ProgressDialog dialog;
-    private static int familyCount = 1;
     public static final String FB_STORAGE_PATH = "Main/";
     public static final String FB_DATABASE_PATH = "Main";
     public static final int POP_RESULT = 9876;
@@ -131,7 +130,7 @@ public class PopupActivity extends Activity {
             }
         });
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference(FB_DATABASE_PATH);
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("Family");
     }
 
     public class NetworkTask extends AsyncTask<Void, Void, String> {
@@ -171,7 +170,7 @@ public class PopupActivity extends Activity {
             dialog.show();
             long now = System.currentTimeMillis();
             Date date = new Date(now);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMHH_mmss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMDD_HHmmss");
             final String filename = sdf.format(date);
 
             //Get the storage reference
@@ -187,15 +186,15 @@ public class PopupActivity extends Activity {
                                 public void onSuccess(Uri uri) {
                                     downloadUrl = uri.toString();
                                     ImageUpload imageUpload = new ImageUpload(filename, downloadUrl, family);
-                                    mDatabaseRef.child(filename).setValue(imageUpload);
+                                    int fcount = Login.getFCount();
+                                    mDatabaseRef.child(Login.getUserID()).child(fcount+"").setValue(imageUpload);
                                     Log.v("된거야?", imageUpload.getUrl() + " " + imageUpload.getName() + " " + imageUpload.getFamily());
 
                                     String url = "http://34.97.246.11/makedir.py";
-
                                     ContentValues contentValues = new ContentValues();
                                     contentValues.put("filename", filename + "." + getImageExt(imgUri));
-                                    contentValues.put("ui", Login.getUserID());
-                                    contentValues.put("fr", familyCount++);
+                                    contentValues.put("ui", Login.getUserFamilyID());
+                                    contentValues.put("fr", fcount);
 
                                     NetworkTask networkTask = new NetworkTask(url, contentValues);
                                     networkTask.execute();

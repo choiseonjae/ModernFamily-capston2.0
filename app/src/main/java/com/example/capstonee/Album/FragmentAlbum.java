@@ -8,6 +8,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -32,6 +33,7 @@ import android.widget.Toast;
 
 import com.example.capstonee.Adapter.RoleAdapter;
 import com.example.capstonee.GPS;
+import com.example.capstonee.Model.ImageUpload;
 import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.Login;
 import com.example.capstonee.Model.Picture;
@@ -43,6 +45,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -73,7 +76,8 @@ public class FragmentAlbum extends Fragment {
     private DatabaseReference gpsRef;
     private DatabaseReference pictureRef;
     private File tempFile;
-
+    private String role;
+    private String distUri;
     public FragmentAlbum() {
     }
 
@@ -216,10 +220,29 @@ public class FragmentAlbum extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(final String s) {
             super.onPostExecute(s);
-            pictureRef.child("relation").setValue(s);
-            Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+            int idx = s.indexOf(".");
+            Toast.makeText(getActivity(), s+ " " +idx+"", Toast.LENGTH_SHORT).show();
+            String dist = s.substring(0, idx);
+            DatabaseReference mDataref = FirebaseDatabase.getInstance().getReference("Family").child(Login.getUserFamilyID()).child(dist);
+            mDataref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    ImageUpload imageUpload = dataSnapshot.getValue(ImageUpload.class);
+                    role = imageUpload.getFamily();
+                    distUri = imageUpload.getUrl();
+                    Log.d("role = ", role);
+                    Log.d("distUri = ", distUri);
+                    DatabaseReference newDataref = FirebaseDatabase.getInstance().getReference("roleAlbum").child(Login.getUserFamilyID());
+                    newDataref.child(role).push().setValue(distUri);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 
@@ -412,7 +435,7 @@ public class FragmentAlbum extends Fragment {
 
         long now = System.currentTimeMillis();
         Date date = new Date(now);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMHH_mmss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_hhmmss");
         final String filename = sdf.format(date);
 
         // 사용자 폴더에 사진 파일 저장을 위한 서버 저장 공간 참조 가져옴.
@@ -431,17 +454,17 @@ public class FragmentAlbum extends Fragment {
                             // 현재 시간 + 사진의 이름
                             String time = Infomation.currentTime();
 
-                            pictureRef = Infomation.getAlbumData(Login.getUserID()).push();
+                            pictureRef = Infomation.getAlbumData(Login.getUserFamilyID()).push();
 
                             final Picture picture = new Picture();
-                            picture.setFileName(filename);
+                            picture.setFileName(filename + "." +getImageExt(photoUri));
                             String gps[] = new GPS().currentLocation(getContext(), getActivity());
 
                             picture.setGpsProvider(gps[0]);
                             picture.setLongitude(Double.parseDouble(gps[1]));
                             picture.setLatitude(Double.parseDouble(gps[2]));
                             picture.setAltitude(Double.parseDouble(gps[3]));
-                            picture.setUploadID(Login.getUserID());
+                            picture.setUploadID(Login.getUserFamilyID());
                             picture.setPictureID(pictureRef.getKey());
                             picture.setUri(photoUri.toString());
                             picture.setDeleted(false);
@@ -495,8 +518,8 @@ public class FragmentAlbum extends Fragment {
                             String url = "http://34.97.246.11/recognition.py";
 
                             ContentValues contentValues = new ContentValues();
-                            contentValues.put("filename", filename);
-                            contentValues.put("ui", Login.getUserID());
+                            contentValues.put("filename", filename+ "." +getImageExt(photoUri));
+                            contentValues.put("ui", Login.getUserFamilyID());
 
                             NetworkTask networkTask = new NetworkTask(url, contentValues);
                             networkTask.execute();
