@@ -186,7 +186,7 @@ public class PopupActivity extends Activity {
                                 public void onSuccess(Uri uri) {
                                     downloadUrl = uri.toString();
                                     ImageUpload imageUpload = new ImageUpload(filename, downloadUrl, family);
-                                    int fcount = Login.getFCount();
+                                    int fcount = Login.getUserFamilyCount();
                                     mDatabaseRef.child(Login.getUserID()).child(fcount+"").setValue(imageUpload);
                                     Log.v("된거야?", imageUpload.getUrl() + " " + imageUpload.getName() + " " + imageUpload.getFamily());
 
@@ -199,6 +199,7 @@ public class PopupActivity extends Activity {
                                     NetworkTask networkTask = new NetworkTask(url, contentValues);
                                     networkTask.execute();
 
+                                    Infomation.getDatabase("User").child(Login.getUserID()).child("familyCount").setValue(fcount);
                                 }
                             });
                         }

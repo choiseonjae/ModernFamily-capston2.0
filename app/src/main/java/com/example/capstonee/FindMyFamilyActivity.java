@@ -17,6 +17,7 @@ import com.example.capstonee.Model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 // 가족이랑 관계 맺기
@@ -39,6 +40,8 @@ public class FindMyFamilyActivity extends Activity {
         noIDButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(Login.getUserID());
+                databaseReference.child("familyID").setValue(Login.getUserID());
                 Login.setFamilyID(Login.getUserID());
                 Intent intent = new Intent();
                 intent.putExtra("keep", true);

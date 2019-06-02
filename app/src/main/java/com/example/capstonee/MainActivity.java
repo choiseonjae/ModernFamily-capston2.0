@@ -51,12 +51,6 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(4).setIcon(R.drawable.ic_settings_black_24dp);
 
         if(!isVisited()){
-            //Init Firebase
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            //DB 레퍼런스 가져오기
-            final DatabaseReference reference = database.getReference("User");
-            //첫방문이니, visited=false인데 이걸 true로 바꿔줌
-//            reference.child(Login.getUserID()).child("visited").setValue(true);
             Intent intent = new Intent(this, FindMyFamilyActivity.class);
             startActivityForResult(intent, 1);
         }
@@ -78,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean isVisited(){
-        return Login.getUserVisit();
+        //첫 로그인 시 UserFamilyID = ""
+        return !Login.getUserFamilyID().equals("");
     }
 
     @Override
