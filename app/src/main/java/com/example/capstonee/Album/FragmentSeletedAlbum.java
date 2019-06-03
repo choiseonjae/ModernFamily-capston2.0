@@ -301,9 +301,9 @@ public class FragmentSeletedAlbum extends Fragment {
                     albumRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            Log.d("addItem", uri.toString());
-                            recyclerViewAdapter.addItem(uri.toString());
-                            recyclerViewAdapter.notifyDataSetChanged();
+//                            Log.d("addItem", uri.toString());
+//                            recyclerViewAdapter.addItem(role, uri.toString());
+//                            recyclerViewAdapter.notifyDataSetChanged();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override

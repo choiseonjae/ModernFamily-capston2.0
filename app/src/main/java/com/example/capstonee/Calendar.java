@@ -47,7 +47,6 @@ public class Calendar extends Fragment {
                 // 첫 로그인 화면처럼 배경 보이고 싶은데 안되네요;; ㅠㅠ
                 startActivity(intent);
 
-
             }
 
         });

@@ -168,6 +168,7 @@ public class PopupActivity extends Activity {
             dialog = new ProgressDialog(this);
             dialog.setTitle("사진을 업로드 중입니다...");
             dialog.show();
+
             long now = System.currentTimeMillis();
             Date date = new Date(now);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
@@ -186,7 +187,7 @@ public class PopupActivity extends Activity {
                                 public void onSuccess(Uri uri) {
                                     downloadUrl = uri.toString();
                                     ImageUpload imageUpload = new ImageUpload(filename, downloadUrl, family);
-                                    int fcount = Login.getUserFamilyCount();
+                                    int fcount = Login.getUserFamilyCount() + 1;
                                     mDatabaseRef.child(Login.getUserID()).child(Integer.toString(fcount)).setValue(imageUpload);
                                     Log.v("된거야?", imageUpload.getUrl() + " " + imageUpload.getName() + " " + imageUpload.getFamily());
 
@@ -200,6 +201,7 @@ public class PopupActivity extends Activity {
                                     networkTask.execute();
 
                                     Infomation.getDatabase("User").child(Login.getUserID()).child("familyCount").setValue(fcount);
+                                    Login.setFamilyCount(fcount);
                                 }
                             });
                         }

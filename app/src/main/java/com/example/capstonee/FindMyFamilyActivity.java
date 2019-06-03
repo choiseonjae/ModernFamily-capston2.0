@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -72,21 +73,22 @@ public class FindMyFamilyActivity extends Activity {
                                 if (!PW.equals(user.getPassword())) {
                                     Toast.makeText(FindMyFamilyActivity.this, "ID / PW를 다시 입력하세요.", Toast.LENGTH_SHORT).show();
                                 } else { // PW 가 일치
-
+                                    Log.e("id, fc ", user.getFamilyID()+ " " +user.getFamilyCount());
                                     // family ID
                                     final String familyID = user.getFamilyID();
+                                    // familyCount;
+                                    final int familyCount = user.getFamilyCount();
 
                                     // User DB : 현재 사용자의 familyID 값을 업데이트함. - 검색한 user 와 같은 family ID 값으로
                                     Infomation.getDatabase("User").child(Login.getUserID()).child("familyID").setValue(familyID);
+                                    Infomation.getDatabase("User").child(Login.getUserID()).child("familyCount").setValue(familyCount);
+                                    Login.setFamilyID(familyID);
+                                    Login.setFamilyCount(familyCount);
 
                                     Intent intent = new Intent();
                                     // true 로 바꿔주면 더 이상 로그인시 팝업창이 뜨지 않음.
                                     intent.putExtra("keep", false);
                                     setResult(RESULT_OK, intent);
-
-                                    // 이제 첫 로그인 아님
-                                    final DatabaseReference reference = Infomation.getDatabase("User");
-                                    reference.child(Login.getUserID()).child("visited").setValue(true);
 
                                     finish();
 
