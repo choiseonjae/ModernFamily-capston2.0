@@ -140,34 +140,6 @@ public class PopupInitSetActivity extends Activity {
                 setImage();
             }
         }
-//        if (requestCode == PICK_FROM_ALBUM && data != null && data.getData() != null) {
-//            photoUri = data.getData();
-//            Log.d(TAG, "PICK_FROM_ALBUM photoUri : " + photoUri);
-//            Cursor cursor = null;
-//            try {
-//                /*
-//                 *  Uri 스키마를
-//                 *  content:/// 에서 file:/// 로  변경한다.
-//                 */
-//                String[] proj = { MediaStore.Images.Media.DATA };
-//                assert photoUri != null;
-//                cursor = getContentResolver().query(photoUri, proj, null, null, null);
-//
-//                assert cursor != null;
-//                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-//
-//                cursor.moveToFirst();
-//                tempFile = new File(cursor.getString(column_index));
-//                Log.d(TAG, "tempFile Uri : " + Uri.fromFile(tempFile));
-//            } finally {
-//                if (cursor != null) {
-//                    cursor.close();
-//                }
-//            }
-//            setImage();
-//        } else if (requestCode == PICK_FROM_CAMERA) {
-//            setImage();
-//        }
     }
     // 이미지 크롭
     private void cropImage(Uri photoUri){

@@ -5,17 +5,17 @@ public class User {
     private String Name;
     private String Password;
     private String BirthDate;
-    private Boolean Visited;
+    private int FamilyCount;
     private String FamilyID;
 
     private User(){}
 
-    public User(String phone, String name, String password, String birthDate, Boolean visited, String familyID) {
+    public User(String phone, String name, String password, String birthDate, int familyCount, String familyID) {
         Phone = phone;
         Name = name;
         Password = password;
         BirthDate = birthDate;
-        Visited = visited;
+        FamilyCount = familyCount;
         FamilyID = familyID;
     }
 
@@ -44,9 +44,9 @@ public class User {
 
     public void setBirthDate(String birthDate) { BirthDate = birthDate; }
 
-    public Boolean getVisited() { return Visited; }
+    public int getFamilyCount() { return FamilyCount; }
 
-    public void setVisited(Boolean visited) { Visited = visited; }
+    public void setFamilyCount(int familyCount) { FamilyCount = familyCount; }
 
     public String getFamilyID() { return FamilyID; }
 

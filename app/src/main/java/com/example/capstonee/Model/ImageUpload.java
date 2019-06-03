@@ -6,9 +6,25 @@ public class ImageUpload {
     private String family;
 
     public ImageUpload(){}
+    public ImageUpload(String url, String name){
+        this.url = url;
+        this.name = name;
+    }
     public ImageUpload(String name, String url, String family) {
         this.name = name;
         this.url = url;
+        this.family = family;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setFamily(String family) {
         this.family = family;
     }
 
@@ -16,9 +32,7 @@ public class ImageUpload {
         return name;
     }
 
-    public String getUrl() {
-        return url;
-    }
+    public String getUrl() { return url; }
 
     public String getFamily() {
         return family;

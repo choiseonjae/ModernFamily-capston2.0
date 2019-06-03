@@ -74,7 +74,7 @@ public class SignIn extends AppCompatActivity {
                                 Login.setPassword(Password);
                                 Login.setPhone(user.getPhone());
                                 Login.setBirth(user.getBirthDate());
-                                Login.setVisit(user.getVisited());
+                                Login.setFamilyCount(user.getFamilyCount());
                                 Login.setFamilyID(user.getFamilyID());
                                 startActivity(intent);
                             }

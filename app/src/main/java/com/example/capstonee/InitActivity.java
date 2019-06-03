@@ -42,12 +42,14 @@ public class InitActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     User user = dataSnapshot.getValue(User.class);
+
                     Log.d("LOGGOG", user.getName()+ " " +user.getPassword()+ " " +user.getPhone());
+
                     Login.setName(user.getName());
                     Login.setPassword(user.getPassword());
                     Login.setPhone(user.getPhone());
                     Login.setBirth(user.getBirthDate());
-                    Login.setVisit(user.getVisited());
+                    Login.setFamilyCount(user.getFamilyCount());
                     Login.setFamilyID(user.getFamilyID());
 
                     Log.d("Login1", Login.getUserID());
