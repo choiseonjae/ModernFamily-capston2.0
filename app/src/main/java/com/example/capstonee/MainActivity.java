@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         //프래그먼트를 여기에 추가
 
-        adapter.AddFragment(new FragmentHome(), "");
+        adapter.AddFragment(new Calendar(), "");
         adapter.AddFragment(new FragmentAlbum(), "");
         adapter.AddFragment(new Chatting(), "");
         adapter.AddFragment(new FragmentLocation(), "");
