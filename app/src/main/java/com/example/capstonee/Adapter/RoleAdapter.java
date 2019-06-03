@@ -109,9 +109,10 @@ public class RoleAdapter extends RecyclerView.Adapter<RoleAdapter.ItemViewHolder
             // 화면에 보여주기
             role_textView.setText(role);
 
+            // 반 쪼개야해용
             ViewGroup.LayoutParams lp = role_imageView.getLayoutParams();
             lp.width = context.getResources().getDisplayMetrics().widthPixels;
-            lp.height = context.getResources().getDisplayMetrics().heightPixels;
+            lp.height = lp.width / 4;
 
             Picasso.with(context).load(pictureUri).fit().into(role_imageView);
         }

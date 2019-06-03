@@ -41,6 +41,7 @@ import com.example.capstonee.R;
 import com.example.capstonee.RequestHttpURLConnection;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -290,17 +291,19 @@ public class FragmentAlbum extends Fragment {
         Log.d("LOG - FAMILY ID : ", Login.getUserFamilyID());
 
         // 현재 사용자의 Family DB 에서 역할가져온다.
-        final DatabaseReference roleRef = Infomation.getDatabase("Family").child(Login.getUserFamilyID());
+        final DatabaseReference roleRef = Infomation.getDatabase("role").child(Login.getUserFamilyID());
         Log.e("roleRef = ", roleRef.getKey());
         // family - id - 이후 key : value
         // 새끼가 빠져서 들어왔으면 짹깍짹깍 안들어오냐?
-        roleRef.addValueEventListener(new ValueEventListener() {
+        roleRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot){
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    ImageUpload imageUpload = snapshot.getValue(ImageUpload.class);
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    // push 하기 때문에 제일 첫 번째 하나 가져옴.
+                    ImageUpload imageUpload = dataSnapshot.getChildren().iterator().next().getValue(ImageUpload.class);
+
                     // 현재 역할 한 분
-                    String role = imageUpload.getFamily();
+                    String role = dataSnapshot.getKey();
                     String uri = imageUpload.getUrl();
 
                     // 역할 -> key : 사진 제목, value : 사진 uri
@@ -313,11 +316,28 @@ public class FragmentAlbum extends Fragment {
                     adapter.addItem(role, uri);
                     // F5
                     adapter.notifyDataSetChanged();
-                }
+
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
         });
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
