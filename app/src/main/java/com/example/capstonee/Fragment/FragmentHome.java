@@ -12,12 +12,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
 import android.widget.Gallery;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.capstonee.R;
+import com.example.capstonee.ShowPictureAtDate;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -32,6 +35,7 @@ public class FragmentHome extends Fragment {
     ImageView viewBG;
     Boolean isPermission = false;
     private static final int PICK_FROM_ALBUM = 567;
+
 
     public FragmentHome() {
     }
@@ -51,6 +55,7 @@ public class FragmentHome extends Fragment {
         });
 
         viewBG = v.findViewById(R.id.viewBG);
+        // 여기까지
         return v;
     }
     private void goToAlbum() {

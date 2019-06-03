@@ -201,6 +201,7 @@ public class PopupActivity extends Activity {
                                     networkTask.execute();
 
                                     Infomation.getDatabase("User").child(Login.getUserID()).child("familyCount").setValue(fcount);
+                                    Login.setFamilyCount(fcount);
                                 }
                             });
                         }

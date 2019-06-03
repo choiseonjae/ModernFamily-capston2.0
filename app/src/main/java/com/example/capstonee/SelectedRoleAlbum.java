@@ -18,6 +18,7 @@ public class SelectedRoleAlbum extends AppCompatActivity {
 
         String role = getIntent().getStringExtra("role");
         recyclerView = findViewById(R.id.selected_role_text_view);
+        recyclerView.setText(role);
 
 
     }

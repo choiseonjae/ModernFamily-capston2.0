@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Picture implements Serializable {
 
     private ArrayList<String> person;
-    private String fileName, uploadID, uri, gpsProvider, location, pictureID;
+    private String fileName, uploadID, uri, gpsProvider, location, pictureID, uploadTime;
     private double longitude, latitude, altitude;
     private boolean deleted = false;
 
@@ -96,5 +96,13 @@ public class Picture implements Serializable {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getUploadTime() {
+        return uploadTime;
+    }
+
+    public void setUploadTime(String uploadTime) {
+        this.uploadTime = uploadTime;
     }
 }

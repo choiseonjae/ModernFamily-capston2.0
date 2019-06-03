@@ -32,7 +32,6 @@ import java.util.Map;
 public class Chatting extends Fragment {
 
     private MessageAdapter adapter;
-    private List<Chat> chatList = new ArrayList<>();
     private RecyclerView recyclerView;
     private View view;
 
@@ -40,6 +39,8 @@ public class Chatting extends Fragment {
 
         // 해당 view 설정 : 자바 파일 <---바인딩---> fragment
         view = inflater.inflate(R.layout.chat_fragment, container, false);
+
+
 
         initAdapter();
         getData();
@@ -138,6 +139,9 @@ public class Chatting extends Fragment {
                 // F5
                 adapter.notifyDataSetChanged();
 
+                // 마지막으로 이동
+                moveLastItem();
+
             }
 
             // 채팅 데이터가 변경 되었을 때 -> 추가 아님 변경 -> 읽은 사람 생김.
@@ -164,76 +168,21 @@ public class Chatting extends Fragment {
             }
         });
     }
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_chatting);
-//
-//        // 상대바
-//        final String opponentID = getIntent().getExtras().getString("USER_ID");
-//        final String myID = Common.getMyId();
-//        Toolbar toolbar = (Toolbar)findViewById(R.id.opponent_view_toolbar);
-//
-//        toolbar.setTitle(opponentID);
-//        final String chatName = Common.integrate(myID, opponentID);
-//
-//        final DatabaseReference contentsRef = Common.getDatabase(Common.CHAT_INFOMAION).child(chatName);
-//
-//        recyclerView = findViewById(R.id.listView2);
-//        recyclerView.setHasFixedSize(true);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-//        linearLayoutManager.setStackFromEnd(true);
-//        recyclerView.setLayoutManager(linearLayoutManager);
-//
-//        // 전송 버튼 클릭 시 메세지 전송
-//        findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                EditText write = (EditText) findViewById(R.id.writeEdit);
-//
-//                ChatData chatData = new ChatData();
-//                chatData.setSender(myID); // 내 아이디
-//                chatData.setReceiver(opponentID); // 상대방 아이디
-//                chatData.setMessage(write.getText().toString()); // 메세지
-//                chatData.setTime(Common.chatTimeStamp()); // 전송 시간
-//
-//                contentsRef.push().setValue(chatData); // DB에 저장
-//                write.setText(""); // 전송 후 초기화
-//            }
-//        });
-//
-//        // 메세지 도착 시 업데이트
-//        // addValueEventListener 변경 및 추가 시 Child DB 전부 돌려줌.
-//        // addChildEventListener 하위에 추가된 DB 넘겨준다.
-//        contentsRef.addChildEventListener(new ChildEventListener() {  // message는 child의 이벤트를 수신합니다.
-//            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                ChatData chat = dataSnapshot.getValue(ChatData.class);  // chatData를 가져오고
-//                // 받아온 내용의 Sender, Receiver 과 채팅방 id 들과 같아야 한다.
-//                if (chat.isRelation(myID, opponentID)) {
-//                    chatList.add(chat);
-//                    messageAdapter = new MessageAdapter(getApplicationContext(), chatList);
-//                    recyclerView.setAdapter(messageAdapter);
-//                }
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//            }
-//        });
-//    }
+
+    // 가장 마지막 아이템으로이동
+    private void moveLastItem(){
+        recyclerView.post(new Runnable() {
+
+            @Override
+
+            public void run() {
+
+                recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+
+            }
+
+        });
+    }
+
 
 }
