@@ -76,6 +76,8 @@ public class SignIn extends AppCompatActivity {
                                 Login.setBirth(user.getBirthDate());
                                 Login.setFamilyCount(user.getFamilyCount());
                                 Login.setFamilyID(user.getFamilyID());
+                                Log.e(" 체크 : ",user.getProfileUri());
+                                Login.setProfileUri(user.getProfileUri());
                                 startActivity(intent);
                             }
                             else{

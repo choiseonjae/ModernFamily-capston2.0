@@ -92,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, 1);
             }
         }
+        Log.e("앨범 코드 ; ", requestCode + "");
+        Log.e("앨범 코드2 ; ", resultCode+ "");
     }
 
     public boolean isNeverVisited(){
