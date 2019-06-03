@@ -93,7 +93,7 @@ public class FragmentSetting extends Fragment {
                 InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
                 Bitmap img = BitmapFactory.decodeStream(in);
 
-                // uri 얻기
+                // uri 얻어서 스토리지 + DB 에 저장
                 Uri uri = getImageUri(getContext(), img);
                 Infomation.getStorageRef("Profile").child(Login.getUserID()).putFile(uri);
                 Infomation.getDatabase("User").child(Login.getUserID()).child("profileUri").setValue(uri.toString());
