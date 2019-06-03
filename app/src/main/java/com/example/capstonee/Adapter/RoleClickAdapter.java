@@ -10,40 +10,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.example.capstonee.ClickRoleActivity;
 import com.example.capstonee.Model.Photo;
 import com.example.capstonee.R;
+import com.example.capstonee.ShowPhotoActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
-/****
- *  FragmentAlbum에서 사진을 보여주는데 쓰일 RecyclerViewAdapter
- */
-public class RecyclerPhotoViewAdapter extends RecyclerView.Adapter<RecyclerPhotoViewAdapter.MyViewHolder> {
+public class RoleClickAdapter extends RecyclerView.Adapter<RoleClickAdapter.MyViewHolder> {
     private Context mContext;
     private List<Photo> mData = new ArrayList<>();
 
-    public RecyclerPhotoViewAdapter(Context mContext){
+    public RoleClickAdapter(Context mContext){
         this.mContext = mContext;
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-
         View view;
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        view = inflater.inflate(R.layout.cardview_item, viewGroup, false);
+        view = inflater.inflate(R.layout.cardview2_item, viewGroup, false);
         return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, final int i) {
+    public void onBindViewHolder(@NonNull RoleClickAdapter.MyViewHolder myViewHolder, int i) {
         myViewHolder.onBind(mData.get(i));
     }
 
@@ -51,36 +45,36 @@ public class RecyclerPhotoViewAdapter extends RecyclerView.Adapter<RecyclerPhoto
     public int getItemCount() {
         return mData.size();
     }
-    public void addItem(String role, String uri) {
+    public void addItem(String uri) {
         // 외부에서 item을 추가시킬 함수입니다.
-        mData.add(new Photo(role, uri));
+        mData.add(new Photo(uri));
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder{
         private ImageView photoImg;
-        private TextView cardText;
+        private String photoUri;
         CardView cardView;
 
         private MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            photoImg = itemView.findViewById(R.id.album_image_id);
-            cardText = itemView.findViewById(R.id.cardtext_id);
-            cardView = itemView.findViewById(R.id.cardview_id);
+            photoImg = itemView.findViewById(R.id.role_photo);
+            cardView = itemView.findViewById(R.id.rolecardview_id);
             photoImg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), ClickRoleActivity.class);
-                    intent.putExtra("role", cardText.getText().toString());
-                    Log.e("role!!!", cardText.getText().toString());
-                    v.getContext().startActivity(intent);
+                    Intent intent = new Intent(v.getContext(), ShowPhotoActivity.class);
+                    intent.putExtra("imageUrl", photoUri);
+                    Log.e("imageUrl", photoUri);
+                    v.getContext().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
             });
         }
 
         void onBind(Photo photo){
+            Log.e("getUri = ", photo.getUri());
             Picasso.with(mContext).load(photo.getUri()).fit().centerInside().into(photoImg);
-            cardText.setText(photo.getRole());
+            photoUri = photo.getUri();
         }
     }
 }

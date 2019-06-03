@@ -15,7 +15,15 @@
         <ImageView
             android:id="@+id/album_image_id"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="200dp"
             android:scaleType="centerCrop" />
+        <TextView
+            android:id="@+id/cardtext_id"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Role"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>

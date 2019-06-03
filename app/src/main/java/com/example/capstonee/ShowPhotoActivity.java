@@ -16,7 +16,7 @@ public class ShowPhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_show_photo);
 
         Intent intent = getIntent();
-        String ImageUrl = intent.getExtras().getString("ImageUrl");
+        String ImageUrl = intent.getStringExtra("imageUrl");
         imageView = findViewById(R.id.detailPhoto);
         Picasso.with(getApplicationContext()).load(ImageUrl).fit().centerInside().into(imageView);
     }

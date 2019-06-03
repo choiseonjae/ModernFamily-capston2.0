@@ -19,7 +19,7 @@ public class Login {
     public static String getUserName(){ return MY_NAME; }
     public static String getUserPassword(){ return MY_PASSWORD; }
     public static String getUserPhone(){ return MY_PHONE; }
-    public static int getUserFamilyCount(){ return ++MY_FAMILYCOUNT; }
+    public static int getUserFamilyCount(){ return MY_FAMILYCOUNT; }
     public static String getUserBirth(){ return MY_BIRTH; }
     public static String getUserFamilyID(){ return MY_FAMILYID; }
     public static void setID(String ID){ MY_ID = ID; }
