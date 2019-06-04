@@ -98,8 +98,10 @@ public class FamilyModifyActivity extends AppCompatActivity {
                         String role = imageUpload.getFamily();
                         String uri = imageUpload.getUrl();
 
-                        recyclerViewAdapter.addItem(role, uri);
-                        recyclerViewAdapter.notifyDataSetChanged();
+                        if(!role.equals("미분류")) {
+                            recyclerViewAdapter.addItem(role, uri);
+                            recyclerViewAdapter.notifyDataSetChanged();
+                        }
                     }
                 }
 
