@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:text="안녕하세요!"
+            android:text="사진 등록"
             android:textSize="16sp"
             android:textColor="#fff"
             android:gravity="center"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content">
         <TextView
             android:id="@+id/txtText"
-            android:text="가족의 첫번째 계정이네요!\n 원활한 얼굴 분류를 위해\n 사진 등록을 해주세요!"
+            android:text="원활한 얼굴 분류를 위해\n 가족 사진을 등록해주세요!"
             android:textSize="14sp"
             android:textColor="#000"
             android:alpha="0.87"

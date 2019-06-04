@@ -75,12 +75,10 @@ public class ShowPictureAtDate extends AppCompatActivity {
                 Log.e("searchDate ", searchDate);
 
                 if(searchDate.equals(date)) {
-
                     Picture picture = dataSnapshot.getValue(Picture.class);
 
                     // 역할 + 사진 주소
                     adapter.addItem(picture);
-
                     // F5
                     adapter.notifyDataSetChanged();
                 }

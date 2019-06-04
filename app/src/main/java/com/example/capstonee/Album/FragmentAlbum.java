@@ -92,6 +92,8 @@ public class FragmentAlbum extends Fragment {
         recyclerViewAdapter = new RecyclerPhotoViewAdapter(getContext());
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(recyclerViewAdapter);
+        RecyclerPhotoViewAdapter.setMode = 1;
+
         getData();
 
         fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);

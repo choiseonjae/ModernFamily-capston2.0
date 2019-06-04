@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.example.capstonee.DetailPicture;
 import com.example.capstonee.Model.Picture;
 import com.example.capstonee.R;
+import com.example.capstonee.ShowPhotoActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -73,12 +74,11 @@ public class DatePictureAdapter extends RecyclerView.Adapter<DatePictureAdapter.
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, DetailPicture.class);
-                    intent.putExtra("picture", picture);
+                    Intent intent = new Intent(context, ShowPhotoActivity.class);
+                    intent.putExtra("imageUrl", picture.getUri());
                     // 지우고 간다. 안가면 에러
                     intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK);
-
-                    context.startActivity(intent);
+                    v.getContext().startActivity(intent);
                 }
             });
 

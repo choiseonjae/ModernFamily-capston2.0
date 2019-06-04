@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.icu.text.IDNA;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,14 +18,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.capstonee.FamilyInformation;
-import com.example.capstonee.MainActivity;
+import com.example.capstonee.FamilyModifyActivity;
 import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.Login;
 import com.example.capstonee.R;
@@ -48,18 +46,15 @@ public class FragmentSetting extends Fragment {
     private CircleImageView profile_imageView;
     private static final int PICK_FROM_ALBUM = 567;
 
-    public FragmentSetting() {
-    }
+    public FragmentSetting() { }
 
     private void changeProfile() {
         final AlertDialog.Builder ad = new AlertDialog.Builder(getContext());
 
         ad.setTitle("프로필 사진 설정");       // 제목 설정
-
         ad.setItems(new String[]{"이미지 변경", "기본 이미지로 변경"},
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
 
                         if (id == 0)
                             goToAlbum();
@@ -71,7 +66,6 @@ public class FragmentSetting extends Fragment {
                         dialog.dismiss();
                     }
                 });
-
         ad.show();
     }
 
@@ -129,7 +123,7 @@ public class FragmentSetting extends Fragment {
         setInfo = v.findViewById(R.id.setInfo);
         Id.setText(Login.getUserID());
         LinearLayout logout = v.findViewById(R.id.logout);
-
+        LinearLayout familyModify = v.findViewById(R.id.familyModify);
         profile_imageView = v.findViewById(R.id.profile_image_setting);
 
         if (Login.getProfileUri().equals("")) {
@@ -191,6 +185,13 @@ public class FragmentSetting extends Fragment {
                 startActivity(intent);
             }
         });
+        familyModify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), FamilyModifyActivity.class));
+            }
+        });
+
         return v;
     }
 }

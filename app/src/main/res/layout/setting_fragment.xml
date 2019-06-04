@@ -62,12 +62,38 @@
                     android:src="@drawable/ic_edit_black_24dp" />
             </LinearLayout>
         </LinearLayout>
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="5dp"
             android:background="@drawable/up1_border" />
+        <LinearLayout
+            android:id="@+id/familyModify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_weight="9.5"
+                android:gravity="center_vertical"
+                android:text="분류사진 변경"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:layout_gravity="center_vertical"
+                android:text=">"
+                android:textSize="30sp" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@drawable/up1_border" />
         <LinearLayout
             android:id="@+id/logout"
             android:layout_width="match_parent"
@@ -77,7 +103,6 @@
             android:clickable="true"
             android:focusable="true"
             android:orientation="horizontal">
-
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="45dp"
@@ -86,7 +111,6 @@
                 android:text="로그아웃"
                 android:textSize="18sp"
                 android:textStyle="bold" />
-
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -126,17 +150,9 @@
                 android:text=">"
                 android:textSize="30sp" />
         </LinearLayout>
-
-        <Switch
-            android:id="@+id/switch1"
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:gravity=""
-            android:text="알림받기"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
+            android:layout_height="5dp"
+            android:background="@drawable/up1_border" />
     </LinearLayout>
 </LinearLayout>

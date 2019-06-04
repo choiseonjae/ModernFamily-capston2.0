@@ -83,8 +83,8 @@ public class PopupActivity extends Activity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alertdialog = new AlertDialog.Builder(PopupActivity.this);
-                alertdialog.setTitle("종료");
-                alertdialog.setMessage("종료해도, 나중에 계정설정에서\n 따로 사진을 추가할 수 있습니다.");
+                alertdialog.setTitle("종료하시겠습니까?");
+                alertdialog.setMessage("계정설정의 '분류사진 변경'에서\n 사진을 추가할 수 있습니다.");
                 // 게시할 때
                 alertdialog.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override

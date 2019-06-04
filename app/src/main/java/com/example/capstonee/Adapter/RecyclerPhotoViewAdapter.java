@@ -27,6 +27,9 @@ import java.util.List;
 public class RecyclerPhotoViewAdapter extends RecyclerView.Adapter<RecyclerPhotoViewAdapter.MyViewHolder> {
     private Context mContext;
     private List<Photo> mData = new ArrayList<>();
+    //setMode가 1이다 -> AlbumFragment에서 호출한 것. 이 경우는 사진 클릭이 가능
+    //2다 -> FamilyModifyActivity에서 호출한 것. 이 경우는 사진 클릭 불가.
+    public static int setMode = 1;
 
     public RecyclerPhotoViewAdapter(Context mContext){
         this.mContext = mContext;
@@ -67,15 +70,17 @@ public class RecyclerPhotoViewAdapter extends RecyclerView.Adapter<RecyclerPhoto
             photoImg = itemView.findViewById(R.id.album_image_id);
             cardText = itemView.findViewById(R.id.cardtext_id);
             cardView = itemView.findViewById(R.id.cardview_id);
-            photoImg.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), ClickRoleActivity.class);
-                    intent.putExtra("role", cardText.getText().toString());
-                    Log.e("role!!!", cardText.getText().toString());
-                    v.getContext().startActivity(intent);
-                }
-            });
+            if(setMode == 1) {
+                photoImg.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), ClickRoleActivity.class);
+                        intent.putExtra("role", cardText.getText().toString());
+                        Log.e("role!!!", cardText.getText().toString());
+                        v.getContext().startActivity(intent);
+                    }
+                });
+            }
         }
 
         void onBind(Photo photo){

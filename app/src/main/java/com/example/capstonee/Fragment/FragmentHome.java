@@ -44,8 +44,7 @@ public class FragmentHome extends Fragment {
     private static final int PICK_FROM_ALBUM = 567;
 
 
-    public FragmentHome() {
-    }
+    public FragmentHome() { }
 
     @Nullable
     @Override
@@ -62,11 +61,9 @@ public class FragmentHome extends Fragment {
         });
 
         viewBG = v.findViewById(R.id.home_bg);
-        // 여기까지
         return v;
     }
     private void goToAlbum() {
-        //isCamera = false;
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
         startActivityForResult(intent, PICK_FROM_ALBUM);
@@ -130,8 +127,7 @@ public class FragmentHome extends Fragment {
                 myDate.setText(date);
                 Intent intent = new Intent(getContext(), ShowPictureAtDate.class);
                 String intentDate = (year + "").substring(2) + (month < 10 ? "0" + month : month) + (dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth);
-
-                intent.putExtra("date",intentDate);
+                intent.putExtra("date", intentDate);
 
                 // 첫 로그인 화면처럼 배경 보이고 싶은데 안되네요;; ㅠㅠ
                 startActivity(intent);
