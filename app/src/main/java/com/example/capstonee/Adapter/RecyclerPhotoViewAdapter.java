@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.example.capstonee.ClickRoleActivity;
 import com.example.capstonee.Model.Photo;
 import com.example.capstonee.R;
+import com.example.capstonee.ShowPhotoActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -83,9 +84,19 @@ public class RecyclerPhotoViewAdapter extends RecyclerView.Adapter<RecyclerPhoto
             }
         }
 
-        void onBind(Photo photo){
+        void onBind(final Photo photo){
             Picasso.with(mContext).load(photo.getUri()).fit().centerInside().into(photoImg);
             cardText.setText(photo.getRole());
+            if(setMode == 2){
+                photoImg.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), ShowPhotoActivity.class);
+                        intent.putExtra("imageUrl", photo.getUri());
+                        v.getContext().startActivity(intent);
+                    }
+                });
+            }
         }
     }
 }

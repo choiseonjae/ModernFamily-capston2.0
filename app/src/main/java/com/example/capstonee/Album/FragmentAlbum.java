@@ -154,24 +154,27 @@ public class FragmentAlbum extends Fragment {
         protected void onPostExecute(final String s) {
             super.onPostExecute(s);
             int idx = s.indexOf(".");
-            //Toast.makeText(getActivity(), s+ " " +idx+"", Toast.LENGTH_SHORT).show();
 
             String dist = s.substring(0, idx);
-            DatabaseReference mDataref = FirebaseDatabase.getInstance().getReference("Family").child(Login.getUserFamilyID()).child(dist);
-            mDataref.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Log.e("dataSnapshot1.getKey", dataSnapshot.getKey());
-                    ImageUpload imageUpload = dataSnapshot.getValue(ImageUpload.class);
-                    role = imageUpload.getFamily();
-                    setRoleFamily(role);
-                }
+            if(dist.equals("unknown")){
+                setRoleFamily("미분류");
+            }else {
+                DatabaseReference mDataref = FirebaseDatabase.getInstance().getReference("Family").child(Login.getUserFamilyID()).child(dist);
+                mDataref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.e("dataSnapshot1.getKey", dataSnapshot.getKey());
+                        ImageUpload imageUpload = dataSnapshot.getValue(ImageUpload.class);
+                        role = imageUpload.getFamily();
+                        setRoleFamily(role);
+                    }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                }
-            });
+                    }
+                });
+            }
         }
     }
 
@@ -451,7 +454,7 @@ public class FragmentAlbum extends Fragment {
         Log.d("LOG - FAMILY ID : ", Login.getUserFamilyID());
         if(Login.getUserFamilyCount() > 0) {
             // 현재 사용자의 Family DB 에서 역할가져온다.
-            final DatabaseReference roleRef = Infomation.getDatabase("Family").child(Login.getUserFamilyID());
+            DatabaseReference roleRef = Infomation.getDatabase("Family").child(Login.getUserFamilyID());
             Log.e("roleRef = ", roleRef.getKey());
             // family - id - 이후 key : value
             roleRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -464,6 +467,24 @@ public class FragmentAlbum extends Fragment {
                         String uri = imageUpload.getUrl();
 
                         recyclerViewAdapter.addItem(role, uri);
+                        recyclerViewAdapter.notifyDataSetChanged();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+            roleRef = Infomation.getDatabase("role").child(Login.getUserFamilyID()).child("미분류");
+            roleRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        ImageUpload imageUpload = snapshot.getValue(ImageUpload.class);
+                        // 현재 역할 한 분
+                        String uri = imageUpload.getUrl();
+
+                        recyclerViewAdapter.addItem("미분류", uri);
                         recyclerViewAdapter.notifyDataSetChanged();
                     }
                 }
