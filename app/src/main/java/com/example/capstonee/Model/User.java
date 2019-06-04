@@ -7,6 +7,7 @@ public class User {
     private String BirthDate;
     private int FamilyCount;
     private String FamilyID;
+    private String profileUri;
 
     private User(){}
 
@@ -17,6 +18,7 @@ public class User {
         BirthDate = birthDate;
         FamilyCount = familyCount;
         FamilyID = familyID;
+        profileUri = "";
     }
 
 
@@ -51,4 +53,12 @@ public class User {
     public String getFamilyID() { return FamilyID; }
 
     public void setFamilyID(String familyID) { FamilyID = familyID; }
+
+    public String getProfileUri() {
+        return profileUri;
+    }
+
+    public void setProfileUri(String profileUri) {
+        this.profileUri = profileUri;
+    }
 }

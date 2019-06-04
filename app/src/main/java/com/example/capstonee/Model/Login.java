@@ -8,6 +8,7 @@ public class Login {
     private static int MY_FAMILYCOUNT;
     private static String MY_BIRTH;
     private static String MY_FAMILYID;
+    private static String MY_PROFILE_URI;
 
     private static class LoginHolder{
         static final Login INSTANCE = new Login();
@@ -29,4 +30,12 @@ public class Login {
     public static void setBirth(String BIRTH){ MY_BIRTH = BIRTH; }
     public static void setFamilyCount(int FAMILYCOUNT){ MY_FAMILYCOUNT = FAMILYCOUNT; }
     public static void setFamilyID(String FAMILYID){ MY_FAMILYID = FAMILYID; }
+
+    public static String getProfileUri() {
+        return MY_PROFILE_URI;
+    }
+
+    public static void setProfileUri(String myProfileUri) {
+        MY_PROFILE_URI = myProfileUri;
+    }
 }

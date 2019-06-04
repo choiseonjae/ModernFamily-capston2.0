@@ -41,6 +41,7 @@ import com.example.capstonee.R;
 import com.example.capstonee.RequestHttpURLConnection;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -173,6 +174,24 @@ public class FragmentAlbum extends Fragment {
             });
         }
     }
+
+    // 선재 코드
+    // adapter 초기화
+    private void initAdapter() {
+        // xml 에 존재하는 recycler 와 연결
+        recyclerView = view.findViewById(R.id.album_recyclerview);
+        // 이거는 꽉찬 그리디 화면 인가?
+//        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        // 내가 데이터를 넣어줄 어뎁터 생성
+        adapter = new RoleAdapter(getContext());
+        // 현재 xml 에 보여질 recycler 설정
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        // recycler 에 보여질 객체 하나를 뜻하는 어뎁터 연결
+        recyclerView.setAdapter(adapter);
+    }
+
+
+
 
     //이미지 확장자
     public String getImageExt(Uri uri) {

@@ -31,6 +31,7 @@
         <activity
             android:name=".PopupInitSetActivity"
             android:theme="@android:style/Theme.Dialog" />
+        <activity android:name=".ShowPictureAtDate" />
         <activity
             android:name=".PopupActivity"
             android:theme="@android:style/Theme.Dialog" />

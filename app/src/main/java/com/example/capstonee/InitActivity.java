@@ -51,7 +51,7 @@ public class InitActivity extends AppCompatActivity {
                     Login.setBirth(user.getBirthDate());
                     Login.setFamilyCount(user.getFamilyCount());
                     Login.setFamilyID(user.getFamilyID());
-
+                    Login.setProfileUri(user.getProfileUri());
                     Log.d("Login1", Login.getUserID());
                     Intent intent = new Intent(InitActivity.this, MainActivity.class);
                     startActivity(intent);

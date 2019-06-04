@@ -1,9 +1,12 @@
 package com.example.capstonee.Fragment;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -32,8 +35,12 @@ import static android.app.Activity.RESULT_OK;
 public class FragmentHome extends Fragment {
     View v;
     ImageButton changeBG;
-    ImageView viewBG;
+    RelativeLayout viewBG;
     Boolean isPermission = false;
+
+    CalendarView calendarView;
+    TextView myDate;
+
     private static final int PICK_FROM_ALBUM = 567;
 
 
@@ -54,7 +61,7 @@ public class FragmentHome extends Fragment {
             }
         });
 
-        viewBG = v.findViewById(R.id.viewBG);
+        viewBG = v.findViewById(R.id.home_bg);
         // 여기까지
         return v;
     }
@@ -72,11 +79,17 @@ public class FragmentHome extends Fragment {
                 InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
                 Bitmap img = BitmapFactory.decodeStream(in);
                 in.close();
-                // 이미지 표시
-                viewBG.setImageBitmap(img);
-                viewBG.setAdjustViewBounds(true);
-                viewBG.setLayoutParams(new RelativeLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+                // bitmap 타입을 drawable로 변경
+                Drawable drawable = new BitmapDrawable(getContext().getResources(), img);
+
+                viewBG.setBackground(drawable);
+
+//                viewBG.setB
+//                viewBG.setImageBitmap(img);
+//                viewBG.setAdjustViewBounds(true);
+//                viewBG.setLayoutParams(new RelativeLayout.LayoutParams(
+//                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -103,4 +116,30 @@ public class FragmentHome extends Fragment {
                 .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .check();
     }
+
+
+    public void onStart(){
+        super.onStart();
+        calendarView = (CalendarView) getView().findViewById(R.id.calendarView);
+        myDate = (TextView)getView().findViewById(R.id.myDate);
+        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int dayOfMonth) {
+                month += 1;
+                String date = (month) + "/" + dayOfMonth  + "/" + year;
+                myDate.setText(date);
+                Intent intent = new Intent(getContext(), ShowPictureAtDate.class);
+                String intentDate = (year + "").substring(2) + (month < 10 ? "0" + month : month) + (dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth);
+
+                intent.putExtra("date",intentDate);
+
+                // 첫 로그인 화면처럼 배경 보이고 싶은데 안되네요;; ㅠㅠ
+                startActivity(intent);
+
+            }
+
+        });
+
+    }
+
 }

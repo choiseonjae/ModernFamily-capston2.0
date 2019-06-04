@@ -29,7 +29,7 @@ public class ShowPictureAtDate extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_picture_at_date);
 
-        date = getIntent().getStringExtra("date");
+        date = "20" + getIntent().getStringExtra("date");
 
         initAdapter();
         getData();
@@ -67,7 +67,7 @@ public class ShowPictureAtDate extends AppCompatActivity {
 
 
 
-                String searchDate = dataSnapshot.child("uploadTime").getValue().toString().split("_")[0];
+                String searchDate = dataSnapshot.child("fileName").getValue().toString().split("_")[0];
 
 
                 // 잠시 로그 확인
