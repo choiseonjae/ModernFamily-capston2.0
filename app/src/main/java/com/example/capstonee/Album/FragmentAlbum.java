@@ -19,7 +19,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -66,7 +65,6 @@ public class FragmentAlbum extends Fragment {
     View view;
     RecyclerView recyclerView;
     RecyclerPhotoViewAdapter recyclerViewAdapter;
-    RoleAdapter adapter;
     private Animation fab_open, fab_close;
     private boolean isFabOpen = false;
     private FloatingActionButton fab, fab1, fab2;
@@ -80,7 +78,6 @@ public class FragmentAlbum extends Fragment {
     private String role;
     private String distUri;
     private String filename;
-    private long childrenCount;
     public FragmentAlbum() {
     }
 
