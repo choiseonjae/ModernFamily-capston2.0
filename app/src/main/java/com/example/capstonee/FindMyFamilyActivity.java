@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.capstonee.Model.ImageUpload;
 import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.Login;
 import com.example.capstonee.Model.User;
@@ -42,6 +43,7 @@ public class FindMyFamilyActivity extends Activity {
             @Override
             public void onClick(View v) {
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(Login.getUserID());
+
                 if(Login.getUserDefaultFamily() == 1) {
                     databaseReference.child("familyID").setValue(Login.getUserID());
                     Login.setFamilyID(Login.getUserID());
@@ -56,6 +58,15 @@ public class FindMyFamilyActivity extends Activity {
                     Login.setFamilyID(Login.getUserID() + "_3");
                     Login.setFamilyID3(Login.getUserFamilyID());
                 }
+
+
+//   충돌 코드  64 66 69 
+//                 databaseReference.child("familyID").setValue(Login.getUserID());
+                ImageUpload imageUpload = new ImageUpload("unknown", "https://sj0ufylf41ew0pru-zippykid.netdna-ssl.com/wp-content/uploads/2016/10/questionmark6-300x300.jpg", "미분류");
+//                 FirebaseDatabase.getInstance().getReference("Family").child(Login.getUserID()).child("미분류").setValue(imageUpload);
+              // 선재가 좀 바꾼 코드
+                FirebaseDatabase.getInstance().getReference("Family").child(Login.getUserFamilyID()).child("미분류").setValue(imageUpload);
+//                 Login.setFamilyID(Login.getUserID());
 
                 Intent intent = new Intent();
                 intent.putExtra("keep", true);

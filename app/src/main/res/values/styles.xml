@@ -11,4 +11,9 @@
     <style name="AppTheme.OverFlow" parent="Widget.AppCompat.ActionButton.Overflow">
         <item name="android:tint">@android:color/white</item>
     </style>
+    <style name="MySeekbarSytle" parent="Base.Widget.AppCompat.SeekBar">
+        <item name="android:thumb">@drawable/thumb</item>
+        <item name="android:progressDrawable">@drawable/po_seekbar</item>
+    </style>
+
 </resources>
