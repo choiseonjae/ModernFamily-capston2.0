@@ -2,6 +2,7 @@ package com.example.capstonee;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.capstonee.Adapter.FamilyAdapter;
 import com.example.capstonee.Model.Infomation;
@@ -29,7 +32,7 @@ import java.util.Map;
 public class FamilyInformation extends AppCompatActivity {
     FamilyAdapter adapter;
     User user;
-
+    private static final int POP_RESULT = 9876;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +49,82 @@ public class FamilyInformation extends AppCompatActivity {
                 init();
                 getData();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+        // 우리 가족 클릭
+        TextView ourFamily = findViewById(R.id.family1);
+        ourFamily.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "우리 가족 선택", Toast.LENGTH_LONG).show();
+                // 디폴트가 우리 가족이면
+                if (Login.getUserDefaultFamily() == 1) return;
+
+                // 존재하는 우리가족 FamilyID가 없으면 설정
+                if (Login.getUserFamilyID1().equals("")) {
+                    setNewFamily_alert(1);
+                }
+                // 이미 FamilyID가 존재하면 해당 FamilyID가 Default로 설정
+                else {
+                    Login.setFamilyID(Login.getUserFamilyID1());
+                    Login.setDefaultFamily(1);
+                }
+
+            }
+        });
+        // 친가 클릭
+        // 지금 디폴트가 친가가 아닐때
+        TextView chin_ga = findViewById(R.id.family2);
+        chin_ga.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "친가 선택", Toast.LENGTH_LONG).show();
+
+                // 디폴트가 친가면
+                if (Login.getUserDefaultFamily() == 2)
+                    return;
+
+
+                // 존재하는 친가 FamilyID가 없으면 설정
+                if (Login.getUserFamilyID2().equals("")) {
+                    setNewFamily_alert(2);
+                }
+                // 이미 FamilyID가 존재하면 해당 FamilyID가 Default로 설정
+                else {
+                    Login.setFamilyID(Login.getUserFamilyID2());
+                    Login.setDefaultFamily(2);
+                }
+
+            }
+        });
+
+
+        // 외가 클릭
+        TextView why_ga = findViewById(R.id.family3);
+        why_ga.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "외가 선택", Toast.LENGTH_LONG).show();
+
+                // 디폴트가 친가면
+                if (Login.getUserDefaultFamily() == 3)
+                    return;
+
+                // 존재하는 친가 FamilyID가 없으면 설정
+                if (Login.getUserFamilyID3().equals("")) {
+                    setNewFamily_alert(3);
+                }
+                // 이미 FamilyID가 존재하면 해당 FamilyID가 Default로 설정
+                else {
+                    Login.setFamilyID(Login.getUserFamilyID3());
+                    Login.setDefaultFamily(3);
+                }
 
             }
         });
@@ -61,6 +138,36 @@ public class FamilyInformation extends AppCompatActivity {
         });
 
 
+    }
+
+    private void setNewFamily_alert(final int default_family) {
+        final AlertDialog.Builder ad = new AlertDialog.Builder(FamilyInformation.this);
+
+        ad.setTitle("관계 없음");       // 제목 설정
+        ad.setMessage("폴더에 사진이 없습니다.\n 설정으로 넘어갑니다.");   // 내용 설정
+
+        // 확인 버튼 설정
+        ad.setPositiveButton("예", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Login.setDefaultFamily(default_family);
+                setNewFamily();
+            }
+        });
+
+        ad.setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        ad.show();
+
+    }
+
+    private void setNewFamily() {
+        Intent intent = new Intent(this, FindMyFamilyActivity.class);
+        startActivityForResult(intent, 1);
     }
 
     private void init() {  //리사이클러뷰 초기화 및 동작
@@ -215,4 +322,23 @@ public class FamilyInformation extends AppCompatActivity {
             }
         });
     }
+
+    // 결과 해결
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_CANCELED) {
+            Intent intent = new Intent(this, PopupActivity.class);
+            startActivityForResult(intent, 1);
+        } else if (requestCode == 1 && resultCode == POP_RESULT) {
+            Boolean keep = (Boolean) data.getBooleanExtra("keep", false);
+            if (keep) {
+                Intent intent = new Intent(this, PopupActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        }
+        Log.e("앨범 코드 ; ", requestCode + "");
+        Log.e("앨범 코드2 ; ", resultCode + "");
+    }
+
 }

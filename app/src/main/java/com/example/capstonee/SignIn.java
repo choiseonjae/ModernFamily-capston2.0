@@ -26,13 +26,14 @@ public class SignIn extends AppCompatActivity {
     EditText logId, logPassword;
     CheckBox edtCheck;
     Button btnSignIn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        logPassword = (MaterialEditText)findViewById(R.id.logPassword);
-        logId = (MaterialEditText)findViewById(R.id.logId);
+        logPassword = (MaterialEditText) findViewById(R.id.logPassword);
+        logId = (MaterialEditText) findViewById(R.id.logId);
         edtCheck = findViewById(R.id.edtCheck);
         btnSignIn = findViewById(R.id.btnSignIn);
 
@@ -54,12 +55,12 @@ public class SignIn extends AppCompatActivity {
                         String ID = logId.getText().toString();
                         String Password = logPassword.getText().toString();
                         Log.d("LOOOOG", dataSnapshot.toString());
-                        if(dataSnapshot.child(ID).exists()){
+                        if (dataSnapshot.child(ID).exists()) {
                             //아이디 있음?
                             User user = dataSnapshot.child(ID).getValue(User.class);
-                            if(Password.equals(user.getPassword())){
+                            if (Password.equals(user.getPassword())) {
                                 //비밀번호 일치?
-                                if(edtCheck.isChecked()){
+                                if (edtCheck.isChecked()) {
                                     //자동로그인 할거임?
                                     SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
                                     SharedPreferences.Editor editor = pref.edit();
@@ -67,7 +68,7 @@ public class SignIn extends AppCompatActivity {
                                     editor.putString("userPassword", Password);
                                     editor.apply();
                                 }
-                                Toast.makeText(SignIn.this, user.getName()+"님 환영합니다!!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignIn.this, user.getName() + "님 환영합니다!!", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(SignIn.this, MainActivity.class);
                                 Login.setID(ID);
                                 Login.setName(user.getName());
@@ -75,14 +76,27 @@ public class SignIn extends AppCompatActivity {
                                 Login.setPhone(user.getPhone());
                                 Login.setBirth(user.getBirthDate());
                                 Login.setFamilyCount(user.getFamilyCount());
-                                Login.setFamilyID(user.getFamilyID());
+
+                                // 선재 추가
+                                Login.setFamilyID1(user.getFamilyID1());
+                                Login.setFamilyID2(user.getFamilyID2());
+                                Login.setFamilyID3(user.getFamilyID3());
+                                Login.setDefaultFamily(user.getDefault_family());
+
+                                // 패밀리 ID 설정과정
+                                if (Login.getUserDefaultFamily() == 1)
+                                    Login.setFamilyID(user.getFamilyID1());
+                                else if (Login.getUserDefaultFamily() == 2)
+                                    Login.setFamilyID(user.getFamilyID2());
+                                else if (Login.getUserDefaultFamily() == 3)
+                                    Login.setFamilyID(user.getFamilyID3());
+
                                 Login.setProfileUri(user.getProfileUri());
                                 startActivity(intent);
-                            }
-                            else{
+                            } else {
                                 Toast.makeText(SignIn.this, "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
                             }
-                        }else{
+                        } else {
                             //아이디 없음
                             Toast.makeText(SignIn.this, "아이디가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
                         }

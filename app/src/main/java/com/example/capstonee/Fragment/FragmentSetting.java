@@ -48,78 +48,6 @@ public class FragmentSetting extends Fragment {
 
     public FragmentSetting() { }
 
-    private void changeProfile() {
-        final AlertDialog.Builder ad = new AlertDialog.Builder(getContext());
-
-        ad.setTitle("프로필 사진 설정");       // 제목 설정
-        ad.setItems(new String[]{"이미지 변경", "기본 이미지로 변경"},
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-
-                        if (id == 0)
-                            goToAlbum();
-                        else if (id == 1) {
-                            // 초기화
-                            Infomation.getDatabase("User").child(Login.getUserID()).child("profileUri").setValue("");
-
-                            // 캐쉬(?) 도 변경
-                            Login.setProfileUri("");
-                            profile_imageView.setImageResource(R.drawable.default_profile);
-                        }
-                        dialog.dismiss();
-                    }
-                });
-        ad.show();
-    }
-
-    // 앨범 키고 선택
-    private void goToAlbum() {
-        //isCamera = false;
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-        intent.putExtra("type", "profile_change");
-        startActivityForResult(intent, PICK_FROM_ALBUM);
-    }
-
-
-    // 사진 선택 후 결과
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == PICK_FROM_ALBUM && resultCode == RESULT_OK){
-            try{
-                InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
-                Bitmap img = BitmapFactory.decodeStream(in);
-
-                // uri 얻어서 스토리지 + DB 에 저장
-                Uri uri = getImageUri(getContext(), img);
-                Infomation.getStorageRef("Profile").child(Login.getUserID()).putFile(uri);
-                Infomation.getDatabase("User").child(Login.getUserID()).child("profileUri").setValue(uri.toString());
-
-                // 캐쉬(?) 도 변경
-                Login.setProfileUri(uri.toString());
-
-                in.close();
-                // 이미지 표시
-                profile_imageView.setImageBitmap(img);
-                profile_imageView.setAdjustViewBounds(true);
-                profile_imageView.setLayoutParams(new RelativeLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
-
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-        }
-    }
-
-    //bitmap 으로 uri 얻기
-    private Uri getImageUri(Context context, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup
@@ -178,6 +106,7 @@ public class FragmentSetting extends Fragment {
                 alertdialog.show();
             }
         });
+        // 패밀리 정보
         LinearLayout familyInfo = v.findViewById(R.id.familyInfo);
         familyInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,6 +115,7 @@ public class FragmentSetting extends Fragment {
                 startActivity(intent);
             }
         });
+        // 유저 정보 변경
         setInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,4 +132,77 @@ public class FragmentSetting extends Fragment {
 
         return v;
     }
+
+    // 프로필 변경
+    private void changeProfile() {
+        final AlertDialog.Builder ad = new AlertDialog.Builder(getContext());
+
+        ad.setTitle("프로필 사진 설정");       // 제목 설정
+        ad.setItems(new String[]{"이미지 변경", "기본 이미지로 변경"},
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        if (id == 0)
+                            goToAlbum();
+                        else if (id == 1) {
+                            // 초기화
+                            Infomation.getDatabase("User").child(Login.getUserID()).child("profileUri").setValue("");
+
+                            // 캐쉬(?) 도 변경
+                            Login.setProfileUri("");
+                            profile_imageView.setImageResource(R.drawable.default_profile);
+                        }
+                        dialog.dismiss();
+                    }
+                });
+        ad.show();
+    }
+
+    // 갤러리 접근
+    private void goToAlbum() {
+        //isCamera = false;
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+        intent.putExtra("type", "profile_change");
+        startActivityForResult(intent, PICK_FROM_ALBUM);
+    }
+
+    // 사진 선택 후 결과 반환
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == PICK_FROM_ALBUM && resultCode == RESULT_OK){
+            try{
+                InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
+                Bitmap img = BitmapFactory.decodeStream(in);
+
+                // uri 얻어서 스토리지 + DB 에 저장
+                Uri uri = getImageUri(getContext(), img);
+                Infomation.getStorageRef("Profile").child(Login.getUserID()).putFile(uri);
+                Infomation.getDatabase("User").child(Login.getUserID()).child("profileUri").setValue(uri.toString());
+
+                // 캐쉬(?) 도 변경
+                Login.setProfileUri(uri.toString());
+
+                in.close();
+                // 이미지 표시
+                profile_imageView.setImageBitmap(img);
+                profile_imageView.setAdjustViewBounds(true);
+                profile_imageView.setLayoutParams(new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //bitmap 으로 uri 얻기
+    private Uri getImageUri(Context context, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
 }
