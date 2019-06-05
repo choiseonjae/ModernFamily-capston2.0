@@ -35,6 +35,7 @@
         <activity
             android:name=".PopupActivity"
             android:theme="@android:style/Theme.Dialog" />
+        <activity android:name=".CapchaTwActivity"/>
         <activity android:name=".SignActivity" />
         <activity android:name=".SignIn" />
         <activity android:name=".SignUp" />
