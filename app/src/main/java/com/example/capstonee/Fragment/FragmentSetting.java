@@ -61,6 +61,9 @@ public class FragmentSetting extends Fragment {
                         else if (id == 1) {
                             // 초기화
                             Infomation.getDatabase("User").child(Login.getUserID()).child("profileUri").setValue("");
+
+                            // 캐쉬(?) 도 변경
+                            Login.setProfileUri("");
                             profile_imageView.setImageResource(R.drawable.default_profile);
                         }
                         dialog.dismiss();
@@ -92,12 +95,17 @@ public class FragmentSetting extends Fragment {
                 Infomation.getStorageRef("Profile").child(Login.getUserID()).putFile(uri);
                 Infomation.getDatabase("User").child(Login.getUserID()).child("profileUri").setValue(uri.toString());
 
+                // 캐쉬(?) 도 변경
+                Login.setProfileUri(uri.toString());
+
                 in.close();
                 // 이미지 표시
                 profile_imageView.setImageBitmap(img);
                 profile_imageView.setAdjustViewBounds(true);
                 profile_imageView.setLayoutParams(new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+
             }catch(Exception e){
                 e.printStackTrace();
             }

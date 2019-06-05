@@ -118,8 +118,8 @@ public class Chatting extends Fragment {
                 Chat chat = dataSnapshot.getValue(Chat.class);
 
                 // 맵으로 추가 지렸딷;
-                Log.e("채팅 하나의 모든 정보 : ", chat.getReader().toString());
-                Log.e("채팅 하나의 모든 정보 : ", chat.getMessage());
+//                Log.e("채팅 하나의 모든 정보 : ", chat.getReader().toString());
+//                Log.e("채팅 하나의 모든 정보 : ", chat.getMessage());
 
                 // 내가 보낸 거 아니면 읽은 사람 표시 + 한번 표시 하면 표시 하지 않음.
                 if (!chat.getSender().equals(Login.getUserID()) && !chat.getReader().containsKey(Login.getUserID())) {

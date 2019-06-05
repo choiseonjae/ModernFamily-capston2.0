@@ -54,6 +54,12 @@ dependencies {
     //JSON
     implementation files('libs/json-simple-1.1.1.jar')
 
+    // Jsoup
+    implementation files('libs/jsoup-1.11.3.jar')
+
+    // 암 복호화
+    implementation files('libs/commons-codec-1.10.jar')
+
     //Image Crop
     implementation 'com.soundcloud.android:android-crop:1.0.1@aar'
 }
