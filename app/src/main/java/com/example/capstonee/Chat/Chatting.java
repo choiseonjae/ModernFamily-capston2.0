@@ -133,6 +133,7 @@ public class Chatting extends Fragment {
                     chatRef.child(key).child("reader").setValue(map);
                 }
 
+                Log.e("message", chat.getMessage());
                 // 어뎁터에 추가
                 adapter.add(chat);
 

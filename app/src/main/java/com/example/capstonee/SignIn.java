@@ -32,13 +32,14 @@ public class SignIn extends AppCompatActivity {
     EditText logId, logPassword;
     CheckBox edtCheck;
     Button btnSignIn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        logPassword = (MaterialEditText)findViewById(R.id.logPassword);
-        logId = (MaterialEditText)findViewById(R.id.logId);
+        logPassword = (MaterialEditText) findViewById(R.id.logPassword);
+        logId = (MaterialEditText) findViewById(R.id.logId);
         edtCheck = findViewById(R.id.edtCheck);
         btnSignIn = findViewById(R.id.btnSignIn);
 
@@ -60,9 +61,10 @@ public class SignIn extends AppCompatActivity {
                         String ID = logId.getText().toString();
                         String Password = logPassword.getText().toString();
                         Log.d("LOOOOG", dataSnapshot.toString());
-                        if(dataSnapshot.child(ID).exists()){
+                        if (dataSnapshot.child(ID).exists()) {
                             //아이디 있음?
                             User user = dataSnapshot.child(ID).getValue(User.class);
+
                             if(Password.equals(user.getPassword())){
                                 if(loginStop == true && correctNumber == -1) {
                                     retryTime = System.currentTimeMillis();
@@ -96,7 +98,23 @@ public class SignIn extends AppCompatActivity {
                                     Login.setPhone(user.getPhone());
                                     Login.setBirth(user.getBirthDate());
                                     Login.setFamilyCount(user.getFamilyCount());
-                                    Login.setFamilyID(user.getFamilyID());
+                                  // 충돌 부분
+//                                     Login.setFamilyID(user.getFamilyID());
+                                  ////////////////////////
+                                // 선재 추가
+                                Login.setFamilyID1(user.getFamilyID1());
+                                Login.setFamilyID2(user.getFamilyID2());
+                                Login.setFamilyID3(user.getFamilyID3());
+                                Login.setDefaultFamily(user.getDefault_family());
+
+                                // 패밀리 ID 설정과정
+                                if (Login.getUserDefaultFamily() == 1)
+                                    Login.setFamilyID(user.getFamilyID1());
+                                else if (Login.getUserDefaultFamily() == 2)
+                                    Login.setFamilyID(user.getFamilyID2());
+                                else if (Login.getUserDefaultFamily() == 3)
+                                    Login.setFamilyID(user.getFamilyID3());
+                                  /////////////////////////////
                                     Login.setProfileUri(user.getProfileUri());
                                     startActivity(intent);
                                 }
@@ -128,8 +146,9 @@ public class SignIn extends AppCompatActivity {
                                         startActivity(intent);
                                     }
                                 }
+
                             }
-                        }else{
+                        } else {
                             //아이디 없음
                             Toast.makeText(SignIn.this, "아이디가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
                         }

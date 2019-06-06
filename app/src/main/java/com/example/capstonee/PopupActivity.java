@@ -188,7 +188,7 @@ public class PopupActivity extends Activity {
                                     downloadUrl = uri.toString();
                                     ImageUpload imageUpload = new ImageUpload(filename, downloadUrl, family);
                                     int fcount = Login.getUserFamilyCount() + 1;
-                                    mDatabaseRef.child(Login.getUserID()).child(Integer.toString(fcount)).setValue(imageUpload);
+                                    mDatabaseRef.child(Login.getUserFamilyID()).child(Integer.toString(fcount)).setValue(imageUpload);
                                     Log.v("된거야?", imageUpload.getUrl() + " " + imageUpload.getName() + " " + imageUpload.getFamily());
 
                                     String url = "http://34.97.246.11/makedir.py";

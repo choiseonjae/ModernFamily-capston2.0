@@ -93,7 +93,7 @@ public class RecyclerPhotoViewAdapter extends RecyclerView.Adapter<RecyclerPhoto
                     public void onClick(View v) {
                         Intent intent = new Intent(v.getContext(), ShowPhotoActivity.class);
                         intent.putExtra("imageUrl", photo.getUri());
-                        v.getContext().startActivity(intent);
+                        v.getContext().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     }
                 });
             }

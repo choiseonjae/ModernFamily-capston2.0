@@ -117,7 +117,10 @@ public class FragmentAlbum extends Fragment {
             public void onClick(View v) {
                 anim();
                 Log.v("알림", "사진촬영 선택");
-                if (isPermission) openCamera();
+                if (isPermission){
+                    if(Login.getUserFamilyCount() > 0) openCamera();
+                    else Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         fab2.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +128,10 @@ public class FragmentAlbum extends Fragment {
             public void onClick(View v) {
                 anim();
                 Log.v("알림", "갤러리 선택");
-                if (isPermission) goToAlbum();
+                if (isPermission){
+                    if(Login.getUserFamilyCount() > 0) goToAlbum();
+                    else Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return view;
@@ -153,6 +159,7 @@ public class FragmentAlbum extends Fragment {
         @Override
         protected void onPostExecute(final String s) {
             super.onPostExecute(s);
+            Log.e("!!?? : ", s);
             int idx = s.indexOf(".");
 
             String dist = s.substring(0, idx);
@@ -452,48 +459,30 @@ public class FragmentAlbum extends Fragment {
     // DB의 변경을 바로 바로 업데이트 한 뒤 xml 에 뿌려주기 위한 Listener
     private void getData() {
         Log.d("LOG - FAMILY ID : ", Login.getUserFamilyID());
-        if(Login.getUserFamilyCount() > 0) {
-            // 현재 사용자의 Family DB 에서 역할가져온다.
-            DatabaseReference roleRef = Infomation.getDatabase("Family").child(Login.getUserFamilyID());
-            Log.e("roleRef = ", roleRef.getKey());
-            // family - id - 이후 key : value
-            roleRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        ImageUpload imageUpload = snapshot.getValue(ImageUpload.class);
-                        // 현재 역할 한 분
-                        String role = imageUpload.getFamily();
-                        String uri = imageUpload.getUrl();
+        //if(Login.getUserFamilyCount() > 0) {
+        // 현재 사용자의 Family DB 에서 역할가져온다.
+        DatabaseReference roleRef = Infomation.getDatabase("Family").child(Login.getUserFamilyID());
+        Log.e("roleRef = ", roleRef.getKey());
+        // family - id - 이후 key : value
+        roleRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    ImageUpload imageUpload = snapshot.getValue(ImageUpload.class);
+                    // 현재 역할 한 분
+                    String role = imageUpload.getFamily();
+                    String uri = imageUpload.getUrl();
 
-                        recyclerViewAdapter.addItem(role, uri);
-                        recyclerViewAdapter.notifyDataSetChanged();
-                    }
+                    recyclerViewAdapter.addItem(role, uri);
+                    recyclerViewAdapter.notifyDataSetChanged();
                 }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                }
-            });
-            roleRef = Infomation.getDatabase("role").child(Login.getUserFamilyID()).child("미분류");
-            roleRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        ImageUpload imageUpload = snapshot.getValue(ImageUpload.class);
-                        // 현재 역할 한 분
-                        String uri = imageUpload.getUrl();
-
-                        recyclerViewAdapter.addItem("미분류", uri);
-                        recyclerViewAdapter.notifyDataSetChanged();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                }
-            });
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        //}
     }
 
     // 이미지 파일 생성

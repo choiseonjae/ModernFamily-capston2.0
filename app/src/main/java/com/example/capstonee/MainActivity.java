@@ -2,25 +2,18 @@ package com.example.capstonee;
 
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.TabLayout.OnTabSelectedListener;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.RelativeLayout;
 
 import com.example.capstonee.Adapter.ViewPagerAdapter;
 import com.example.capstonee.Album.FragmentAlbum;
 import com.example.capstonee.Chat.Chatting;
-import com.example.capstonee.Fragment.FragmentChat;
 import com.example.capstonee.Fragment.FragmentHome;
-import com.example.capstonee.Fragment.FragmentLocation;
+import com.example.capstonee.Location.FragmentLocation;
 import com.example.capstonee.Fragment.FragmentSetting;
 import com.example.capstonee.Model.Login;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;

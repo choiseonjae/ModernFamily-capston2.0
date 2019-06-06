@@ -76,7 +76,7 @@ public class ShowPhotoActivity extends AppCompatActivity {
         //id = intent.getStringExtra("id");
         picture = (Picture) getIntent().getSerializableExtra("picture");
         //이미지 뷰와 버튼 세 개
-        imageView = findViewById(R.id.imageview);
+//        imageView = findViewById(R.id.imageview);
         downloadButton = (ImageButton) findViewById(R.id.downloadButton);
         removeButton = (ImageButton) findViewById(R.id.removeButton);
         shareButton = (ImageButton) findViewById(R.id.shareButton);
