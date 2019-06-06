@@ -114,13 +114,14 @@ public class NearHotPlace extends AppCompatActivity {
                         Map<String, String> map = new HashMap<>();
                         map.put("title", title);
                         map.put("address", address);
-                        map.put("image", image);
-                        map.put("image2", image2);
+                        map.put("image", image.replace("http://", "https://"));
+                        map.put("image2", image2.replace("http://", "https://"));
 
                         Log.e("title", title);
                         Log.e("address", address);
                         Log.e("image", image);
                         Log.e("image2", image2);
+
 
 
                         if (!map.get("title").equals("") && !map.get("image").equals("")) {

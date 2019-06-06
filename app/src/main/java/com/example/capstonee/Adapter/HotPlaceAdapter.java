@@ -12,9 +12,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.capstonee.R;
 import com.example.capstonee.SelectedRoleAlbum;
+import com.example.capstonee.ShowPhotoActivity;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
@@ -80,6 +82,18 @@ public class HotPlaceAdapter extends RecyclerView.Adapter<HotPlaceAdapter.ItemVi
             linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), ShowPhotoActivity.class);
+                    intent.putExtra("imageUrl", map.get("image"));
+                    intent.putExtra("imageUrl2", map.get("image2"));
+                    Toast.makeText(v.getContext(), "뷰페이저를 준비하는 중입니다.", Toast.LENGTH_LONG).show();
+                    v.getContext().startActivity(intent);
+                }
+            });
+
+            // 길게 클릭
+            linearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
                     final AlertDialog.Builder ad = new AlertDialog.Builder(v.getContext());
                     ad.setTitle("주소");
                     if (map.get("address").equals(""))
@@ -88,6 +102,7 @@ public class HotPlaceAdapter extends RecyclerView.Adapter<HotPlaceAdapter.ItemVi
                         ad.setMessage(map.get("address"));
 
                     ad.show();
+                    return false;
                 }
             });
 
@@ -96,8 +111,8 @@ public class HotPlaceAdapter extends RecyclerView.Adapter<HotPlaceAdapter.ItemVi
         void onBind(Map<String, String> map) {
             this.map = map;
             title_textView.setText(map.get("title"));
-            Log.e("-> ", map.get("image").replace("http://", "https://"));
-            Picasso.with(context).load(map.get("image").replace("http://", "https://")).fit().into(image_imageView);
+            Log.e("inage", map.get("image"));
+            Picasso.with(context).load(map.get("image")).fit().into(image_imageView);
 
 
         }
