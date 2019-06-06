@@ -15,11 +15,8 @@ import android.widget.TextView;
 
 import com.example.capstonee.NearHotPlace;
 import com.example.capstonee.R;
-import com.example.capstonee.SelectedRoleAlbum;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class GPSAdapter extends RecyclerView.Adapter<GPSAdapter.ItemViewHolder> {
 
