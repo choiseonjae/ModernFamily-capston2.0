@@ -106,7 +106,9 @@ public class NearHotPlace extends AppCompatActivity {
                     // item 하나 하나 추출
                     Elements list = doc.select("item");
                     for (Element e : list) {
-                        String title = e.select("title").text().split("\\(")[1].split("\\)")[0];
+                        String title = e.select("title").text();
+                        if(title.contains("("))
+                            title = title.split("\\(")[1].split("\\)")[0];
                         String image = e.select("firstimage").text();
                         String image2 = e.select("firstimage2").text();
                         String address = e.select("addr1").text();
