@@ -159,6 +159,7 @@ public class FragmentAlbum extends Fragment {
         @Override
         protected void onPostExecute(final String s) {
             super.onPostExecute(s);
+            Log.e("!!?? : ", s);
             int idx = s.indexOf(".");
 
             String dist = s.substring(0, idx);

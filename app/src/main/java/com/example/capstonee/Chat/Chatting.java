@@ -23,6 +23,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -65,7 +67,15 @@ public class Chatting extends Fragment {
                     // 전송
                     Chat chat = new Chat();
                     chat.setSender(Login.getUserID());
-                    chat.setMessage(message);
+                    // 암호화 전송
+                    try {
+                        chat.setMessage(new AES256Util().encrypt(message));
+                    } catch (GeneralSecurityException e) {
+                        e.printStackTrace();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+//                    chat.setMessage((message));
                     chat.setTime(time);
 
                     Log.e(" Family ID : ", Login.getUserFamilyID());

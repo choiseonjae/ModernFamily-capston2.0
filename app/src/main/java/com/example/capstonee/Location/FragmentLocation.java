@@ -1,4 +1,4 @@
-package com.example.capstonee.Fragment;
+package com.example.capstonee.Location;
 
 import android.location.Address;
 import android.location.Geocoder;
@@ -44,9 +44,7 @@ import java.util.List;
 
 public class FragmentLocation extends Fragment {
 
-    // 2000 -> 2km
-    private final int radius = 2000;
-    private final String key = "jPNKVysk1VVndzX8Me3F%2F81FWko4M70FivLAOLRLJMA5uNIlYHqdTCw9Qtvj1feC6qRmjy3ifWxGMKv3kcEi1w%3D%3D";
+
     View v;
     private RecyclerView recyclerView;
     private GPSAdapter adapter;
@@ -54,115 +52,20 @@ public class FragmentLocation extends Fragment {
     public FragmentLocation() {
     }
 
-    Geocoder geocoder;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.location_fragment, container, false);
 
-        geocoder = new Geocoder(getContext());
+
 
         initAdapter(v);
         getData();
 
         return v;
     }
-
-    // 주변 정보
-    private void getNearPlaceInformation(final String address) throws InterruptedException {
-
-        double[] area = convertAddrToXY(address);
-
-        // 위도 - 경도
-        final double longitude = area[0];
-        final double latitude = area[1];
-
-        ////////////////////////////////////////////////////////////////////
-
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ////////////////////////////////////////////
-                String key = "jPNKVysk1VVndzX8Me3F%2F81FWko4M70FivLAOLRLJMA5uNIlYHqdTCw9Qtvj1feC6qRmjy3ifWxGMKv3kcEi1w%3D%3D";
-
-                StringBuilder apiURL = new StringBuilder(
-                        "https://api.visitkorea.or.kr/openapi/service/rest/RusService/locationBasedList");
-                // 인증키
-                apiURL.append("?ServiceKey=" + key);
-                // 위치 반경
-                apiURL.append("&mapX=" + longitude + "&mapY=" + latitude + "&radius=" + radius);
-                // 나머지 설정
-                apiURL.append("&pageNo=1&numOfRows=10&listYN=Y&arrange=A&MobileOS=AND&MobileApp=모던패밀리");
-
-                try {
-                    Element doc = Jsoup.connect(apiURL.toString()).get();
-//                    Log.e("? ", doc.toString());
-                    Elements list = doc.select("item");
-                    for (Element e : list) {
-                        String title = e.select("title").text().split("\\(")[1].split("\\)")[0];
-                        Log.e("title" , title);
-                        String img = e.select("firstimage").text();
-                        if (e.select("title").text() != null)
-                            Log.d(" title -> ", e.select("title").text());
-                        if (e.select("firstimage").text() != null)
-                            Log.d(" firstimage -> ", e.select("firstimage").text());
-                        if (e.select("firstimage2").text() != null)
-                            Log.d(" firstimage2 -> ", e.select("firstimage2").text());
-                        if (e.select("addr1").text() != null)
-                            Log.d(" addr1 -> ", e.select("addr1").text());
-
-                        if(/*title != null &&*/ img != null) {
-                            adapter.addItem(address, img);
-                            break;
-                        }
-                    }
-
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        });
-        t.start();
-        t.join();
-        adapter.notifyDataSetChanged();
-
-        ////////////////////////////////////////////////////////////////////
-    }
-
-    // 주소를 위도 경도로
-    private double[] convertAddrToXY(String addr) {
-        List<Address> list = null;
-
-        String str = addr;
-        try {
-            list = geocoder.getFromLocationName(
-                    str, // 지역 이름
-                    10); // 읽을 개수
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("test", "입출력 오류 - 서버에서 주소변환시 에러발생");
-        }
-
-        if (list != null) {
-            if (list.size() == 0) {
-                Log.e("해당되는 주소 정보는 없습니다", "??");
-            } else {
-//                Log.e(" 결과는 ", list.get(0).toString());
-                //          list.get(0).getCountryName();  // 국가명
-                Log.e(" 위도 : ", list.get(0).getLatitude() + "");        // 위도
-                Log.e(" 경도 : ", list.get(0).getLongitude() + "");    // 경도
-
-                return new double[]{list.get(0).getLongitude(), list.get(0).getLatitude()};
-            }
-
-        }
-        return null;
-    }
-
 
     // 선재 코드
     // adapter 초기화
@@ -215,13 +118,15 @@ public class FragmentLocation extends Fragment {
                                 final String dong = district.getChildren().iterator().next().getKey();
 
                                 String address = si + " " + gu + " " + dong;
+                                adapter.addItem(address);
+                                adapter.notifyDataSetChanged();
 
                                 // 주소 넣으면 주변 정보 얻음.
-                                try {
-                                    getNearPlaceInformation(address);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
+//                                try {
+////                                    getNearPlaceInformation(address);
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
 
 
 

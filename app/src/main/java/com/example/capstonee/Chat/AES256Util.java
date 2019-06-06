@@ -1,5 +1,7 @@
 package com.example.capstonee.Chat;
 
+import android.util.Log;
+
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.UnsupportedEncodingException;
@@ -26,7 +28,7 @@ public class AES256Util {
      * @throws UnsupportedEncodingException
      *             키값의 길이가 16이하일 경우 발생
      */
-    final static String key = "1234567891011121341";
+    final static String key = "abseffgfkfk21fkrkek";
 
     public AES256Util() throws UnsupportedEncodingException {
         this.iv = key.substring(0, 16);
@@ -76,6 +78,7 @@ public class AES256Util {
         Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding");
         c.init(Cipher.DECRYPT_MODE, keySpec, new IvParameterSpec(iv.getBytes()));
         byte[] byteStr = Base64.decodeBase64(str.getBytes());
+        Log.e("복호화 ->", new String(c.doFinal(byteStr), "UTF-8"));
         return new String(c.doFinal(byteStr), "UTF-8");
     }
 }

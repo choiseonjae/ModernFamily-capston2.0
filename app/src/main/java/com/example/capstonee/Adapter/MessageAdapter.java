@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.capstonee.Chat.AES256Util;
 import com.example.capstonee.Model.Chat;
 import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.Login;
@@ -20,6 +21,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -58,7 +61,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         Chat chat = chatList.get(position);
 //        viewHolder.show_message.setText(chat.getMessage());
 
-        viewHolder.onBind(chat);
+        try {
+            viewHolder.onBind(chat);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
     }
 
     public void add(Chat chat) {
@@ -176,9 +185,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
 
 
-        void onBind(final Chat chat) {
+        void onBind(final Chat chat) throws UnsupportedEncodingException, GeneralSecurityException {
             this.chat = chat;
 
+            // 해독
+//            chat.setMessage(new AES256Util().decrypt(chat.getMessage()));
 
             // 이름 설정 가능 하면 이름 넣어준다. -> 왼쪽 상대라는 소리지!
             // 근데 이거 관계형 디비 아닌게 극형이네;;
