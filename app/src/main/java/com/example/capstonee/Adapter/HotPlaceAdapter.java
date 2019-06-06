@@ -15,8 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.capstonee.R;
-import com.example.capstonee.SelectedRoleAlbum;
-import com.example.capstonee.ShowPhotoActivity;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;

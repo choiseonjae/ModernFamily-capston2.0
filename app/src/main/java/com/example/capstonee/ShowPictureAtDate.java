@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.example.capstonee.Adapter.DatePictureAdapter;
-import com.example.capstonee.Adapter.RoleAdapter;
 import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.Login;
 import com.example.capstonee.Model.Picture;
