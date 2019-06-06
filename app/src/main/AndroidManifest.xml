@@ -23,7 +23,7 @@
             android:name="com.soundcloud.android.crop.CropImageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".SelectedRoleAlbum" />
+        <activity android:name=".Location.ShowLocationImage" />
         <activity
             android:name=".FindMyFamilyActivity"
             android:theme="@android:style/Theme.Dialog" />
