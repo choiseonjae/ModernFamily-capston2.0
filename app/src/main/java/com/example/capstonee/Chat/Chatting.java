@@ -23,8 +23,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
-import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,9 +39,6 @@ public class Chatting extends Fragment {
 
         // 해당 view 설정 : 자바 파일 <---바인딩---> fragment
         view = inflater.inflate(R.layout.chat_fragment, container, false);
-
-
-
         initAdapter();
         getData();
 
@@ -53,9 +48,16 @@ public class Chatting extends Fragment {
             public void onClick(View v) {
                 EditText writeEdit = (EditText) view.findViewById(R.id.write_edit);
 
-
                 // 사용자가 쓴 거 찾음.
                 String message = writeEdit.getText().toString();
+
+                try{
+                    AES256Util aes = new AES256Util();
+                    message = aes.encrypt(message);
+                    //message = aes.decrypt(message);
+                } catch(Exception e){
+                    e.printStackTrace();
+                }
 
                 // 사용자가 타이핑 함.
                 if (!message.equals("")) {
@@ -67,26 +69,14 @@ public class Chatting extends Fragment {
                     // 전송
                     Chat chat = new Chat();
                     chat.setSender(Login.getUserID());
-                    // 암호화 전송
-                    try {
-                        chat.setMessage(new AES256Util().encrypt(message));
-                    } catch (GeneralSecurityException e) {
-                        e.printStackTrace();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-//                    chat.setMessage((message));
+                    chat.setMessage(message);
                     chat.setTime(time);
 
                     Log.e(" Family ID : ", Login.getUserFamilyID());
 
                     // 해당 User 의 패밀리 ID
                     Infomation.getDatabase("Chat").child(Login.getUserFamilyID()).push().setValue(chat);
-
-
                 }
-
-
             }
         });
 
@@ -143,6 +133,7 @@ public class Chatting extends Fragment {
                     chatRef.child(key).child("reader").setValue(map);
                 }
 
+                Log.e("message", chat.getMessage());
                 // 어뎁터에 추가
                 adapter.add(chat);
 

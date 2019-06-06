@@ -21,8 +21,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -34,6 +32,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     ArrayList<Chat> chatList = new ArrayList<>();
     Context context;
     View view;
+    String message;
 
     public MessageAdapter(Context context) {
         this.context = context;
@@ -61,13 +60,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         Chat chat = chatList.get(position);
 //        viewHolder.show_message.setText(chat.getMessage());
 
-        try {
-            viewHolder.onBind(chat);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
-        }
+        viewHolder.onBind(chat);
     }
 
     public void add(Chat chat) {
@@ -185,12 +178,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
 
 
-        void onBind(final Chat chat) throws UnsupportedEncodingException, GeneralSecurityException {
+        void onBind(final Chat chat) {
             this.chat = chat;
-
-            // 해독
-//            chat.setMessage(new AES256Util().decrypt(chat.getMessage()));
-
+            try{
+                AES256Util aes = new AES256Util();
+                message = chat.getMessage();
+                message = aes.decrypt(message);
+            } catch(Exception e){
+                e.printStackTrace();
+            }
             // 이름 설정 가능 하면 이름 넣어준다. -> 왼쪽 상대라는 소리지!
             // 근데 이거 관계형 디비 아닌게 극형이네;;
             // chat 에 이름으로 넣어버릴까? -> 이거 읽으신 분은 카톡으로 의견좀 ㅎㅎ
@@ -202,7 +198,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                         // 이름으로 추가
                         userName_textView.setText(user.getName());
                         if (chat.getUri().equals(""))
-                            message_textView.setText(chat.getMessage());
+                            message_textView.setText(message);
                     }
 
                     @Override
@@ -212,9 +208,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 });
 
             } else {
-
                 if (chat.getUri().equals(""))
-                    message_textView.setText(chat.getMessage());
+                    //message_textView.setText(chat.getMessage());
+                    message_textView.setText(message);
             }
 
         }

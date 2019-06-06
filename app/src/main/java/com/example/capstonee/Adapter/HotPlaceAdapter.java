@@ -82,11 +82,12 @@ public class HotPlaceAdapter extends RecyclerView.Adapter<HotPlaceAdapter.ItemVi
             linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), ShowPhotoActivity.class);
-                    intent.putExtra("imageUrl", map.get("image"));
-                    intent.putExtra("imageUrl2", map.get("image2"));
-                    Toast.makeText(v.getContext(), "뷰페이저를 준비하는 중입니다.", Toast.LENGTH_LONG).show();
-                    v.getContext().startActivity(intent);
+//                    Intent intent = new Intent(v.getContext(), ShowPhotoActivity.class);
+//                    intent.putExtra("imageUrl", map.get("image"));
+//                    Log.e("imageUrl", map.get("image"));
+//                    intent.putExtra("imageUrl2", map.get("image2"));
+//                    Toast.makeText(v.getContext(), "뷰페이저를 준비하는 중입니다.", Toast.LENGTH_LONG).show();
+//                    v.getContext().startActivity(intent);
                 }
             });
 
