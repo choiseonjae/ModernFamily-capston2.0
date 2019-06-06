@@ -42,6 +42,7 @@ public class Chatting extends Fragment {
         view = inflater.inflate(R.layout.chat_fragment, container, false);
         initAdapter();
         getData();
+        AES256Util.key = makeTWKey(Login.getUserFamilyID());
 
         // 메세지 보내기
         view.findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
@@ -53,7 +54,6 @@ public class Chatting extends Fragment {
                 String message = writeEdit.getText().toString();
 
                 try{
-                    AES256Util.key = makeTWKey(Login.getUserFamilyID());
                     AES256Util aes = new AES256Util();
                     message = aes.encrypt(message);
                     //message = aes.decrypt(message);

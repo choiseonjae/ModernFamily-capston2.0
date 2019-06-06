@@ -49,7 +49,7 @@ public class ShowPhotoActivity extends AppCompatActivity {
     //카카오톡 외부 전송시 사용하는 변수들
     File imageFile;
     Uri uri;
-    URL url;
+    //URL url;
     Picture picture;
 
     //이미지 로컬 다운로드 할 때 사용하는 변수들
@@ -95,7 +95,7 @@ public class ShowPhotoActivity extends AppCompatActivity {
                 sdCardFilename = formatter.format(now) + ".png";
 
                 OutputStream outStream = null;
-                File dir = new File(Environment.getExternalStorageDirectory() + "/tw");
+                File dir = new File(Environment.getExternalStorageDirectory() + "/modernFam");
                 if(!dir.exists())
                     dir.mkdirs();
                 //String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
@@ -110,7 +110,7 @@ public class ShowPhotoActivity extends AppCompatActivity {
                             Bitmap.CompressFormat.PNG, 100, outStream);
                     outStream.flush();
                     outStream.close();
-                    //uri = Uri.parse(Environment.getExternalStorageDirectory() + "/tw/"+sdCardFilename);   //sdcardfilename때문에 여기 삽입
+                    uri = Uri.parse(Environment.getExternalStorageDirectory() + "/modernFam/"+sdCardFilename);   //sdcardfilename때문에 여기 삽입
                     Toast.makeText(ShowPhotoActivity.this,
                             "저장완료", Toast.LENGTH_LONG).show();
 
