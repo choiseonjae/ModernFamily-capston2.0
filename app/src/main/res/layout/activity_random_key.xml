@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#222222"
+    tools:context=".TranskmitKeyKakao">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/key"
+                android:hint="키 값 4자리 입력"
+                android:layout_weight="0.75"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColorHint="@android:color/white"
+                android:textColor="@android:color/white"
+                android:textSize="34sp"
+                android:inputType="text"
+                app:met_baseColor="@android:color/white"
+                app:met_floatingLabel="highlight"
+                app:met_primaryColor="@android:color/white"
+                app:met_singleLineEllipsis="true"
+                />
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/okaykeybutton"
+                android:layout_gravity="center_vertical"
+                android:padding="10dp"
+                android:layout_marginLeft="10dp"
+                android:text="확인"
+                android:textColor="@android:color/white"
+                android:layout_weight="0.25"
+                android:layout_width="0dp"
+                android:textSize="20dp"
+                android:backgroundTint="#7cfc00"
+                android:layout_height="wrap_content"
+                app:cornerRadius="4dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

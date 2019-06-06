@@ -2,6 +2,8 @@ package com.example.capstonee.Chat;
 
 import android.util.Log;
 
+import com.firebase.ui.auth.data.model.User;
+
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.UnsupportedEncodingException;
@@ -20,6 +22,7 @@ public class AES256Util {
     private String iv;
     private Key keySpec;
 
+
     /**
      * 16자리의 키값을 입력하여 객체를 생성한다.
      *
@@ -28,7 +31,8 @@ public class AES256Util {
      * @throws UnsupportedEncodingException
      *             키값의 길이가 16이하일 경우 발생
      */
-    final static String key = "abseffgfkfk21fkrkek";
+    static String key; // = "abseffgfkfk21fkrkek";
+
 
     public AES256Util() throws UnsupportedEncodingException {
         this.iv = key.substring(0, 16);

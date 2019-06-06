@@ -127,6 +127,13 @@ public class ShowPhotoActivity extends AppCompatActivity {
                 context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)) );
             }
         });
+        shareButton.setOnClickListener(new ImageButton.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
 
     }
 

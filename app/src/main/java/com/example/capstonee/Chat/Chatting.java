@@ -18,6 +18,7 @@ import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.Login;
 import com.example.capstonee.R;
 import com.example.capstonee.Adapter.MessageAdapter;
+import com.firebase.ui.auth.data.model.User;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,6 +53,7 @@ public class Chatting extends Fragment {
                 String message = writeEdit.getText().toString();
 
                 try{
+                    AES256Util.key = makeTWKey(Login.getUserFamilyID());
                     AES256Util aes = new AES256Util();
                     message = aes.encrypt(message);
                     //message = aes.decrypt(message);
@@ -185,5 +187,10 @@ public class Chatting extends Fragment {
         });
     }
 
+    String makeTWKey(String key){
+        for(int i=0; i<4; i++)
+            key = key.concat(key);
+        return key;
+    }
 
 }

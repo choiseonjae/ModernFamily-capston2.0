@@ -28,6 +28,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
+    //keyFlag는 항상 트루 그러나, 캡차 5번 실패시 false로 변환됨.
+    public static boolean keyFlag = true;
+
+
     // chat 모음
     ArrayList<Chat> chatList = new ArrayList<>();
     Context context;
@@ -183,7 +187,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             try{
                 AES256Util aes = new AES256Util();
                 message = chat.getMessage();
-                message = aes.decrypt(message);
+                if(keyFlag == true){   //키 플래그는 항상 트루. 그러나 만약, 캡차에서 5번 틀릴시에는 false로 바꾸게 했다.
+                    message = aes.decrypt(message);
+                }
             } catch(Exception e){
                 e.printStackTrace();
             }
@@ -216,6 +222,5 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
 
     }
-
 
 }
