@@ -60,9 +60,7 @@ public class FragmentLocation extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.location_fragment, container, false);
-
         geocoder = new Geocoder(getContext());
-
         initAdapter(v);
         getData();
 

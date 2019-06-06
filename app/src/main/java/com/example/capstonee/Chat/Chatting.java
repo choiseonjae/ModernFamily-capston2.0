@@ -39,9 +39,6 @@ public class Chatting extends Fragment {
 
         // 해당 view 설정 : 자바 파일 <---바인딩---> fragment
         view = inflater.inflate(R.layout.chat_fragment, container, false);
-
-
-
         initAdapter();
         getData();
 
@@ -51,9 +48,16 @@ public class Chatting extends Fragment {
             public void onClick(View v) {
                 EditText writeEdit = (EditText) view.findViewById(R.id.write_edit);
 
-
                 // 사용자가 쓴 거 찾음.
                 String message = writeEdit.getText().toString();
+
+                try{
+                    AES256Util aes = new AES256Util();
+                    message = aes.encrypt(message);
+                    //message = aes.decrypt(message);
+                } catch(Exception e){
+                    e.printStackTrace();
+                }
 
                 // 사용자가 타이핑 함.
                 if (!message.equals("")) {
@@ -72,11 +76,7 @@ public class Chatting extends Fragment {
 
                     // 해당 User 의 패밀리 ID
                     Infomation.getDatabase("Chat").child(Login.getUserFamilyID()).push().setValue(chat);
-
-
                 }
-
-
             }
         });
 

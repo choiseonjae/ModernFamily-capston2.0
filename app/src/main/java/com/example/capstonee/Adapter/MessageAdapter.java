@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.capstonee.Chat.AES256Util;
 import com.example.capstonee.Model.Chat;
 import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.Login;
@@ -31,6 +32,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     ArrayList<Chat> chatList = new ArrayList<>();
     Context context;
     View view;
+    String message;
 
     public MessageAdapter(Context context) {
         this.context = context;
@@ -178,8 +180,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         void onBind(final Chat chat) {
             this.chat = chat;
-
-
+            try{
+                AES256Util aes = new AES256Util();
+                message = chat.getMessage();
+                message = aes.decrypt(message);
+            } catch(Exception e){
+                e.printStackTrace();
+            }
             // 이름 설정 가능 하면 이름 넣어준다. -> 왼쪽 상대라는 소리지!
             // 근데 이거 관계형 디비 아닌게 극형이네;;
             // chat 에 이름으로 넣어버릴까? -> 이거 읽으신 분은 카톡으로 의견좀 ㅎㅎ
@@ -191,7 +198,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                         // 이름으로 추가
                         userName_textView.setText(user.getName());
                         if (chat.getUri().equals(""))
-                            message_textView.setText(chat.getMessage());
+                            message_textView.setText(message);
                     }
 
                     @Override
@@ -201,9 +208,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 });
 
             } else {
-
                 if (chat.getUri().equals(""))
-                    message_textView.setText(chat.getMessage());
+                    //message_textView.setText(chat.getMessage());
+                    message_textView.setText(message);
             }
 
         }
