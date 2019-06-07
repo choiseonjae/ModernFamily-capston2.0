@@ -43,7 +43,6 @@ public class FindMyFamilyActivity extends Activity {
             @Override
             public void onClick(View v) {
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(Login.getUserID());
-
                 if(Login.getUserDefaultFamily() == 1) {
                     databaseReference.child("familyID").setValue(Login.getUserID());
                     Login.setFamilyID(Login.getUserID());
@@ -65,7 +64,7 @@ public class FindMyFamilyActivity extends Activity {
                 ImageUpload imageUpload = new ImageUpload("unknown", "https://sj0ufylf41ew0pru-zippykid.netdna-ssl.com/wp-content/uploads/2016/10/questionmark6-300x300.jpg", "미분류");
 //                 FirebaseDatabase.getInstance().getReference("Family").child(Login.getUserID()).child("미분류").setValue(imageUpload);
               // 선재가 좀 바꾼 코드
-                FirebaseDatabase.getInstance().getReference("Family").child(Login.getUserFamilyID()).child("미분류").setValue(imageUpload);
+                FirebaseDatabase.getInstance().getReference("Family").child(Login.getUserFamilyID()).child("unknown").setValue(imageUpload);
 //                 Login.setFamilyID(Login.getUserID());
 
                 Intent intent = new Intent();
@@ -110,7 +109,6 @@ public class FindMyFamilyActivity extends Activity {
                                     Login.setFamilyCount(familyCount);
 
                                     Intent intent = new Intent();
-                                    // true 로 바꿔주면 더 이상 로그인시 팝업창이 뜨지 않음.
                                     intent.putExtra("keep", false);
                                     setResult(RESULT_OK, intent);
 

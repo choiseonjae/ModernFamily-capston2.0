@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="@android:color/white"
-            android:text="123123"
+            android:text="00000"
             android:textColor="@android:color/white"
             android:textSize="34sp"
             android:inputType="text"
@@ -51,7 +51,7 @@
             android:id="@+id/edtCheck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
+            android:checked="false"
             android:layout_gravity="end"
             android:text="자동 로그인하기"
             android:textColor="@android:color/white"/>
