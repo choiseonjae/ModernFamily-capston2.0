@@ -163,6 +163,7 @@ public class FragmentAlbum extends Fragment {
         @Override
         protected void onPostExecute(final String s) {
             super.onPostExecute(s);
+            Log.e("!!?? : ", s);
             int idx = s.indexOf(".");
 
             String dist = s.substring(0, idx);
@@ -447,20 +448,6 @@ public class FragmentAlbum extends Fragment {
             }
         });
     }
-    // 선재 코드
-    // adapter 초기화
-//    private void initAdapter() {
-//        // xml 에 존재하는 recycler 와 연결
-//        recyclerView = view.findViewById(R.id.album_recyclerview);
-//        // 이거는 꽉찬 그리디 화면 인가?
-////        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
-//        // 내가 데이터를 넣어줄 어뎁터 생성
-//        adapter = new RoleAdapter(getContext());
-//        // 현재 xml 에 보여질 recycler 설정
-//        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-//        // recycler 에 보여질 객체 하나를 뜻하는 어뎁터 연결
-//        recyclerView.setAdapter(adapter);
-//    }
 
     // DB의 변경을 바로 바로 업데이트 한 뒤 xml 에 뿌려주기 위한 Listener
     private void getData() {

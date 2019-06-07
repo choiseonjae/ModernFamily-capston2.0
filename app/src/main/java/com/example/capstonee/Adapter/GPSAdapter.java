@@ -13,19 +13,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.capstonee.NearHotPlace;
 import com.example.capstonee.R;
-import com.example.capstonee.SelectedRoleAlbum;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class GPSAdapter extends RecyclerView.Adapter<GPSAdapter.ItemViewHolder>{
+public class GPSAdapter extends RecyclerView.Adapter<GPSAdapter.ItemViewHolder> {
 
     // adapter에 들어갈 list 입니다.
     private ArrayList<String> addr = new ArrayList<>();
     private ArrayList<String> titleList = new ArrayList<>();
-    private ArrayList<String> imageList = new ArrayList<>();
 
     private Context context;
     private View view;
@@ -47,7 +44,7 @@ public class GPSAdapter extends RecyclerView.Adapter<GPSAdapter.ItemViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull GPSAdapter.ItemViewHolder holder, int position) {
         // Item을 하나, 하나 보여주는(bind 되는) 함수입니다.
-        holder.onBind(titleList.get(position), imageList.get(position));
+        holder.onBind(titleList.get(position));
     }
 
     @Override
@@ -56,11 +53,11 @@ public class GPSAdapter extends RecyclerView.Adapter<GPSAdapter.ItemViewHolder>{
         return titleList.size();
     }
 
-    public void addItem(String title, String img) {
+    public void addItem(String title) {
         // 외부에서 item을 추가시킬 함수입니다.
 
         titleList.add(title);
-        imageList.add(img);
+
     }
 
 //    public void remove(String userID) {
@@ -71,7 +68,7 @@ public class GPSAdapter extends RecyclerView.Adapter<GPSAdapter.ItemViewHolder>{
     // 여기서 subView를 setting 해줍니다.
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        private String title, pictureUri;
+        private String address;
         private LinearLayout linearLayout;
         private TextView popular_textView;
         private ImageView popular_imageView;
@@ -83,48 +80,40 @@ public class GPSAdapter extends RecyclerView.Adapter<GPSAdapter.ItemViewHolder>{
             popular_imageView = view.findViewById(R.id.popular_image_view);
             linearLayout = view.findViewById(R.id.popular_linearlayout);
             // 짧게 누를 시
-//            linearLayout.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(context, SelectedRoleAlbum.class);
-//                    intent.putExtra("role", role);
-//                    context.startActivity(intent);
-//                }
-//            });
+            linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, NearHotPlace.class);
+                    intent.putExtra("address", address);
+                    context.startActivity(intent);
+                }
+            });
 
 
-            // 오래 누르면
-//            view.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View v) {
-//                    familyAdd_alert(familyMemberID);
-//                    return false;
-//                }
-//            });
 
         }
 
-        void onBind(String title, String imgUrl) {
+        void onBind(String address) {
             //잠시 로그 확인
 //            Log.e("role, uri", Arrays.toString(value));
 
             // 값 저장
-            this.title = title;
-            pictureUri = imgUrl;
+            this.address = address;
+
 
             // 화면에 보여주기
-            popular_textView.setText(title);
+            popular_textView.setText(address);
 
 //            // 반 쪼개야해용
 //            ViewGroup.LayoutParams lp = popular_imageView.getLayoutParams();
 //            lp.width = context.getResources().getDisplayMetrics().widthPixels;
 //            lp.height = lp.width / 3;
 //
-            pictureUri = pictureUri.replace("http://","https://");
+//            pictureUri = pictureUri.replace("http://","https://");
 
-            Log.d("? ", pictureUri);
+//            Log.d("? ", pictureUri);
 
-            Picasso.with(context).load(pictureUri).fit().into(popular_imageView);
+//            Picasso.with(context).load(pictureUri).fit().into(popular_imageView);
 
         }
 

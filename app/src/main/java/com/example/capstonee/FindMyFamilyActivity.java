@@ -44,16 +44,16 @@ public class FindMyFamilyActivity extends Activity {
             public void onClick(View v) {
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(Login.getUserID());
                 if(Login.getUserDefaultFamily() == 1) {
-                    databaseReference.child("familyID").setValue(Login.getUserID());
+//                    databaseReference.child("familyID").setValue(Login.getUserID());
                     Login.setFamilyID(Login.getUserID());
                     Login.setFamilyID1(Login.getUserID());
                 }else if(Login.getUserDefaultFamily() == 2){
-                    databaseReference.child("familyID2").setValue(Login.getUserID() + "_2");
+//                    databaseReference.child("familyID2").setValue(Login.getUserID() + "_2");
                     Login.setFamilyID(Login.getUserID() + "_2");
                     Login.setFamilyID2(Login.getUserFamilyID());
 
                 }else if(Login.getUserDefaultFamily() == 3){
-                    databaseReference.child("familyID3").setValue(Login.getUserID() + "_3");
+//                    databaseReference.child("familyID3").setValue(Login.getUserID() + "_3");
                     Login.setFamilyID(Login.getUserID() + "_3");
                     Login.setFamilyID3(Login.getUserFamilyID());
                 }

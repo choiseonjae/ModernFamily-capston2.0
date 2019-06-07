@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.capstonee.Adapter.MessageAdapter;
+
 import java.text.SimpleDateFormat;
 
 
@@ -46,6 +48,7 @@ public class CapchaTwActivity extends AppCompatActivity {
             @Override
             public String onMaxFailed() {
                 Toast.makeText(CapchaTwActivity.this, "계정이 차단됩니다.", Toast.LENGTH_SHORT).show();
+                MessageAdapter.keyFlag=false;//이렇게 함으로써 복호화 태우가 막아버림. 해결법은 설정에서 랜덤수 4자리 제대로 입력하는 것 밖에 없음.
                 SignIn.correctNumber=-1;
                 SignIn.loginStop=true;
                 SignIn.failureTime = System.currentTimeMillis();

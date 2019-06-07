@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,14 +15,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FamilyModifyActivity"></activity>
+        <activity android:name=".NearHotPlace"></activity>
+        <activity android:name=".FamilyModifyActivity" />
         <activity android:name=".ClickRoleActivity" /> <!-- Crop Activity -->
         <activity android:name=".DetailPicture" />
         <activity
             android:name="com.soundcloud.android.crop.CropImageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".SelectedRoleAlbum" />
+        <activity android:name=".Location.ShowLocationImage" />
         <activity
             android:name=".FindMyFamilyActivity"
             android:theme="@android:style/Theme.Dialog" />
@@ -35,13 +35,26 @@
         <activity
             android:name=".PopupActivity"
             android:theme="@android:style/Theme.Dialog" />
-        <activity android:name=".CapchaTwActivity"/>
+        <activity android:name=".CapchaTwActivity" />
         <activity android:name=".SignActivity" />
         <activity android:name=".SignIn" />
         <activity android:name=".SignUp" />
         <activity android:name=".SetUserInformation" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ShowPhotoActivity" />
+        <activity android:name=".TranskmitKeyKakao">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="@string/kakao_scheme"
+                    android:host="@string/kakaolink_host" />
+            </intent-filter>
+        </activity>
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="@string/kakao_app_key" />
         <activity android:name=".InitActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

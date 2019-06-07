@@ -2,17 +2,29 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/move_button"
+        android:title="이동"
+        android:icon="@drawable/ic_move_black_24dp"
+        app:showAsAction="always"
+        />
+    <item
         android:id="@+id/delete_button"
         android:title="삭제"
         android:icon="@drawable/ic_delete_black_24dp"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/download_button"
+        android:title="다운로드"
+        android:icon="@drawable/ic_download_black_24dp"
+        app:showAsAction="always"
         />
     <item
         android:id="@+id/kakao_share"
         android:title="공유"
-        app:showAsAction="ifRoom"
+        android:icon="@drawable/kakaolink_btn_small"
+        app:showAsAction="always"
         />
-
 </menu>
 
 

@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FamilyInformation extends AppCompatActivity {
-    FamilyAdapter adapter;
     User user;
     private static final int POP_RESULT = 9876;
 
@@ -40,26 +39,8 @@ public class FamilyInformation extends AppCompatActivity {
         setContentView(R.layout.activity_family_information);
 
 
-        // 내 정보 가져오기 : user <-  내 정보 넣음
-        final DatabaseReference myInfo = Infomation.getDatabase("User").child(Login.getUserID());
-        myInfo.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                user = dataSnapshot.getValue(User.class);
-                init();
-                getData();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
         // 우리 가족 클릭
-        TextView ourFamily = findViewById(R.id.family1);
-        ourFamily.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.family1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "우리 가족 선택", Toast.LENGTH_LONG).show();
@@ -80,8 +61,7 @@ public class FamilyInformation extends AppCompatActivity {
         });
         // 친가 클릭
         // 지금 디폴트가 친가가 아닐때
-        TextView chin_ga = findViewById(R.id.family2);
-        chin_ga.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.family2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "친가 선택", Toast.LENGTH_LONG).show();
@@ -106,8 +86,7 @@ public class FamilyInformation extends AppCompatActivity {
 
 
         // 외가 클릭
-        TextView why_ga = findViewById(R.id.family3);
-        why_ga.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.family3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "외가 선택", Toast.LENGTH_LONG).show();
@@ -168,17 +147,6 @@ public class FamilyInformation extends AppCompatActivity {
     private void setNewFamily() {
         Intent intent = new Intent(this, FindMyFamilyActivity.class);
         startActivityForResult(intent, 1);
-    }
-
-    private void init() {  //리사이클러뷰 초기화 및 동작
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-
-        // 3 개 나옴 한 줄에 리사이클러뷰가 네모 형태로 나중에 써보셈
-//      recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        adapter = new FamilyAdapter(this);
-        recyclerView.setAdapter(adapter);
     }
 
     private void familyAdd_alert() {
@@ -283,45 +251,6 @@ public class FamilyInformation extends AppCompatActivity {
 
     }
 
-    private void getData() {
-
-        String familyID = user.getFamilyID();
-        final DatabaseReference familyRef = Infomation.getDatabase("Family").child(familyID);
-        familyRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.e("dataSnapshot : ", dataSnapshot.toString());
-
-                // 현재 사용자랑 같은 팀을 보여줌.
-                if (!dataSnapshot.getValue().toString().equals(Login.getUserID()))
-                    adapter.addItem(dataSnapshot.getValue().toString());
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.e("change", dataSnapshot.toString());
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Log.e("remove", dataSnapshot.toString());
-                adapter.remove(dataSnapshot.getValue().toString());
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     // 결과 해결
     @Override

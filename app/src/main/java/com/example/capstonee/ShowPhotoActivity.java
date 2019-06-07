@@ -1,11 +1,17 @@
 package com.example.capstonee;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +19,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -30,6 +38,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class ShowPhotoActivity extends AppCompatActivity {
     private ImageView imageView;
@@ -45,8 +62,29 @@ public class ShowPhotoActivity extends AppCompatActivity {
     // kind는 뭐냐면 어댑터에서 사진을 클릭해서 이 액티비티로 와서 삭제를 누르면,
     // DB에서 얘가 어디에 속해있는지 파악할 필요가 있다.
     // 그때 쓰는게 바로 Kind
+    Context context;
+
+
+    //카카오톡 외부 전송시 사용하는 변수들
+    File imageFile;
+    Uri uri;
+    //URL url;
+    Picture picture;
+
+    //이미지 로컬 다운로드 할 때 사용하는 변수들
+    Bitmap mSaveBm;
+    String sdCardFilename;
+    Date now;
+    File file = null;
+
+    //삭제시 사용할 id
+    String id;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //초기화
+        context = getApplicationContext();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_photo);
 
@@ -58,7 +96,18 @@ public class ShowPhotoActivity extends AppCompatActivity {
 
         Log.e("urlfilefrom", ImageUrl + " " + fileName + " " + role + " " + From);
         imageView = findViewById(R.id.detailPhoto);
-        Picasso.with(getApplicationContext()).load(ImageUrl).fit().centerInside().into(imageView);
+        //Picasso.with(getApplicationContext()).load(ImageUrl).fit().centerInside().into(imageView);
+        //String ImageUrl = intent.getStringExtra("imageUrl"); 종한씨가 받아온 부분
+        //id = intent.getStringExtra("id"); 종한씨가 받아온 부분
+
+        //객체로 받아오는 걸로 바꿈.
+        //picture = (Picture) getIntent().getSerializableExtra("picture");
+        //imageView = findViewById(R.id.detailPhoto);
+
+        //잠시 피카소는 태우가 주석처리! 왜냐? 저장할 때 SD카드 내부 저장을 위한 비트맵 변환을 위해.
+        //Picasso.with(getApplicationContext()).load(ImageUrl).fit().centerInside().into(imageView);
+        OpenHttpConnection opHttpCon = new OpenHttpConnection();  //비트맵으로 받아오기 위해서 정의
+        opHttpCon.execute(imageView, ImageUrl);               //execute메소드 호출하면서 비트맵 얻어옮.
 
         toolbar = findViewById(R.id.show_photo_toolbar);
         setSupportActionBar(toolbar);
@@ -73,6 +122,7 @@ public class ShowPhotoActivity extends AppCompatActivity {
         menuInflater.inflate(R.menu.main_menu, menu);
         return true;
     }
+
     // 사진 업로드 후 VM에 URL 보내는 곳
     public class NetworkTask extends AsyncTask<Void, Void, String> {
         private String url;
@@ -102,12 +152,13 @@ public class ShowPhotoActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        AlertDialog.Builder alertdialog;
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;
             case R.id.delete_button:
-                android.app.AlertDialog.Builder alertdialog = new AlertDialog.Builder(this);
+                alertdialog = new AlertDialog.Builder(this);
                 alertdialog.setTitle("삭제하시겠습니까?");
                 alertdialog.setMessage("한번 삭제하면 돌이킬 수 없게 됩니다!");
                 // 게시할 때
@@ -199,8 +250,49 @@ public class ShowPhotoActivity extends AppCompatActivity {
                     }
                 });
                 alertdialog.show();
+                break;
+            case R.id.download_button:
+                alertdialog = new AlertDialog.Builder(this);
+                alertdialog.setTitle("다운로드");
+                alertdialog.setMessage("사진을 다운로드 하시겠습니까?");
+                // 게시할 때
+                alertdialog.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        makeImageFile(1);
+                    }
+                });
+                alertdialog.setNegativeButton("돌아가기", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                });
+                alertdialog.show();
+                break;
+            case R.id.move_button:
+                //TODO :: 사진 이동
+                break;
             case R.id.kakao_share:
-                //TODO :: 카카오 공유넣기
+                alertdialog = new AlertDialog.Builder(this);
+                alertdialog.setTitle("카카오톡으로 공유");
+                alertdialog.setMessage("사진을 카카오톡에 공유 하시겠습니까?");
+                // 게시할 때
+                alertdialog.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        makeImageFile(2);  //2는 카카오톡으로 공유를 의미
+                        sendKaKao(uri);
+                    }
+                });
+                alertdialog.setNegativeButton("돌아가기", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                });
+                alertdialog.show();
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -282,6 +374,83 @@ public class ShowPhotoActivity extends AppCompatActivity {
         finish();
     }
     @Override
-    public void onBackPressed() {
+    public void onBackPressed() { }
+
+    private void sendKaKao(Uri uri) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.setPackage("com.kakao.talk");
+            startActivityForResult(intent, 1);
+        } catch (ActivityNotFoundException e) {
+            Uri uriMarket = Uri.parse("market://deatils?id=com.kakao.talk");
+            Intent intent = new Intent(Intent.ACTION_VIEW, uriMarket);
+            startActivity(intent);
+        }
+    }
+
+    private class OpenHttpConnection extends AsyncTask<Object, Void, Bitmap> {
+        private ImageView bmImage;
+        @Override
+        protected Bitmap doInBackground(Object... params) {
+            Bitmap mBitmap = null;
+            bmImage = (ImageView) params[0];
+            String url = (String) params[1];
+            InputStream in = null;
+            try {
+                in = new java.net.URL(url).openStream();
+                mBitmap = BitmapFactory.decodeStream(in);
+                in.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return mBitmap;
+        }
+        @Override
+        protected void onPostExecute(Bitmap bm) {
+            super.onPostExecute(bm);
+            mSaveBm = bm;
+            bmImage.setImageBitmap(bm);
+        }
+    }
+
+    void makeImageFile(int num){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMHH_mmss");
+        now = new Date();
+        sdCardFilename = formatter.format(now) + ".png";
+
+        OutputStream outStream = null;
+        File dir = new File(Environment.getExternalStorageDirectory() + "/modernFam");
+        if(!dir.exists())
+            dir.mkdirs();
+        //String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
+        //Log.d("디렉토리:", extStorageDirectory);
+        //file = new File(extStorageDirectory, sdCardFilename);
+        file = new File(dir, sdCardFilename);
+        imageFile = new File(dir, sdCardFilename);
+        try {
+            outStream = new FileOutputStream(file);
+            Log.d("파일경로", file.toString());
+            mSaveBm.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+            outStream.flush();
+            outStream.close();
+            uri = Uri.parse(Environment.getExternalStorageDirectory() + "/modernFam/"+ sdCardFilename);   //sdcardfilename때문에 파일 공유 여기 삽입
+            if(num==1){
+                Toast.makeText(ShowPhotoActivity.this, "저장완료", Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(ShowPhotoActivity.this, "카톡으로 이동합니다!", Toast.LENGTH_LONG).show();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(ShowPhotoActivity.this,
+                    e.toString(), Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(ShowPhotoActivity.this,
+                    e.toString(), Toast.LENGTH_LONG).show();
+        }
+        //앨범에 이미지 저장 후 바로 최신화 시켜주기 위해 이미지 스캐닝(파일스캐닝)을 해줘야함.
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)) );
     }
 }

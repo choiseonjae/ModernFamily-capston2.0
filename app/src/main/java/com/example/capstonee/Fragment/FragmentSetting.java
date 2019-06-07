@@ -30,6 +30,7 @@ import com.example.capstonee.Model.Login;
 import com.example.capstonee.R;
 import com.example.capstonee.SetUserInformation;
 import com.example.capstonee.SignActivity;
+import com.example.capstonee.TranskmitKeyKakao;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -60,6 +61,7 @@ public class FragmentSetting extends Fragment {
         Id.setText(Login.getUserID());
         LinearLayout logout = v.findViewById(R.id.logout);
         LinearLayout familyModify = v.findViewById(R.id.familyModify);
+        LinearLayout transmitKey = v.findViewById(R.id.transmitkeykakao);
         profile_imageView = v.findViewById(R.id.profile_image_setting);
 
         if (Login.getProfileUri().equals("")) {
@@ -129,6 +131,14 @@ public class FragmentSetting extends Fragment {
                 startActivity(new Intent(getActivity(), FamilyModifyActivity.class));
             }
         });
+
+        transmitKey.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), TranskmitKeyKakao.class));
+            }
+        });
+
 
         return v;
     }
