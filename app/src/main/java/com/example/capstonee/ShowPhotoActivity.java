@@ -1,11 +1,16 @@
 package com.example.capstonee;
 
+
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -19,6 +24,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,6 +35,7 @@ import com.example.capstonee.Model.Login;
 import com.example.capstonee.Model.Picture;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +43,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -44,6 +52,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -97,12 +108,6 @@ public class ShowPhotoActivity extends AppCompatActivity {
         Log.e("urlfilefrom", ImageUrl + " " + fileName + " " + role + " " + From);
         imageView = findViewById(R.id.detailPhoto);
         //Picasso.with(getApplicationContext()).load(ImageUrl).fit().centerInside().into(imageView);
-        //String ImageUrl = intent.getStringExtra("imageUrl"); 종한씨가 받아온 부분
-        //id = intent.getStringExtra("id"); 종한씨가 받아온 부분
-
-        //객체로 받아오는 걸로 바꿈.
-        //picture = (Picture) getIntent().getSerializableExtra("picture");
-        //imageView = findViewById(R.id.detailPhoto);
 
         //잠시 피카소는 태우가 주석처리! 왜냐? 저장할 때 SD카드 내부 저장을 위한 비트맵 변환을 위해.
         //Picasso.with(getApplicationContext()).load(ImageUrl).fit().centerInside().into(imageView);
@@ -416,6 +421,7 @@ public class ShowPhotoActivity extends AppCompatActivity {
     }
 
     void makeImageFile(int num){
+
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMHH_mmss");
         now = new Date();
         sdCardFilename = formatter.format(now) + ".png";
@@ -432,7 +438,9 @@ public class ShowPhotoActivity extends AppCompatActivity {
         try {
             outStream = new FileOutputStream(file);
             Log.d("파일경로", file.toString());
+
             mSaveBm.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+
             outStream.flush();
             outStream.close();
             uri = Uri.parse(Environment.getExternalStorageDirectory() + "/modernFam/"+ sdCardFilename);   //sdcardfilename때문에 파일 공유 여기 삽입

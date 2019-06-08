@@ -76,7 +76,11 @@ public class DatePictureAdapter extends RecyclerView.Adapter<DatePictureAdapter.
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ShowPhotoActivity.class);
-                    intent.putExtra("imageUrl", picture.getUri());
+                    //Log.d("twtw", picture.getFileName());
+                    //Log.d("태우", picture.getPictureID());
+                    intent.putExtra("picture", picture);
+                    //intent.putExtra("id", picture.getPictureID());
+                    //intent.putExtra("imageUrl", picture.getUri());
                     // 지우고 간다. 안가면 에러
                     intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK);
                     v.getContext().startActivity(intent);
