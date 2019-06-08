@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.capstonee.Model.ImageUpload;
+import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.Login;
 import com.example.capstonee.Model.Picture;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -67,7 +68,6 @@ public class ShowPhotoActivity extends AppCompatActivity {
     private String role;
     private String From;
     private String Kind;
-    private static final int GO_BACK = 6754;
 
     // PJH
     // kind는 뭐냐면 어댑터에서 사진을 클릭해서 이 액티비티로 와서 삭제를 누르면,
@@ -198,8 +198,15 @@ public class ShowPhotoActivity extends AppCompatActivity {
                                                     NetworkTask networkTask = new NetworkTask(url, contentValues);
                                                     networkTask.execute();
 
-                                                    int count = Login.getUserFamilyCount();
-                                                    Login.setFamilyCount(count-1);
+                                                    final int count = Login.getUserFamilyCount2()-1;
+                                                    Infomation.getDatabase("User").child(Login.getUserID()).child("familyCount").setValue(Login.getUserFamilyCount());
+                                                    Infomation.getDatabase("User").child(Login.getUserID()).child("familyCount2").setValue(count)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Login.setFamilyCount2(count);
+                                                        }
+                                                    });
                                                     break;
                                                 }
                                             }

@@ -6,6 +6,7 @@ public class User {
     private String Password;
     private String BirthDate;
     private int FamilyCount;
+    private int FamilyCount2;
     private String FamilyID, FamilyID1, FamilyID2, FamilyID3;
     private String profileUri;
     private int Default_family;
@@ -13,12 +14,13 @@ public class User {
     private User() {
     }
 
-    public User(String phone, String name, String password, String birthDate, int familyCount, String familyID, String familyID1, String familyID2, String familyID3, int default_family) {
+    public User(String phone, String name, String password, String birthDate, int familyCount, int familyCount2, String familyID, String familyID1, String familyID2, String familyID3, int default_family) {
         Phone = phone;
         Name = name;
         Password = password;
         BirthDate = birthDate;
         FamilyCount = familyCount;
+        FamilyCount2 = familyCount2;
         FamilyID = familyID;
         profileUri = "";
         FamilyID1 = familyID1;
@@ -66,6 +68,14 @@ public class User {
 
     public void setFamilyCount(int familyCount) {
         FamilyCount = familyCount;
+    }
+
+    public int getFamilyCount2() {
+        return FamilyCount2;
+    }
+
+    public void setFamilyCount2(int familyCount2) {
+        FamilyCount2 = familyCount2;
     }
 
     public String getFamilyID() {

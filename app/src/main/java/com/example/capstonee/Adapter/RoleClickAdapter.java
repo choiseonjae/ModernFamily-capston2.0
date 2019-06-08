@@ -79,7 +79,7 @@ public class RoleClickAdapter extends RecyclerView.Adapter<RoleClickAdapter.MyVi
                     intent.putExtra("fileName", fileName);
                     intent.putExtra("role", role);
                     intent.putExtra("From", "RoleClick");
-                    Log.e("imageUrl", photoUri);
+                    Log.e("imageUrl", photoUri+ " " +fileName);
                     ((Activity)mContext).startActivityForResult(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), SHOW_PHOTO_FINISH);
                 }
             });

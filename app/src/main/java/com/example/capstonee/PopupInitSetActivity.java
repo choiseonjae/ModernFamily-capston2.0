@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.soundcloud.android.crop.Crop;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +40,7 @@ public class PopupInitSetActivity extends Activity {
     private static final int PICK_FROM_ALBUM = 1;
     private static final int PICK_FROM_CAMERA = 2;
     private File tempFile;
+
     private Uri photoUri;
     private String imageFileName;
     boolean isCamera = false;
@@ -110,19 +112,6 @@ public class PopupInitSetActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != Activity.RESULT_OK) {
-            Toast.makeText(this, "취소 되었습니다.", Toast.LENGTH_SHORT).show();
-
-            if(tempFile != null) {
-                if (tempFile.exists()) {
-                    if (tempFile.delete()) {
-                        Log.e(TAG, tempFile.getAbsolutePath() + " 삭제 성공");
-                        tempFile = null;
-                    }
-                }
-            }
-            return;
-        }
         switch (requestCode) {
             case PICK_FROM_ALBUM: {
                 photoUri = data.getData();
@@ -136,25 +125,18 @@ public class PopupInitSetActivity extends Activity {
                 cropImage(photoUri);
                 break;
             }
-            case Crop.REQUEST_CROP: {
+            case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE: {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                photoUri = result.getUri();
+                Log.e("이건뭐냐", photoUri.toString());
+
                 setImage();
             }
         }
     }
     // 이미지 크롭
     private void cropImage(Uri photoUri){
-        Log.d("Tag", "TEMPFILE : " +tempFile);
-        if(tempFile == null){
-            try{
-                tempFile = createImageFile();
-            }catch(Exception e){
-                Toast.makeText(this, "이미지 처리 오류!", Toast.LENGTH_SHORT).show();
-                finish();
-                e.printStackTrace();
-            }
-        }
-        Uri savingUri = Uri.fromFile(tempFile);
-        Crop.of(photoUri, savingUri).asSquare().start(this);
+        CropImage.activity(photoUri).start(this);
     }
     /**
      *  앨범에서 이미지 가져오기
@@ -201,7 +183,7 @@ public class PopupInitSetActivity extends Activity {
      */
     private File createImageFile() throws IOException {
 
-        // 이미지 파일 이름 ( blackJin_{시간}_ )
+        // 이미지 파일 이름
         String timeStamp = new SimpleDateFormat("HHmmss").format(new Date());
         imageFileName = "capstone_" + timeStamp + "_";
 
@@ -210,7 +192,7 @@ public class PopupInitSetActivity extends Activity {
         if (!storageDir.exists()) storageDir.mkdirs();
 
         // 파일 생성
-        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+        File image = File.createTempFile(imageFileName, ".png", storageDir);
         Log.d(TAG, "createImageFile : " + image.getAbsolutePath());
 
         return image;
@@ -221,10 +203,10 @@ public class PopupInitSetActivity extends Activity {
      */
     private void setImage() {
         Intent intent = new Intent();
-        intent.putExtra("tempFile", tempFile);
         intent.putExtra("photoUri", photoUri);
         intent.putExtra("imageFileName", imageFileName);
         intent.putExtra("isCamera", isCamera);
+
         tempFile = null;
         setResult(RESULT_OK, intent);
         finish();

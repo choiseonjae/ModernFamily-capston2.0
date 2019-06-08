@@ -96,17 +96,17 @@ public class FindMyFamilyActivity extends Activity {
                                 if (!PW.equals(user.getPassword())) {
                                     Toast.makeText(FindMyFamilyActivity.this, "ID / PW를 다시 입력하세요.", Toast.LENGTH_SHORT).show();
                                 } else { // PW 가 일치
-                                    Log.e("id, fc ", user.getFamilyID()+ " " +user.getFamilyCount());
                                     // family ID
                                     final String familyID = user.getFamilyID();
                                     // familyCount;
                                     final int familyCount = user.getFamilyCount();
-
+                                    final int familyCount2 = user.getFamilyCount2();
                                     // User DB : 현재 사용자의 familyID 값을 업데이트함. - 검색한 user 와 같은 family ID 값으로
                                     Infomation.getDatabase("User").child(Login.getUserID()).child("familyID").setValue(familyID);
                                     Infomation.getDatabase("User").child(Login.getUserID()).child("familyCount").setValue(familyCount);
                                     Login.setFamilyID(familyID);
                                     Login.setFamilyCount(familyCount);
+                                    Login.setFamilyCount2(familyCount2);
 
                                     Intent intent = new Intent();
                                     intent.putExtra("keep", false);

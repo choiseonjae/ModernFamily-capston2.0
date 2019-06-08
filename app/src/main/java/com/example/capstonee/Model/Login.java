@@ -5,7 +5,7 @@ public class Login {
     private static String MY_NAME;
     private static String MY_PASSWORD;
     private static String MY_PHONE;
-    private static int MY_FAMILYCOUNT, MY_DEFAULT_FAMILY;
+    private static int MY_FAMILYCOUNT, MY_FAMILYCOUNT2, MY_DEFAULT_FAMILY;
     private static String MY_BIRTH;
     private static String MY_FAMILYID, MY_FAMILYID1, MY_FAMILYID2, MY_FAMILYID3;
     private static String MY_PROFILE_URI;
@@ -37,6 +37,8 @@ public class Login {
     public static int getUserFamilyCount() {
         return MY_FAMILYCOUNT;
     }
+
+    public static int getUserFamilyCount2() { return MY_FAMILYCOUNT2; }
 
     public static int getUserDefaultFamily() {
         return MY_DEFAULT_FAMILY;
@@ -85,6 +87,8 @@ public class Login {
     public static void setFamilyCount(int FAMILYCOUNT) {
         MY_FAMILYCOUNT = FAMILYCOUNT;
     }
+
+    public static void setFamilyCount2(int FAMILYCOUNT) { MY_FAMILYCOUNT2 = FAMILYCOUNT; }
 
     public static void setDefaultFamily(int DEFAULT_FAMILY) {
         MY_DEFAULT_FAMILY = DEFAULT_FAMILY;

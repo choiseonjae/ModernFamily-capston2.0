@@ -85,7 +85,7 @@ public class FamilyModifyActivity extends AppCompatActivity {
     // DB의 변경을 바로 바로 업데이트 한 뒤 xml 에 뿌려주기 위한 Listener
     private void getData() {
         Log.d("LOG - FAMILY ID : ", Login.getUserFamilyID());
-        if(Login.getUserFamilyCount() > 0) {
+        if(Login.getUserFamilyCount2() > 0) {
             // 현재 사용자의 Family DB 에서 역할가져온다.
             final DatabaseReference roleRef = Infomation.getDatabase("Family").child(Login.getUserFamilyID());
             Log.e("roleRef = ", roleRef.getKey());

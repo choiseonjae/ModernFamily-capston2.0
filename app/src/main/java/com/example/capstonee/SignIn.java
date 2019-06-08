@@ -98,6 +98,7 @@ public class SignIn extends AppCompatActivity {
                                     Login.setPhone(user.getPhone());
                                     Login.setBirth(user.getBirthDate());
                                     Login.setFamilyCount(user.getFamilyCount());
+                                    Login.setFamilyCount2(user.getFamilyCount2());
 
                                     // 선재 추가
                                     Login.setFamilyID1(user.getFamilyID1());
