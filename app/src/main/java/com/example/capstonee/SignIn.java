@@ -98,25 +98,23 @@ public class SignIn extends AppCompatActivity {
                                     Login.setPhone(user.getPhone());
                                     Login.setBirth(user.getBirthDate());
                                     Login.setFamilyCount(user.getFamilyCount());
-                                  // 충돌 부분
-//                                     Login.setFamilyID(user.getFamilyID());
-                                  ////////////////////////
-                                // 선재 추가
-                                Login.setFamilyID1(user.getFamilyID1());
-                                Login.setFamilyID2(user.getFamilyID2());
-                                Login.setFamilyID3(user.getFamilyID3());
-                                Login.setDefaultFamily(user.getDefault_family());
 
-                                // 패밀리 ID 설정과정
-                                if (Login.getUserDefaultFamily() == 1)
-                                    Login.setFamilyID(user.getFamilyID1());
-                                else if (Login.getUserDefaultFamily() == 2)
-                                    Login.setFamilyID(user.getFamilyID2());
-                                else if (Login.getUserDefaultFamily() == 3)
-                                    Login.setFamilyID(user.getFamilyID3());
-                                  /////////////////////////////
-                                    Login.setProfileUri(user.getProfileUri());
-                                    startActivity(intent);
+                                    // 선재 추가
+                                    Login.setFamilyID1(user.getFamilyID1());
+                                    Login.setFamilyID2(user.getFamilyID2());
+                                    Login.setFamilyID3(user.getFamilyID3());
+                                    Login.setDefaultFamily(user.getDefault_family());
+
+                                    // 패밀리 ID 설정과정
+                                    if (Login.getUserDefaultFamily() == 1)
+                                        Login.setFamilyID(user.getFamilyID1());
+                                    else if (Login.getUserDefaultFamily() == 2)
+                                        Login.setFamilyID(user.getFamilyID2());
+                                    else if (Login.getUserDefaultFamily() == 3)
+                                        Login.setFamilyID(user.getFamilyID3());
+                                      /////////////////////////////
+                                        Login.setProfileUri(user.getProfileUri());
+                                        startActivity(intent);
                                 }
                             }
                             else{

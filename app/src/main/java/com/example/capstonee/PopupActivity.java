@@ -214,8 +214,12 @@ public class PopupActivity extends Activity {
             }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                    dialog.setMessage("Uploaded " + (int) progress + "%");
+                    try {
+                        double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        dialog.setMessage("Uploaded " + (int) progress + "%");
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
                 }
             });
             finish();

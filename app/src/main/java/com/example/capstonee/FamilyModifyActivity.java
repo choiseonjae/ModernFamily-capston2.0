@@ -18,6 +18,7 @@ import com.example.capstonee.Adapter.RecyclerPhotoViewAdapter;
 import com.example.capstonee.Model.ImageUpload;
 import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.Login;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,7 +36,7 @@ public class FamilyModifyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_family_modify);
 
         AlertDialog.Builder confirm = new AlertDialog.Builder(this);
-        confirm.setMessage("동일인물의 사진을 바꾸려면\n 삭제 후 다시 저장해주세요.");
+        confirm.setMessage("동일인물의 사진을 바꾸려면\n삭제 후 다시 저장해주세요.\n동일인이라면 꼭 같은 이름으로 저장하세요.\n(그래야 같은 앨범이 됩니다!)");
         confirm.setPositiveButton("확인", null);
         confirm.show();
 
@@ -89,24 +90,43 @@ public class FamilyModifyActivity extends AppCompatActivity {
             final DatabaseReference roleRef = Infomation.getDatabase("Family").child(Login.getUserFamilyID());
             Log.e("roleRef = ", roleRef.getKey());
             // family - id - 이후 key : value
-            roleRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            roleRef.addChildEventListener(new ChildEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        ImageUpload imageUpload = snapshot.getValue(ImageUpload.class);
-                        // 현재 역할 한 분
-                        String role = imageUpload.getFamily();
-                        String uri = imageUpload.getUrl();
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    ImageUpload imageUpload = dataSnapshot.getValue(ImageUpload.class);
+                    // 현재 역할 한 분
+                    String name = imageUpload.getName();
+                    String role = imageUpload.getFamily();
+                    String uri = imageUpload.getUrl();
 
-                        if(!role.equals("미분류")) {
-                            recyclerViewAdapter.addItem(role, uri);
-                            recyclerViewAdapter.notifyDataSetChanged();
-                        }
+                    if(!role.equals("미분류")) {
+                        recyclerViewAdapter.addItem(name, uri, role);
+                        recyclerViewAdapter.notifyDataSetChanged();
                     }
                 }
 
                 @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    ImageUpload imageUpload = dataSnapshot.getValue(ImageUpload.class);
+
+                    String name = imageUpload.getName();
+                    recyclerViewAdapter.removeItem(name);
+                    recyclerViewAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
+
                 }
             });
         }

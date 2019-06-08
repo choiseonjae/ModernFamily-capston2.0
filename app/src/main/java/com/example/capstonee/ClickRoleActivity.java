@@ -74,6 +74,8 @@ public class ClickRoleActivity extends AppCompatActivity {
     private String distUri;
     private static final int PICK_FROM_ALBUM = 1;
     private static final int PICK_FROM_CAMERA = 2;
+    private static final int SHOW_PHOTO_FINISH = 9487;
+    private static final int GO_BACK = 6754;
     private DatabaseReference gpsRef;
     private DatabaseReference pictureRef;
 
@@ -84,11 +86,14 @@ public class ClickRoleActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.role_recyclerview);
         StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
-        recyclerViewAdapter = new RoleClickAdapter(getApplicationContext());
+        recyclerViewAdapter = new RoleClickAdapter(this);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(recyclerViewAdapter);
 
-        getData();
+        String intentRole = getIntent().getStringExtra("role");
+        Log.e("씨빠아아아아랄", intentRole);
+        if(intentRole != null && !intentRole.equals(""))
+            getData(intentRole);
 
         albumToolbar = findViewById(R.id.album_toolbar);
         setSupportActionBar(albumToolbar);
@@ -190,26 +195,51 @@ public class ClickRoleActivity extends AppCompatActivity {
                 .check();
     }
 
-    private void getData() {
-        String role = getIntent().getStringExtra("role");
+    private void getData(final String intentRole) {
         // 현재 사용자의 Family DB 에서 역할가져온다.
-        final DatabaseReference roleRef = Infomation.getDatabase("role").child(Login.getUserFamilyID()).child(role);
+        Log.e("intentRole", intentRole);
+        final DatabaseReference roleRef = Infomation.getDatabase("role").child(Login.getUserFamilyID());
         if(roleRef.getKey() != null) {
             Log.e("roleRef!! = ", roleRef.getKey());
             // family - id - 이후 key : value
 
-            roleRef.addListenerForSingleValueEvent(new ValueEventListener(){
+            roleRef.addChildEventListener(new ChildEventListener(){
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Log.e("sg", snapshot.getChildren().toString());
+                        Log.e("snapshhot", snapshot.getKey());
                         ImageUpload imageUpload = snapshot.getValue(ImageUpload.class);
 
+                        String name = imageUpload.getName();
+                        String role = imageUpload.getFamily();
                         String uri = imageUpload.getUrl();
                         Log.e("ref uri = ", imageUpload.getUrl());
-                        recyclerViewAdapter.addItem(uri);
+                        if (intentRole.equals(role)) {
+                            recyclerViewAdapter.addItem(name, uri, role);
+                            recyclerViewAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        ImageUpload imageUpload = snapshot.getValue(ImageUpload.class);
+
+                        String name = imageUpload.getName();
+                        recyclerViewAdapter.removeItem(name);
                         recyclerViewAdapter.notifyDataSetChanged();
                     }
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
                 }
 
                 @Override
@@ -269,19 +299,6 @@ public class ClickRoleActivity extends AppCompatActivity {
     //카메라나 갤러리에서 사진 가져온 거 처리해주는 부분
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) {
-            Toast.makeText(ClickRoleActivity.this, "취소 되었습니다.", Toast.LENGTH_SHORT).show();
-
-            if (tempFile != null) {
-                if (tempFile.exists()) {
-                    if (tempFile.delete()) {
-                        Log.e("TAG", tempFile.getAbsolutePath() + " 삭제 성공");
-                        tempFile = null;
-                    }
-                }
-            }
-            return;
-        }
         switch (requestCode) {
             case PICK_FROM_ALBUM: {
                 photoUri = data.getData();
@@ -297,6 +314,9 @@ public class ClickRoleActivity extends AppCompatActivity {
             }
             case Crop.REQUEST_CROP: {
                 UploadPicture_alert();
+            }
+            case SHOW_PHOTO_FINISH: {
+                //TODO
             }
         }
     }
@@ -345,6 +365,7 @@ public class ClickRoleActivity extends AppCompatActivity {
             int idx = s.indexOf(".");
 
             String dist = s.substring(0, idx);
+            Log.e("dist", dist);
             DatabaseReference mDataref = FirebaseDatabase.getInstance().getReference("Family").child(Login.getUserFamilyID()).child(dist);
             mDataref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -376,7 +397,7 @@ public class ClickRoleActivity extends AppCompatActivity {
                     if(filename.equals(picture.getFileName())){
                         Log.d("role = ", role);
                         Log.d("distUri = ", distUri);
-                        ImageUpload imageUpload = new ImageUpload(distUri, filename);
+                        ImageUpload imageUpload = new ImageUpload(filename, distUri, role);
                         DatabaseReference newDataref = FirebaseDatabase.getInstance().getReference("role").child(Login.getUserFamilyID());
                         newDataref.child(role).push().setValue(imageUpload);
                     }
@@ -420,7 +441,6 @@ public class ClickRoleActivity extends AppCompatActivity {
                             public void onSuccess(Uri uri) {
                                 try {
                                     progressDialog.dismiss(); //업로드 진행 Dialog 상자 닫기
-
                                     pictureRef = Infomation.getAlbumData(Login.getUserFamilyID()).push();
 
                                     final Picture picture = new Picture();
@@ -448,14 +468,12 @@ public class ClickRoleActivity extends AppCompatActivity {
                                                     String location = GPS.getAdrress(picture.getLatitude(), picture.getLongitude());
                                                     Log.e("location", location);
                                                     picture.setLocation(location);
-
                                                     // 위치 쪼개기
                                                     String[] gpsDivide = location.split(" ");
                                                     gpsRef = Infomation.getDatabase("GPS");
                                                     for (int i = 0; i < gpsDivide.length; i++) {
                                                         gpsRef = gpsRef.child(gpsDivide[i]);
                                                     }
-
                                                     // 위치 추가
                                                     gpsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
@@ -463,13 +481,10 @@ public class ClickRoleActivity extends AppCompatActivity {
                                                             if (dataSnapshot.exists()) gpsRef.setValue(Integer.parseInt(dataSnapshot.getValue().toString()) + 1);
                                                             else gpsRef.setValue(1);
                                                         }
-
                                                         @Override
                                                         public void onCancelled(@NonNull DatabaseError databaseError) { }
                                                     });
                                                     pictureRef.setValue(picture);
-
-
                                                 } catch (Exception e) {
                                                     e.printStackTrace();
                                                 }

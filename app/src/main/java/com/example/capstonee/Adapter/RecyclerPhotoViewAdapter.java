@@ -2,6 +2,7 @@ package com.example.capstonee.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.capstonee.ClickRoleActivity;
+import com.example.capstonee.Model.ImageUpload;
 import com.example.capstonee.Model.Photo;
 import com.example.capstonee.R;
 import com.example.capstonee.ShowPhotoActivity;
@@ -27,7 +29,8 @@ import java.util.List;
  */
 public class RecyclerPhotoViewAdapter extends RecyclerView.Adapter<RecyclerPhotoViewAdapter.MyViewHolder> {
     private Context mContext;
-    private List<Photo> mData = new ArrayList<>();
+    private List<ImageUpload> mData = new ArrayList<>();
+    //PJH
     //setMode가 1이다 -> AlbumFragment에서 호출한 것. 이 경우는 사진 클릭이 가능
     //2다 -> FamilyModifyActivity에서 호출한 것. 이 경우는 사진 클릭 불가.
     public static int setMode = 1;
@@ -55,9 +58,19 @@ public class RecyclerPhotoViewAdapter extends RecyclerView.Adapter<RecyclerPhoto
     public int getItemCount() {
         return mData.size();
     }
-    public void addItem(String role, String uri) {
+    public void addItem(String name, String uri, String role) {
         // 외부에서 item을 추가시킬 함수입니다.
-        mData.add(new Photo(role, uri));
+        mData.add(new ImageUpload(name, uri, role));
+    }
+    public void removeItem(String name){
+        int index;
+        for(int i=0; i<mData.size(); i++){
+            if(mData.get(i).getName().equals(name)) {
+                index = i;
+                mData.remove(index);
+                break;
+            }
+        }
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder{
@@ -84,15 +97,17 @@ public class RecyclerPhotoViewAdapter extends RecyclerView.Adapter<RecyclerPhoto
             }
         }
 
-        void onBind(final Photo photo){
-            Picasso.with(mContext).load(photo.getUri()).fit().centerInside().into(photoImg);
-            cardText.setText(photo.getRole());
+        void onBind(final ImageUpload imageUpload){
+            Picasso.with(mContext).load(imageUpload.getUrl()).fit().centerInside().into(photoImg);
+            cardText.setText(imageUpload.getFamily());
             if(setMode == 2){
                 photoImg.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(v.getContext(), ShowPhotoActivity.class);
-                        intent.putExtra("imageUrl", photo.getUri());
+                        intent.putExtra("imageUrl", imageUpload.getUrl());
+                        intent.putExtra("fileName", imageUpload.getName());
+                        intent.putExtra("From", "PhotoView");
                         v.getContext().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     }
                 });

@@ -8,6 +8,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -40,6 +41,7 @@ import com.example.capstonee.R;
 import com.example.capstonee.RequestHttpURLConnection;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -77,6 +79,7 @@ public class FragmentAlbum extends Fragment {
     private String role;
     private String distUri;
     private String filename;
+
     public FragmentAlbum() {
     }
 
@@ -109,7 +112,6 @@ public class FragmentAlbum extends Fragment {
             @Override
             public void onClick(View v) {
                 anim();
-                Toast.makeText(getContext(), "Main", Toast.LENGTH_SHORT).show();
             }
         });
         fab1.setOnClickListener(new View.OnClickListener() {
@@ -117,9 +119,10 @@ public class FragmentAlbum extends Fragment {
             public void onClick(View v) {
                 anim();
                 Log.v("알림", "사진촬영 선택");
-                if (isPermission){
-                    if(Login.getUserFamilyCount() > 0) openCamera();
-                    else Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
+                if (isPermission) {
+                    if (Login.getUserFamilyCount() > 0) openCamera();
+                    else
+                        Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -128,9 +131,10 @@ public class FragmentAlbum extends Fragment {
             public void onClick(View v) {
                 anim();
                 Log.v("알림", "갤러리 선택");
-                if (isPermission){
-                    if(Login.getUserFamilyCount() > 0) goToAlbum();
-                    else Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
+                if (isPermission) {
+                    if (Login.getUserFamilyCount() > 0) goToAlbum();
+                    else
+                        Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -163,9 +167,9 @@ public class FragmentAlbum extends Fragment {
             int idx = s.indexOf(".");
 
             String dist = s.substring(0, idx);
-            if(dist.equals("unknown")){
+            if (dist.equals("unknown")) {
                 setRoleFamily("미분류");
-            }else {
+            } else {
                 DatabaseReference mDataref = FirebaseDatabase.getInstance().getReference("Family").child(Login.getUserFamilyID()).child(dist);
                 mDataref.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -202,7 +206,7 @@ public class FragmentAlbum extends Fragment {
         long now = System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        filename = sdf.format(date)+ "." +getImageExt(photoUri);
+        filename = sdf.format(date) + "." + getImageExt(photoUri);
 
         // 사용자 폴더에 사진 파일 저장을 위한 서버 저장 공간 참조 가져옴.
         final StorageReference storageRef = Infomation.getAlbum(Login.getUserFamilyID() + "/" + filename);
@@ -258,12 +262,14 @@ public class FragmentAlbum extends Fragment {
                                                     gpsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                            if (dataSnapshot.exists()) gpsRef.setValue(Integer.parseInt(dataSnapshot.getValue().toString()) + 1);
+                                                            if (dataSnapshot.exists())
+                                                                gpsRef.setValue(Integer.parseInt(dataSnapshot.getValue().toString()) + 1);
                                                             else gpsRef.setValue(1);
                                                         }
 
                                                         @Override
-                                                        public void onCancelled(@NonNull DatabaseError databaseError) { }
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                        }
                                                     });
                                                     pictureRef.setValue(picture);
 
@@ -417,20 +423,20 @@ public class FragmentAlbum extends Fragment {
         Crop.of(photoUri, savingUri).asSquare().start(getContext(), this);
     }
 
-    public void setRoleFamily(final String role){
+    public void setRoleFamily(final String role) {
         DatabaseReference mDataref = FirebaseDatabase.getInstance().getReference("Album").child(Login.getUserFamilyID());
         mDataref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.e("dataSnapshot.getKey", dataSnapshot.getKey());
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Log.e("snapshot.getkey", snapshot.getKey());
                     Picture picture = snapshot.getValue(Picture.class);
                     Log.e("picture.getName = ", picture.getFileName());
-                    if(filename.equals(picture.getFileName())){
+                    if (filename.equals(picture.getFileName())) {
                         Log.d("role = ", role);
                         Log.d("distUri = ", distUri);
-                        ImageUpload imageUpload = new ImageUpload(distUri, filename);
+                        ImageUpload imageUpload = new ImageUpload(filename, distUri, role);
                         DatabaseReference newDataref = FirebaseDatabase.getInstance().getReference("role").child(Login.getUserFamilyID());
                         newDataref.child(role).push().setValue(imageUpload);
                     }
@@ -438,37 +444,54 @@ public class FragmentAlbum extends Fragment {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         });
     }
 
     // DB의 변경을 바로 바로 업데이트 한 뒤 xml 에 뿌려주기 위한 Listener
     private void getData() {
-        Log.d("LOG - FAMILY ID : ", Login.getUserFamilyID());
-        //if(Login.getUserFamilyCount() > 0) {
-        // 현재 사용자의 Family DB 에서 역할가져온다.
-        DatabaseReference roleRef = Infomation.getDatabase("Family").child(Login.getUserFamilyID());
-        Log.e("roleRef = ", roleRef.getKey());
-        // family - id - 이후 key : value
-        roleRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    ImageUpload imageUpload = snapshot.getValue(ImageUpload.class);
-                    // 현재 역할 한 분
-                    String role = imageUpload.getFamily();
-                    String uri = imageUpload.getUrl();
+        Log.d("USERFAMILYID: ", Login.getUserFamilyID());
+        if (Login.getUserFamilyCount() > 0) {
+            // 현재 사용자의 Family DB 에서 역할가져온다.
+            DatabaseReference roleRef = Infomation.getDatabase("Family").child(Login.getUserFamilyID());
+            Log.e("roleRef = ", roleRef.getKey());
+            // family - id - 이후 key : value
+            roleRef.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    ImageUpload imageUpload = dataSnapshot.getValue(ImageUpload.class);
 
-                    recyclerViewAdapter.addItem(role, uri);
+                    recyclerViewAdapter.addItem(imageUpload.getName(), imageUpload.getUrl(), imageUpload.getFamily());
                     recyclerViewAdapter.notifyDataSetChanged();
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-        //}
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    ImageUpload imageUpload = dataSnapshot.getValue(ImageUpload.class);
+
+                    String name = imageUpload.getName();
+                    recyclerViewAdapter.removeItem(name);
+                    recyclerViewAdapter.notifyDataSetChanged();
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+        }
     }
 
     // 이미지 파일 생성
@@ -506,7 +529,6 @@ public class FragmentAlbum extends Fragment {
 
         builder.show();
     }
-
 
 
     // 내가 모르는 메소드 ㅋㅋ..

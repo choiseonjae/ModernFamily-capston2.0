@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean isNeverVisited(){
         //첫 로그인 시 UserFamilyID = ""
+        Log.e("USERFAMILYID", Login.getUserFamilyID());
         return Login.getUserFamilyID().equals("");
     }
 

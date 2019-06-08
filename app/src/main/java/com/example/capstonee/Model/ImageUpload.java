@@ -6,10 +6,6 @@ public class ImageUpload {
     private String family;
 
     public ImageUpload(){}
-    public ImageUpload(String url, String name){
-        this.url = url;
-        this.name = name;
-    }
     public ImageUpload(String name, String url, String family) {
         this.name = name;
         this.url = url;

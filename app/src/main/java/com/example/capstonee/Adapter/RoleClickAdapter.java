@@ -1,5 +1,6 @@
 package com.example.capstonee.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -10,8 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import com.example.capstonee.ClickRoleActivity;
-import com.example.capstonee.Model.Photo;
+import com.example.capstonee.Model.ImageUpload;
 import com.example.capstonee.R;
 import com.example.capstonee.ShowPhotoActivity;
 import com.squareup.picasso.Picasso;
@@ -21,7 +21,8 @@ import java.util.List;
 
 public class RoleClickAdapter extends RecyclerView.Adapter<RoleClickAdapter.MyViewHolder> {
     private Context mContext;
-    private List<Photo> mData = new ArrayList<>();
+    private List<ImageUpload> mData = new ArrayList<>();
+    private int SHOW_PHOTO_FINISH = 9487;
 
     public RoleClickAdapter(Context mContext){
         this.mContext = mContext;
@@ -45,14 +46,24 @@ public class RoleClickAdapter extends RecyclerView.Adapter<RoleClickAdapter.MyVi
     public int getItemCount() {
         return mData.size();
     }
-    public void addItem(String uri) {
+    public void addItem(String name, String uri, String role) {
         // 외부에서 item을 추가시킬 함수입니다.
-        mData.add(new Photo(uri));
+        mData.add(new ImageUpload(name, uri, role));
     }
-
+    public void removeItem(String name)
+    {
+        for (int i = 0; i < mData.size(); i++) {
+            if (mData.get(i).getName().equals(name)) {
+                mData.remove(i);
+                break;
+            }
+        }
+    }
     class MyViewHolder extends RecyclerView.ViewHolder{
         private ImageView photoImg;
         private String photoUri;
+        private String fileName;
+        private String role;
         CardView cardView;
 
         private MyViewHolder(@NonNull View itemView) {
@@ -63,18 +74,23 @@ public class RoleClickAdapter extends RecyclerView.Adapter<RoleClickAdapter.MyVi
             photoImg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), ShowPhotoActivity.class);
+                    Intent intent = new Intent(mContext, ShowPhotoActivity.class);
                     intent.putExtra("imageUrl", photoUri);
+                    intent.putExtra("fileName", fileName);
+                    intent.putExtra("role", role);
+                    intent.putExtra("From", "RoleClick");
                     Log.e("imageUrl", photoUri);
-                    v.getContext().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    ((Activity)mContext).startActivityForResult(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), SHOW_PHOTO_FINISH);
                 }
             });
         }
 
-        void onBind(Photo photo){
-            Log.e("getUri = ", photo.getUri());
-            Picasso.with(mContext).load(photo.getUri()).fit().centerInside().into(photoImg);
-            photoUri = photo.getUri();
+        void onBind(ImageUpload imageUpload){
+            Log.e("getUri = ", imageUpload.getUrl());
+            Picasso.with(mContext).load(imageUpload.getUrl()).fit().centerInside().into(photoImg);
+            photoUri = imageUpload.getUrl();
+            fileName = imageUpload.getName();
+            role = imageUpload.getFamily();
         }
     }
 }
