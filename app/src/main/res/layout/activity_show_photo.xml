@@ -19,37 +19,4 @@
 
     <include layout="@layout/content_show_photo" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/removeButton"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:padding="0sp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/remove_img" />
-
-        <ImageButton
-            android:id="@+id/shareButton"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:padding="0sp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/share_img" />
-
-        <ImageButton
-            android:id="@+id/downloadButton"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:padding="0sp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/download_img" />
-    </LinearLayout>
-
 </android.support.design.widget.CoordinatorLayout>

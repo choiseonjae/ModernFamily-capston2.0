@@ -55,7 +55,6 @@ public class PopupActivity extends Activity {
     private String family;
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
-    private File tempFile;
     private ProgressDialog dialog;
     public static final String FB_STORAGE_PATH = "Main/";
     public static final int POP_RESULT = 9876;
@@ -172,7 +171,7 @@ public class PopupActivity extends Activity {
             long now = System.currentTimeMillis();
             Date date = new Date(now);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-            filename = sdf.format(date)+ "." +getImageExt(imgUri);
+            filename = sdf.format(date)+ ".png";
 
             //Get the storage reference
             final StorageReference ref = mStorageRef.child(FB_STORAGE_PATH + Login.getUserID() + "/" + filename);
@@ -188,6 +187,8 @@ public class PopupActivity extends Activity {
                                     downloadUrl = uri.toString();
                                     ImageUpload imageUpload = new ImageUpload(filename, downloadUrl, family);
                                     int fcount = Login.getUserFamilyCount() + 1;
+                                    int fcount2 = Login.getUserFamilyCount2() + 1;
+
                                     mDatabaseRef.child(Login.getUserFamilyID()).child(Integer.toString(fcount)).setValue(imageUpload);
                                     Log.v("된거야?", imageUpload.getUrl() + " " + imageUpload.getName() + " " + imageUpload.getFamily());
 
@@ -201,7 +202,9 @@ public class PopupActivity extends Activity {
                                     networkTask.execute();
 
                                     Infomation.getDatabase("User").child(Login.getUserID()).child("familyCount").setValue(fcount);
+                                    Infomation.getDatabase("User").child(Login.getUserID()).child("familyCount2").setValue(fcount2);
                                     Login.setFamilyCount(fcount);
+                                    Login.setFamilyCount2(fcount2);
                                 }
                             });
                         }
@@ -232,14 +235,10 @@ public class PopupActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             imgUri = data.getParcelableExtra("photoUri");
+            Log.e("imgURIRIRI", imgUri.toString());
             boolean isCamera = data.getBooleanExtra("isCamera", false);
-            tempFile = (File) data.getSerializableExtra("tempFile");
 
-            ImageResizeUtils.resizeFile(tempFile, tempFile, 1280, isCamera);
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
-
-            setInitPhoto.setImageBitmap(originalBm);
+            setInitPhoto.setImageURI(imgUri);
         }
     }
 

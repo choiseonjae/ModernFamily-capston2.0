@@ -4,11 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -28,7 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import com.example.capstonee.Adapter.RecyclerPhotoViewAdapter;
@@ -52,7 +49,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
-import com.soundcloud.android.crop.Crop;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,57 +85,63 @@ public class FragmentAlbum extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         // 해당 view 설정 : 자바 파일 <---바인딩---> fragment
-        view = inflater.inflate(R.layout.album_fragment, container, false);
+        if(Login.getUserVisible()) {
+            view = inflater.inflate(R.layout.album_fragment, container, false);
 
-        recyclerView = view.findViewById(R.id.album_recyclerview);
-        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        recyclerViewAdapter = new RecyclerPhotoViewAdapter(getContext());
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(recyclerViewAdapter);
-        RecyclerPhotoViewAdapter.setMode = 1;
+            recyclerView = view.findViewById(R.id.album_recyclerview);
+            StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            recyclerViewAdapter = new RecyclerPhotoViewAdapter(getContext());
+            recyclerView.setLayoutManager(manager);
+            recyclerView.setAdapter(recyclerViewAdapter);
+            RecyclerPhotoViewAdapter.setMode = 1;
 
-        getData();
+            getData();
 
-        fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
+            fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
+            fab_close = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
 
-        fab = view.findViewById(R.id.fab_main);
-        fab1 = view.findViewById(R.id.fab_sub1);
-        fab2 = view.findViewById(R.id.fab_sub2);
+            fab = view.findViewById(R.id.fab_main);
+            fab1 = view.findViewById(R.id.fab_sub1);
+            fab2 = view.findViewById(R.id.fab_sub2);
 
-        tedPermission();
+            tedPermission();
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                anim();
-            }
-        });
-        fab1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                anim();
-                Log.v("알림", "사진촬영 선택");
-                if (isPermission) {
-                    if (Login.getUserFamilyCount() > 0) openCamera();
-                    else
-                        Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    anim();
                 }
-            }
-        });
-        fab2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                anim();
-                Log.v("알림", "갤러리 선택");
-                if (isPermission) {
-                    if (Login.getUserFamilyCount() > 0) goToAlbum();
-                    else
-                        Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
+            });
+            fab1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    anim();
+                    Log.v("알림", "사진촬영 선택");
+                    if (isPermission) {
+                        if (Login.getUserFamilyCount2() > 0) openCamera();
+                        else
+                            Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
-        return view;
+            });
+            fab2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    anim();
+                    Log.v("알림", "갤러리 선택");
+                    if (isPermission) {
+                        if (Login.getUserFamilyCount2() > 0) goToAlbum();
+                        else
+                            Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            return view;
+        }
+        else{
+            view = inflater.inflate(R.layout.confidential_album, container, false);
+            return view;
+        }
     }
 
     // 사진 업로드 후 VM에 URL 보내는 곳
@@ -189,13 +192,6 @@ public class FragmentAlbum extends Fragment {
         }
     }
 
-    //이미지 확장자
-    public String getImageExt(Uri uri) {
-        ContentResolver contentResolver = getActivity().getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
-
     // 사진 업로드
     private void uploadPicture() {
         // 진행상황 보여줌.
@@ -206,7 +202,7 @@ public class FragmentAlbum extends Fragment {
         long now = System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        filename = sdf.format(date) + "." + getImageExt(photoUri);
+        filename = sdf.format(date) +".png";
 
         // 사용자 폴더에 사진 파일 저장을 위한 서버 저장 공간 참조 가져옴.
         final StorageReference storageRef = Infomation.getAlbum(Login.getUserFamilyID() + "/" + filename);
@@ -346,7 +342,9 @@ public class FragmentAlbum extends Fragment {
                 cropImage(photoUri);
                 break;
             }
-            case Crop.REQUEST_CROP: {
+            case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE: {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                photoUri = result.getUri();
                 UploadPicture_alert();
             }
         }
@@ -410,17 +408,17 @@ public class FragmentAlbum extends Fragment {
     // 이미지 크롭
     private void cropImage(Uri photoUri) {
         Log.d("Tag", "TEMPFILE : " + tempFile);
-        if (tempFile == null) {
-            try {
-                tempFile = createImageFile();
-            } catch (Exception e) {
-                Toast.makeText(getActivity(), "이미지 처리 오류!", Toast.LENGTH_SHORT).show();
-                getActivity().finish();
-                e.printStackTrace();
-            }
-        }
-        Uri savingUri = Uri.fromFile(tempFile);
-        Crop.of(photoUri, savingUri).asSquare().start(getContext(), this);
+//        if (tempFile == null) {
+//            try {
+//                tempFile = createImageFile();
+//            } catch (Exception e) {
+//                Toast.makeText(getActivity(), "이미지 처리 오류!", Toast.LENGTH_SHORT).show();
+//                getActivity().finish();
+//                e.printStackTrace();
+//            }
+//        }
+//        Uri savingUri = Uri.fromFile(tempFile);
+        CropImage.activity(photoUri).start(getContext(), this);
     }
 
     public void setRoleFamily(final String role) {
@@ -452,7 +450,7 @@ public class FragmentAlbum extends Fragment {
     // DB의 변경을 바로 바로 업데이트 한 뒤 xml 에 뿌려주기 위한 Listener
     private void getData() {
         Log.d("USERFAMILYID: ", Login.getUserFamilyID());
-        if (Login.getUserFamilyCount() > 0) {
+        if (Login.getUserFamilyCount2() > 0) {
             // 현재 사용자의 Family DB 에서 역할가져온다.
             DatabaseReference roleRef = Infomation.getDatabase("Family").child(Login.getUserFamilyID());
             Log.e("roleRef = ", roleRef.getKey());
@@ -502,7 +500,7 @@ public class FragmentAlbum extends Fragment {
         File storageDir = new File(Environment.getExternalStorageDirectory() + "/Album/");
         if (!storageDir.exists()) storageDir.mkdirs();
 
-        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+        File image = File.createTempFile(imageFileName, ".png", storageDir);
         Log.d("createImage", "createIMAGEFILE : " + image.getAbsolutePath());
 
         return image;
@@ -512,6 +510,7 @@ public class FragmentAlbum extends Fragment {
     // 사진 업로드 할 지 물어보는 알람
     public void UploadPicture_alert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setIcon(R.drawable.ic_cloud_upload_black_24dp);
         builder.setTitle("사진 업로드");
         builder.setMessage("사진을 Cloud에 업로드 하시겠습니까?\n'아니오' 선택 시 사진은 삭제됩니다.");
         builder.setPositiveButton("예",

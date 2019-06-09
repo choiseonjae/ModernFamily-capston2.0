@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.Login;
 import com.example.capstonee.Model.User;
 import com.google.firebase.database.DataSnapshot;
@@ -98,13 +99,14 @@ public class SignIn extends AppCompatActivity {
                                     Login.setPhone(user.getPhone());
                                     Login.setBirth(user.getBirthDate());
                                     Login.setFamilyCount(user.getFamilyCount());
+                                    Login.setFamilyCount2(user.getFamilyCount2());
 
                                     // 선재 추가
                                     Login.setFamilyID1(user.getFamilyID1());
                                     Login.setFamilyID2(user.getFamilyID2());
                                     Login.setFamilyID3(user.getFamilyID3());
                                     Login.setDefaultFamily(user.getDefault_family());
-
+                                    Login.setVisible(user.isVisible());
                                     // 패밀리 ID 설정과정
                                     if (Login.getUserDefaultFamily() == 1)
                                         Login.setFamilyID(user.getFamilyID1());
@@ -140,6 +142,7 @@ public class SignIn extends AppCompatActivity {
                                     if (correctNumber == 3) {
                                         //캡차 띄우기.
                                         Toast.makeText(SignIn.this, "자동로그인 방지를 위해 인증화면으로 이동합니다.", Toast.LENGTH_SHORT).show();
+                                        Infomation.getDatabase("User").child(ID).child("visible").setValue(false);
                                         Intent intent = new Intent(SignIn.this, CapchaTwActivity.class);
                                         startActivity(intent);
                                     }

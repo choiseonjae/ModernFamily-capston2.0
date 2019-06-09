@@ -5,10 +5,11 @@ public class Login {
     private static String MY_NAME;
     private static String MY_PASSWORD;
     private static String MY_PHONE;
-    private static int MY_FAMILYCOUNT, MY_DEFAULT_FAMILY;
+    private static int MY_FAMILYCOUNT, MY_FAMILYCOUNT2, MY_DEFAULT_FAMILY;
     private static String MY_BIRTH;
     private static String MY_FAMILYID, MY_FAMILYID1, MY_FAMILYID2, MY_FAMILYID3;
     private static String MY_PROFILE_URI;
+    private static boolean MY_VISIBLE;
 
     private static class LoginHolder {
         static final Login INSTANCE = new Login();
@@ -38,6 +39,8 @@ public class Login {
         return MY_FAMILYCOUNT;
     }
 
+    public static int getUserFamilyCount2() { return MY_FAMILYCOUNT2; }
+
     public static int getUserDefaultFamily() {
         return MY_DEFAULT_FAMILY;
     }
@@ -60,6 +63,10 @@ public class Login {
 
     public static String getUserFamilyID3() {
         return MY_FAMILYID3;
+    }
+
+    public static boolean getUserVisible() {
+        return MY_VISIBLE;
     }
 
     public static void setID(String ID) {
@@ -86,6 +93,8 @@ public class Login {
         MY_FAMILYCOUNT = FAMILYCOUNT;
     }
 
+    public static void setFamilyCount2(int FAMILYCOUNT) { MY_FAMILYCOUNT2 = FAMILYCOUNT; }
+
     public static void setDefaultFamily(int DEFAULT_FAMILY) {
         MY_DEFAULT_FAMILY = DEFAULT_FAMILY;
         Infomation.getDatabase("User").child(MY_ID).child("Default_family").setValue(DEFAULT_FAMILY);
@@ -111,7 +120,9 @@ public class Login {
         Infomation.getDatabase("User").child(MY_ID).child("familyID3").setValue(FAMILYID3);
     }
 
-
+    public static void setVisible(Boolean VISIBLE){
+        MY_VISIBLE = VISIBLE;
+    }
 
 
     public static String getProfileUri() {
