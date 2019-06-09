@@ -70,11 +70,10 @@ public class FragmentSetting extends Fragment {
             Picasso.with(getContext()).load(Login.getProfileUri()).fit().into(profile_imageView);
         }
 
-        profile_imageView.setOnLongClickListener(new View.OnLongClickListener() {
+        profile_imageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
+            public void onClick(View v) {
                 changeProfile();
-                return false;
             }
         });
 

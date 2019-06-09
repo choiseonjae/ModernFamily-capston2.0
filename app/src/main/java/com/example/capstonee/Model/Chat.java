@@ -45,12 +45,12 @@ public class Chat {
         this.time = time;
     }
 
-    public void setReader(Map<String, Integer> reader) {
-        this.reader = reader;
-    }
-
     public Map<String, Integer> getReader() {
         return reader;
+    }
+
+    public void setReader(Map<String, Integer> reader) {
+        this.reader = reader;
     }
 }
 

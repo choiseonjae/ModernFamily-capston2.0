@@ -35,6 +35,8 @@ public class Chatting extends Fragment {
     private MessageAdapter adapter;
     private RecyclerView recyclerView;
     private View view;
+    private DatabaseReference chatRef;
+    private ChildEventListener childEventListener;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
@@ -108,10 +110,9 @@ public class Chatting extends Fragment {
         Log.e("Log Family ID : ", Login.getUserFamilyID());
 
         // Chat DB -> family ID
-        final DatabaseReference chatRef = Infomation.getDatabase("Chat").child(Login.getUserFamilyID());
+        chatRef = Infomation.getDatabase("Chat").child(Login.getUserFamilyID());
 
-        // key : 시간, value : chat
-        chatRef.addChildEventListener(new ChildEventListener() {
+        childEventListener= new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
@@ -119,9 +120,7 @@ public class Chatting extends Fragment {
                 // 채팅 하나 객체
                 Chat chat = dataSnapshot.getValue(Chat.class);
 
-                // 맵으로 추가 지렸딷;
-//                Log.e("채팅 하나의 모든 정보 : ", chat.getReader().toString());
-//                Log.e("채팅 하나의 모든 정보 : ", chat.getMessage());
+                Log.e("chat -> ", chat.getTime());
 
                 // 내가 보낸 거 아니면 읽은 사람 표시 + 한번 표시 하면 표시 하지 않음.
                 if (!chat.getSender().equals(Login.getUserID()) && !chat.getReader().containsKey(Login.getUserID())) {
@@ -169,7 +168,10 @@ public class Chatting extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        // key : 시간, value : chat
+        chatRef.addChildEventListener(childEventListener);
     }
 
     // 가장 마지막 아이템으로이동
@@ -191,6 +193,13 @@ public class Chatting extends Fragment {
         for(int i=0; i<4; i++)
             key = key.concat(key);
         return key;
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        if(childEventListener != null)
+            chatRef.removeEventListener(childEventListener);
     }
 
 }
