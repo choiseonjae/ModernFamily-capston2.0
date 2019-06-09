@@ -9,12 +9,13 @@ public class User {
     private int FamilyCount2;
     private String FamilyID, FamilyID1, FamilyID2, FamilyID3;
     private String profileUri;
+    private boolean Visible;
     private int Default_family;
 
     private User() {
     }
 
-    public User(String phone, String name, String password, String birthDate, int familyCount, int familyCount2, String familyID, String familyID1, String familyID2, String familyID3, int default_family) {
+    public User(String phone, String name, String password, String birthDate, int familyCount, int familyCount2, String familyID, String familyID1, String familyID2, String familyID3, int default_family, boolean visible) {
         Phone = phone;
         Name = name;
         Password = password;
@@ -27,8 +28,16 @@ public class User {
         FamilyID2 = familyID2;
         FamilyID3 = familyID3;
         Default_family = default_family;
+        Visible = visible;
     }
 
+    public boolean isVisible() {
+        return Visible;
+    }
+
+    public void setVisible(boolean visible) {
+        Visible = visible;
+    }
 
     public String getName() {
         return Name;

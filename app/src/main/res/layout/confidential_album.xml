@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <ImageView
+        android:layout_marginTop="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/sample_confidentiality_agreement"/>
+    <TextView
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="잘못된 비밀번호 입력누적으로\n 앨범이 잠겼습니다.\n 해제를 원하시면 가족 ID로\n 로그인 해 키 값을 얻어오세요."
+        android:textSize="22sp" />
+</LinearLayout>

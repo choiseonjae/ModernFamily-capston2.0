@@ -4,11 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -28,7 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import com.example.capstonee.Adapter.RecyclerPhotoViewAdapter;
@@ -52,7 +49,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
-import com.soundcloud.android.crop.Crop;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
@@ -89,55 +85,63 @@ public class FragmentAlbum extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         // 해당 view 설정 : 자바 파일 <---바인딩---> fragment
-        view = inflater.inflate(R.layout.album_fragment, container, false);
+        if(Login.getUserVisible()) {
+            view = inflater.inflate(R.layout.album_fragment, container, false);
 
-        recyclerView = view.findViewById(R.id.album_recyclerview);
-        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        recyclerViewAdapter = new RecyclerPhotoViewAdapter(getContext());
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(recyclerViewAdapter);
-        RecyclerPhotoViewAdapter.setMode = 1;
+            recyclerView = view.findViewById(R.id.album_recyclerview);
+            StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            recyclerViewAdapter = new RecyclerPhotoViewAdapter(getContext());
+            recyclerView.setLayoutManager(manager);
+            recyclerView.setAdapter(recyclerViewAdapter);
+            RecyclerPhotoViewAdapter.setMode = 1;
 
-        getData();
+            getData();
 
-        fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
+            fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
+            fab_close = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
 
-        fab = view.findViewById(R.id.fab_main);
-        fab1 = view.findViewById(R.id.fab_sub1);
-        fab2 = view.findViewById(R.id.fab_sub2);
+            fab = view.findViewById(R.id.fab_main);
+            fab1 = view.findViewById(R.id.fab_sub1);
+            fab2 = view.findViewById(R.id.fab_sub2);
 
-        tedPermission();
+            tedPermission();
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                anim();
-            }
-        });
-        fab1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                anim();
-                Log.v("알림", "사진촬영 선택");
-                if (isPermission) {
-                    if (Login.getUserFamilyCount2() > 0) openCamera();
-                    else Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    anim();
                 }
-            }
-        });
-        fab2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                anim();
-                Log.v("알림", "갤러리 선택");
-                if (isPermission) {
-                    if (Login.getUserFamilyCount2() > 0) goToAlbum();
-                    else Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
+            });
+            fab1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    anim();
+                    Log.v("알림", "사진촬영 선택");
+                    if (isPermission) {
+                        if (Login.getUserFamilyCount2() > 0) openCamera();
+                        else
+                            Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
-        return view;
+            });
+            fab2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    anim();
+                    Log.v("알림", "갤러리 선택");
+                    if (isPermission) {
+                        if (Login.getUserFamilyCount2() > 0) goToAlbum();
+                        else
+                            Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            return view;
+        }
+        else{
+            view = inflater.inflate(R.layout.confidential_album, container, false);
+            return view;
+        }
     }
 
     // 사진 업로드 후 VM에 URL 보내는 곳

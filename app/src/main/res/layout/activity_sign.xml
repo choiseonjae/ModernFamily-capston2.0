@@ -4,7 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/login_bg"
     tools:context=".SignActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="모던패밀리"
+            android:textColor="@android:color/white"
+            android:textSize="35dp"
+            android:textStyle="bold"
+            android:fontFamily="@font/gugi"
+            />
+        <TextView
+            android:gravity="center"
+            android:id="@+id/txtSlogan"
+            android:text="가족들을 위한 어플"
+            android:textColor="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/gugi"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

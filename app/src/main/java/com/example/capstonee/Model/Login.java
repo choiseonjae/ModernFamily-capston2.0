@@ -9,6 +9,7 @@ public class Login {
     private static String MY_BIRTH;
     private static String MY_FAMILYID, MY_FAMILYID1, MY_FAMILYID2, MY_FAMILYID3;
     private static String MY_PROFILE_URI;
+    private static boolean MY_VISIBLE;
 
     private static class LoginHolder {
         static final Login INSTANCE = new Login();
@@ -64,6 +65,10 @@ public class Login {
         return MY_FAMILYID3;
     }
 
+    public static boolean getUserVisible() {
+        return MY_VISIBLE;
+    }
+
     public static void setID(String ID) {
         MY_ID = ID;
     }
@@ -115,7 +120,9 @@ public class Login {
         Infomation.getDatabase("User").child(MY_ID).child("familyID3").setValue(FAMILYID3);
     }
 
-
+    public static void setVisible(Boolean VISIBLE){
+        MY_VISIBLE = VISIBLE;
+    }
 
 
     public static String getProfileUri() {

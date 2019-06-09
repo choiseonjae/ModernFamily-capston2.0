@@ -18,8 +18,6 @@ import com.example.capstonee.Location.ShowLocationImage;
 import com.example.capstonee.R;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Map;
 
