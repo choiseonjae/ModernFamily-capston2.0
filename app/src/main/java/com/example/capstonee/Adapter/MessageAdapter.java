@@ -2,6 +2,7 @@ package com.example.capstonee.Adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -35,7 +37,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     // chat 모음
     ArrayList<Chat> chatList = new ArrayList<>();
     Context context;
-    View view;
     String message;
 
     public MessageAdapter(Context context) {
@@ -184,6 +185,23 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         void onBind(final Chat chat) {
             this.chat = chat;
+            if(profile_image != null) {
+                Infomation.getDatabase("User").child(chat.getSender()).child("profileUri").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.getValue().toString().equals(""))
+                            profile_image.setImageResource(R.drawable.default_profile);
+                        else
+                            Picasso.with(context).load(dataSnapshot.getValue().toString()).fit().into(profile_image);;
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
             try{
                 AES256Util aes = new AES256Util();
                 message = chat.getMessage();
