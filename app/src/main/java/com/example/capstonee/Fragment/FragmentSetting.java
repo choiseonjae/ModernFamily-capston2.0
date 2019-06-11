@@ -31,10 +31,18 @@ import com.example.capstonee.R;
 import com.example.capstonee.SetUserInformation;
 import com.example.capstonee.SignActivity;
 import com.example.capstonee.TranskmitKeyKakao;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -44,6 +52,7 @@ public class FragmentSetting extends Fragment {
     View v;
     private ImageButton setInfo;
     TextView Username, Id;
+    private Uri photoUri;
     private CircleImageView profile_imageView;
     private static final int PICK_FROM_ALBUM = 567;
 
@@ -150,12 +159,12 @@ public class FragmentSetting extends Fragment {
         ad.setItems(new String[]{"이미지 변경", "기본 이미지로 변경"},
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
                         if (id == 0)
                             goToAlbum();
                         else if (id == 1) {
                             // 초기화
                             Infomation.getDatabase("User").child(Login.getUserID()).child("profileUri").setValue("");
+                            // 앨범에서 사진 삭제
 
                             // 캐쉬(?) 도 변경
                             Login.setProfileUri("");
@@ -181,31 +190,58 @@ public class FragmentSetting extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == PICK_FROM_ALBUM && resultCode == RESULT_OK){
             try{
-                InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
-                Bitmap img = BitmapFactory.decodeStream(in);
+                photoUri = data.getData();
+                cropImage(photoUri);
+//                InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
+//                Bitmap img = BitmapFactory.decodeStream(in);
 
-                // uri 얻어서 스토리지 + DB 에 저장
-                Uri uri = getImageUri(getContext(), img);
-                Infomation.getStorageRef("Profile").child(Login.getUserID()).putFile(uri);
-                Infomation.getDatabase("User").child(Login.getUserID()).child("profileUri").setValue(uri.toString());
-
-                // 캐쉬(?) 도 변경
-                Login.setProfileUri(uri.toString());
-
-                in.close();
-                // 이미지 표시
-                profile_imageView.setImageBitmap(img);
-                profile_imageView.setAdjustViewBounds(true);
-                profile_imageView.setLayoutParams(new RelativeLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//                // uri 얻어서 스토리지 + DB 에 저장
+//                Uri uri = getImageUri(getContext(), img);
+//                Infomation.getStorageRef("Profile").child(Login.getUserID()).putFile(uri);
+//                Infomation.getDatabase("User").child(Login.getUserID()).child("profileUri").setValue(uri.toString());
+//
+//                // 캐쉬(?) 도 변경
+//                Login.setProfileUri(uri.toString());
+//
+//                in.close();
+//                // 이미지 표시
+//                profile_imageView.setImageBitmap(img);
+//                profile_imageView.setAdjustViewBounds(true);
+//                profile_imageView.setLayoutParams(new RelativeLayout.LayoutParams(
+//                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
 
             }catch(Exception e){
                 e.printStackTrace();
             }
+        }else if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK){
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            photoUri = result.getUri();
+            Picasso.with(getContext()).load(photoUri).fit().into(profile_imageView);
+
+            // 사용자 폴더에 사진 파일 저장을 위한 서버 저장 공간 참조 가져옴.
+            final StorageReference storageRef = Infomation.getStorageRef("Profile").child(Login.getUserID());
+
+            storageRef.putFile(photoUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    FirebaseDatabase.getInstance().getReference("User").child(Login.getUserID()).child("profileUri").setValue(uri.toString());
+                                    Login.setProfileUri(photoUri.toString());
+                                }
+                            });
+                        }
+                    });
         }
     }
 
+    // 이미지 크롭
+    private void cropImage(Uri photoUri) {
+        CropImage.activity(photoUri).start(getContext(), this);
+    }
     //bitmap 으로 uri 얻기
     private Uri getImageUri(Context context, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();

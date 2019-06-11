@@ -187,7 +187,6 @@ public class ShowPhotoActivity extends AppCompatActivity {
                                                 if (imageUpload.getName().equals(fileName)) {
                                                     Kind = snapshot.getKey();
                                                     RemoveFamilyData(Kind);
-                                                    Log.e("시발", Kind);
                                                     Move();
                                                     String url = "http://34.97.246.11/removefile.py";
 
