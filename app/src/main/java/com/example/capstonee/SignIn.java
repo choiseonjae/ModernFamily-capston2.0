@@ -67,7 +67,6 @@ public class SignIn extends AppCompatActivity {
                         if (dataSnapshot.child(ID).exists()) {
                             //아이디 있음?
                             user = dataSnapshot.child(ID).getValue(User.class);
-
                             if(Password.equals(user.getPassword())){
                                 if(loginStop == true && correctNumber == -1) {
                                     retryTime = System.currentTimeMillis();
@@ -92,13 +91,14 @@ public class SignIn extends AppCompatActivity {
                                         editor.apply();
                                     }
                                     Toast.makeText(SignIn.this, user.getName() + "님 환영합니다!!", Toast.LENGTH_SHORT).show();
-                                    intent = new Intent(SignIn.this, MainActivity.class);
+                                    intent = new Intent(SignIn.this, FakeActivity.class);
 
                                     Login.setID(ID);
                                     Login.setName(user.getName());
                                     Login.setPassword(Password);
                                     Login.setPhone(user.getPhone());
                                     Login.setBirth(user.getBirthDate());
+
                                     // 선재 추가
                                     Login.setFamilyID1(user.getFamilyID1());
                                     Login.setFamilyID2(user.getFamilyID2());
@@ -117,28 +117,23 @@ public class SignIn extends AppCompatActivity {
 
                                     Login.setProfileUri(user.getProfileUri());
 
-                                    Log.e("씨바아아알", user.getFamilyID());
-                                    if(!user.getFamilyID().equals("")) {
-                                        DatabaseReference db = FirebaseDatabase.getInstance().getReference("User").child(user.getFamilyID());
+                                    if(!Login.getUserFamilyID().equals("")) {
+                                        DatabaseReference db = FirebaseDatabase.getInstance().getReference("User").child(Login.getUserFamilyID());
                                         db.addValueEventListener(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                 User user1 = dataSnapshot.getValue(User.class);
                                                 Login.setFamilyCount(user1.getFamilyCount());
-                                                Login.setFamilyCount2(user1.getFamilyCount2());
-                                                Log.e("fc", user1.getFamilyCount() + " " + user1.getFamilyCount2());
+                                                startActivity(intent);
                                             }
 
                                             @Override
                                             public void onCancelled(@NonNull DatabaseError databaseError) {
-
                                             }
                                         });
-                                        startActivity(intent);
                                     }
                                     else{
                                         Login.setFamilyCount(0);
-                                        Login.setFamilyCount2(0);
                                         startActivity(intent);
                                     }
                                 }
@@ -169,7 +164,6 @@ public class SignIn extends AppCompatActivity {
                                         startActivity(intent);
                                     }
                                 }
-
                             }
                         } else {
                             //아이디 없음

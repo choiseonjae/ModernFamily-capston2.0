@@ -2,7 +2,6 @@ package com.example.capstonee.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 
 import com.example.capstonee.ClickRoleActivity;
 import com.example.capstonee.Model.ImageUpload;
-import com.example.capstonee.Model.Photo;
 import com.example.capstonee.R;
 import com.example.capstonee.ShowPhotoActivity;
 import com.squareup.picasso.Picasso;
@@ -30,9 +28,6 @@ import java.util.List;
 public class RecyclerPhotoViewAdapter extends RecyclerView.Adapter<RecyclerPhotoViewAdapter.MyViewHolder> {
     private Context mContext;
     private List<ImageUpload> mData = new ArrayList<>();
-    //PJH
-    //setMode가 1이다 -> AlbumFragment에서 호출한 것. 이 경우는 사진 클릭이 가능
-    //2다 -> FamilyModifyActivity에서 호출한 것. 이 경우는 사진 클릭 불가.
     public static int setMode = 1;
 
     public RecyclerPhotoViewAdapter(Context mContext){
@@ -62,6 +57,7 @@ public class RecyclerPhotoViewAdapter extends RecyclerView.Adapter<RecyclerPhoto
         // 외부에서 item을 추가시킬 함수입니다.
         mData.add(new ImageUpload(name, uri, role));
     }
+
     public void removeItem(String name){
         int index;
         for(int i=0; i<mData.size(); i++){

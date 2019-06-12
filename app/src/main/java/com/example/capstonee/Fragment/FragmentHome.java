@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -24,6 +25,10 @@ import android.widget.TextView;
 
 import com.example.capstonee.R;
 import com.example.capstonee.ShowPictureAtDate;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -82,11 +87,6 @@ public class FragmentHome extends Fragment {
 
                 viewBG.setBackground(drawable);
 
-//                viewBG.setB
-//                viewBG.setImageBitmap(img);
-//                viewBG.setAdjustViewBounds(true);
-//                viewBG.setLayoutParams(new RelativeLayout.LayoutParams(
-//                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }catch(Exception e){
                 e.printStackTrace();
             }

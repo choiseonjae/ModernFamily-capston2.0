@@ -41,7 +41,6 @@ public class FindMyFamilyActivity extends Activity {
         noIDButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(FindMyFamilyActivity.this, "이 ID를 가족ID로 생성합니다.", Toast.LENGTH_SHORT).show();
                 Login.setFamilyID(Login.getUserID());
                 Login.setFamilyID1(Login.getUserID());
                 
@@ -81,7 +80,6 @@ public class FindMyFamilyActivity extends Activity {
                                     final String familyID = user.getFamilyID1();
                                     // familyCount;
                                     final int familyCount = user.getFamilyCount();
-                                    final int familyCount2 = user.getFamilyCount2();
                                     // User DB : 현재 사용자의 familyID 값을 업데이트함. - 검색한 user 와 같은 family ID 값으로
                                     Infomation.getDatabase("User").child(Login.getUserID()).child("familyID").setValue(familyID);
                                     Infomation.getDatabase("User").child(Login.getUserID()).child("familyID1").setValue(familyID);
@@ -89,7 +87,6 @@ public class FindMyFamilyActivity extends Activity {
                                     Login.setFamilyID(familyID);
                                     Login.setFamilyID1(familyID);
                                     Login.setFamilyCount(familyCount);
-                                    Login.setFamilyCount2(familyCount2);
 
                                     Intent intent = new Intent();
                                     intent.putExtra("keep", false);

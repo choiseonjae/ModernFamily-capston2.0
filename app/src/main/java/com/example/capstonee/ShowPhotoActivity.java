@@ -150,8 +150,6 @@ public class ShowPhotoActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final String s) {
             super.onPostExecute(s);
-            if(s.equals("finish"))
-                Toast.makeText(ShowPhotoActivity.this, "서버에서도 사진 삭제가 완료되었습니다.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -199,14 +197,14 @@ public class ShowPhotoActivity extends AppCompatActivity {
                                                     NetworkTask networkTask = new NetworkTask(url, contentValues);
                                                     networkTask.execute();
 
-                                                    final int count = Login.getUserFamilyCount2()-1;
-                                                    Infomation.getDatabase("User").child(Login.getUserFamilyID()).child("familyCount2").setValue(count)
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            Login.setFamilyCount2(count);
-                                                        }
-                                                    });
+//                                                    final int count = Login.getUserFamilyCount2()-1;
+//                                                    Infomation.getDatabase("User").child(Login.getUserFamilyID()).child("familyCount2").setValue(count)
+//                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                        @Override
+//                                                        public void onSuccess(Void aVoid) {
+//                                                            Login.setFamilyCount2(count);
+//                                                        }
+//                                                    });
 
 
                                                     break;

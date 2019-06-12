@@ -1,16 +1,15 @@
 package com.example.capstonee;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -18,7 +17,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -27,17 +25,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import com.example.capstonee.Adapter.RecyclerPhotoViewAdapter;
 import com.example.capstonee.Adapter.RoleClickAdapter;
-import com.example.capstonee.Album.FragmentAlbum;
 import com.example.capstonee.Model.ImageUpload;
 import com.example.capstonee.Model.Infomation;
 import com.example.capstonee.Model.Login;
 import com.example.capstonee.Model.Picture;
-import com.example.capstonee.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
@@ -51,7 +45,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
-import com.soundcloud.android.crop.Crop;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
@@ -92,7 +85,6 @@ public class ClickRoleActivity extends AppCompatActivity {
         recyclerView.setAdapter(recyclerViewAdapter);
 
         String intentRole = getIntent().getStringExtra("role");
-        Log.e("씨빠아아아아랄", intentRole);
         if (intentRole != null && !intentRole.equals(""))
             getData(intentRole);
 
@@ -201,7 +193,7 @@ public class ClickRoleActivity extends AppCompatActivity {
     private void getData(final String intentRole) {
         // 현재 사용자의 Family DB 에서 역할가져온다.
         Log.e("intentRole", intentRole);
-        final DatabaseReference roleRef = Infomation.getDatabase("role").child(Login.getUserFamilyID());
+        final DatabaseReference roleRef = Infomation.getDatabase("role").child(Login.getUserFamilyID()).child(intentRole);
         if (roleRef.getKey() != null) {
             Log.e("roleRef!! = ", roleRef.getKey());
             // family - id - 이후 key : value
@@ -209,19 +201,17 @@ public class ClickRoleActivity extends AppCompatActivity {
             roleRef.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Log.e("snapshhot", snapshot.getKey());
-                        ImageUpload imageUpload = snapshot.getValue(ImageUpload.class);
+                    Log.e("snapshhot", dataSnapshot.getKey());
+                    ImageUpload imageUpload = dataSnapshot.getValue(ImageUpload.class);
 
-                        String name = imageUpload.getName();
-                        String role = imageUpload.getFamily();
-                        String uri = imageUpload.getUrl();
-                        Log.e("ref uri = ", imageUpload.getUrl());
+                    String name = imageUpload.getName();
+                    String role = imageUpload.getFamily();
+                    String uri = imageUpload.getUrl();
+                    Log.e("ref uri = ", imageUpload.getUrl());
 
-                        if (intentRole.equals(role)) {
-                            recyclerViewAdapter.addItem(name, uri, role);
-                            recyclerViewAdapter.notifyDataSetChanged();
-                        }
+                    if (intentRole.equals(role)) {
+                        recyclerViewAdapter.addItem(name, uri, role);
+                        recyclerViewAdapter.notifyDataSetChanged();
                     }
                 }
 
@@ -231,13 +221,11 @@ public class ClickRoleActivity extends AppCompatActivity {
 
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        ImageUpload imageUpload = snapshot.getValue(ImageUpload.class);
-                        String name = imageUpload.getName();
-                        Log.e("snapsshot", name);
-                        recyclerViewAdapter.removeItem(name);
-                        recyclerViewAdapter.notifyDataSetChanged();
-                    }
+                    ImageUpload imageUpload = dataSnapshot.getValue(ImageUpload.class);
+                    String name = imageUpload.getName();
+                    Log.e("snapsshot", name);
+                    recyclerViewAdapter.removeItem(name);
+                    recyclerViewAdapter.notifyDataSetChanged();
                 }
 
                 @Override
@@ -273,16 +261,7 @@ public class ClickRoleActivity extends AppCompatActivity {
     // 이미지 크롭
     private void cropImage(Uri photoUri) {
         Log.d("Tag", "TEMPFILE : " + tempFile);
-//        if (tempFile == null) {
-//            try {
-//                tempFile = createImageFile();
-//            } catch (Exception e) {
-//                Toast.makeText(getActivity(), "이미지 처리 오류!", Toast.LENGTH_SHORT).show();
-//                getActivity().finish();
-//                e.printStackTrace();
-//            }
-//        }
-//        Uri savingUri = Uri.fromFile(tempFile);
+
         CropImage.activity(photoUri).start(this);
     }
 
@@ -322,9 +301,6 @@ public class ClickRoleActivity extends AppCompatActivity {
                     CropImage.ActivityResult result = CropImage.getActivityResult(data);
                     photoUri = result.getUri();
                     UploadPicture_alert();
-                }
-                case SHOW_PHOTO_FINISH: {
-                    //TODO
                 }
             }
         }
@@ -503,7 +479,7 @@ public class ClickRoleActivity extends AppCompatActivity {
                                         thread.start();
                                     }
                                     Toast.makeText(ClickRoleActivity.this, "업로드 완료!", Toast.LENGTH_SHORT).show();
-                                    String url = "http://34.97.246.11/recognition.py";
+                                    String url = "http://104.155.130.175/recognition.py";
 
                                     ContentValues contentValues = new ContentValues();
                                     contentValues.put("filename", filename);

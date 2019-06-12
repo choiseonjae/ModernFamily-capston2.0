@@ -4,7 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.capstonee.Model.Login;
@@ -16,18 +20,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class FamilyInformation extends AppCompatActivity {
-    User user;
     private static final int CHINGA = 9876;
     private static final int WOEGA = 8765;
-
+    private Button family1, family2, family3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_family_information);
+        Toolbar toolbar = findViewById(R.id.show_photo_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle("");
 
 
         // 우리 가족 클릭
-        findViewById(R.id.family1).setOnClickListener(new View.OnClickListener() {
+        family1 = findViewById(R.id.family1);
+        family1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 디폴트가 우리 가족이면
@@ -36,16 +45,14 @@ public class FamilyInformation extends AppCompatActivity {
                 else {
                     Toast.makeText(FamilyInformation.this, "보여줄 앨범을 우리 가족으로 변경합니다!", Toast.LENGTH_LONG).show();
                     Login.setFamilyID(Login.getUserFamilyID1());
-                    DatabaseReference dr = FirebaseDatabase.getInstance().getReference().child("User").child(Login.getUserFamilyID());
+                    DatabaseReference dr = FirebaseDatabase.getInstance().getReference().child("User").child(Login.getUserFamilyID1());
                     dr.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             User user = dataSnapshot.getValue(User.class);
-                            int fc, fc2;
+                            int fc;
                             fc = user.getFamilyCount();
-                            fc2 = user.getFamilyCount2();
                             Login.setFamilyCount(fc);
-                            Login.setFamilyCount2(fc2);
                         }
 
                         @Override
@@ -59,7 +66,8 @@ public class FamilyInformation extends AppCompatActivity {
         });
         // 친가 클릭
         // 지금 디폴트가 친가가 아닐때
-        findViewById(R.id.family2).setOnClickListener(new View.OnClickListener() {
+        family2 = findViewById(R.id.family2);
+        family2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 디폴트가 친가면
@@ -80,17 +88,13 @@ public class FamilyInformation extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 User user = dataSnapshot.getValue(User.class);
-                                int fc, fc2;
+                                int fc;
                                 fc = user.getFamilyCount();
-                                fc2 = user.getFamilyCount2();
                                 Login.setFamilyCount(fc);
-                                Login.setFamilyCount2(fc2);
                             }
 
                             @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
+                            public void onCancelled(@NonNull DatabaseError databaseError) { }
                         });
                         Login.setDefaultFamily(2);
                     }
@@ -101,7 +105,8 @@ public class FamilyInformation extends AppCompatActivity {
 
 
         // 외가 클릭
-        findViewById(R.id.family3).setOnClickListener(new View.OnClickListener() {
+        family3 = findViewById(R.id.family3);
+        family3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 디폴트가 외가면
@@ -125,9 +130,10 @@ public class FamilyInformation extends AppCompatActivity {
                                 User user = dataSnapshot.getValue(User.class);
                                 int fc, fc2;
                                 fc = user.getFamilyCount();
-                                fc2 = user.getFamilyCount2();
+                                //fc2 = user.getFamilyCount2();
                                 Login.setFamilyCount(fc);
-                                Login.setFamilyCount2(fc2);
+                                //Login.setFamilyCount2(fc2);
+                                //Log.e("fc1, fc2 = ", fc + " " +fc2);
                             }
 
                             @Override
@@ -140,6 +146,13 @@ public class FamilyInformation extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home)
+            finish();
+        return true;
     }
 
     // 결과 해결
@@ -155,9 +168,9 @@ public class FamilyInformation extends AppCompatActivity {
                     User user = dataSnapshot.getValue(User.class);
                     int fc, fc2;
                     fc = user.getFamilyCount();
-                    fc2 = user.getFamilyCount2();
+                    //fc2 = user.getFamilyCount2();
                     Login.setFamilyCount(fc);
-                    Login.setFamilyCount2(fc2);
+                    //Login.setFamilyCount2(fc2);
                 }
 
                 @Override
@@ -176,9 +189,9 @@ public class FamilyInformation extends AppCompatActivity {
                     User user = dataSnapshot.getValue(User.class);
                     int fc, fc2;
                     fc = user.getFamilyCount();
-                    fc2 = user.getFamilyCount2();
+                    //fc2 = user.getFamilyCount2();
                     Login.setFamilyCount(fc);
-                    Login.setFamilyCount2(fc2);
+                    //Login.setFamilyCount2(fc2);
                 }
 
                 @Override

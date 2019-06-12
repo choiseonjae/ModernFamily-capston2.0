@@ -69,6 +69,7 @@ public class FragmentAlbum extends Fragment {
     private boolean isPermission = true;
     private static final int PICK_FROM_ALBUM = 1;
     private static final int PICK_FROM_CAMERA = 2;
+    private int count = 0;
     private Uri photoUri;
     private DatabaseReference gpsRef;
     private DatabaseReference pictureRef;
@@ -115,11 +116,10 @@ public class FragmentAlbum extends Fragment {
                 @Override
                 public void onClick(View v) {
                     anim();
-                    Log.v("알림", "사진촬영 선택");
+                    Log.v("알림", "사진촬영 선택" +count);
                     if (isPermission) {
-                        if (Login.getUserFamilyCount2() > 0) openCamera();
-                        else
-                            Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
+                        if(count > 1) openCamera();
+                        else Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -127,11 +127,10 @@ public class FragmentAlbum extends Fragment {
                 @Override
                 public void onClick(View v) {
                     anim();
-                    Log.v("알림", "갤러리 선택");
+                    Log.v("알림", "갤러리 선택" +count);
                     if (isPermission) {
-                        if (Login.getUserFamilyCount2() > 0) goToAlbum();
-                        else
-                            Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
+                        if(count > 1) goToAlbum();
+                        else Toast.makeText(getContext(), "먼저 분류할 사진이 설정이 필요합니다.", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -327,14 +326,14 @@ public class FragmentAlbum extends Fragment {
         switch (requestCode) {
             case PICK_FROM_ALBUM: {
                 photoUri = data.getData();
-                Log.d("CAMERA", "PICK_FROM_ALBUM photoUri : " + photoUri);
-                cropImage(photoUri);
+                Log.d("ALBUM", "PICK_FROM_ALBUM photoUri : " + photoUri);
+                cropImage();
                 break;
             }
             case PICK_FROM_CAMERA: {
                 photoUri = Uri.fromFile(tempFile);
-                Log.d("ALBUM", "takePhoto photoUri : " + photoUri);
-                cropImage(photoUri);
+                Log.d("CAMERA", "takePhoto photoUri : " + photoUri);
+                cropImage();
                 break;
             }
             case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE: {
@@ -401,8 +400,7 @@ public class FragmentAlbum extends Fragment {
     }
 
     // 이미지 크롭
-    private void cropImage(Uri photoUri) {
-        Log.d("Tag", "TEMPFILE : " + tempFile);
+    private void cropImage() {
         CropImage.activity(photoUri).start(getContext(), this);
     }
 
@@ -435,8 +433,6 @@ public class FragmentAlbum extends Fragment {
     // DB의 변경을 바로 바로 업데이트 한 뒤 xml 에 뿌려주기 위한 Listener
     public void getData() {
         Log.d("USERFAMILYID: ", Login.getUserFamilyID());
-        if (Login.getUserFamilyCount2() > 0) {
-            Log.e("씨바아아알!", Login.getUserFamilyCount2()+ " ");
             // 현재 사용자의 Family DB 에서 역할가져온다.
             DatabaseReference roleRef = Infomation.getDatabase("Family").child(Login.getUserFamilyID());
             Log.e("roleRef = ", roleRef.getKey());
@@ -445,7 +441,7 @@ public class FragmentAlbum extends Fragment {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     ImageUpload imageUpload = dataSnapshot.getValue(ImageUpload.class);
-
+                    count++;
                     recyclerViewAdapter.addItem(imageUpload.getName(), imageUpload.getUrl(), imageUpload.getFamily());
                     recyclerViewAdapter.notifyDataSetChanged();
                 }
@@ -458,7 +454,7 @@ public class FragmentAlbum extends Fragment {
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                     ImageUpload imageUpload = dataSnapshot.getValue(ImageUpload.class);
-
+                    count--;
                     String name = imageUpload.getName();
                     recyclerViewAdapter.removeItem(name);
                     recyclerViewAdapter.notifyDataSetChanged();
@@ -474,7 +470,6 @@ public class FragmentAlbum extends Fragment {
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                 }
             });
-        }
     }
 
     // 이미지 파일 생성

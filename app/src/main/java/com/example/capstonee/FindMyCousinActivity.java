@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -70,9 +71,8 @@ public class FindMyCousinActivity extends Activity {
                                 } else { // PW 가 일치
                                     // family ID
                                     final String familyID = user.getFamilyID1();
-                                    // familyCount;
                                     final int familyCount = user.getFamilyCount();
-                                    final int familyCount2 = user.getFamilyCount2();
+
                                     // User DB : 현재 사용자의 familyID 값을 업데이트함. - 검색한 user 와 같은 family ID 값으로
                                     Infomation.getDatabase("User").child(Login.getUserID()).child("familyID").setValue(familyID);
 
@@ -87,8 +87,6 @@ public class FindMyCousinActivity extends Activity {
                                     }
                                     Login.setFamilyID(familyID);
                                     Login.setFamilyCount(familyCount);
-                                    Login.setFamilyCount2(familyCount2);
-
                                     Intent intent = new Intent();
                                     setResult(RESULT_OK, intent);
                                     finish();

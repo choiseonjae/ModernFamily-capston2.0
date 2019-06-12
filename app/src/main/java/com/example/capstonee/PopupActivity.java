@@ -90,7 +90,7 @@ public class PopupActivity extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent();
                         intent.putExtra("keep", false);
-                        setResult(POP_RESULT, intent);
+                        setResult(RESULT_FIRST_USER, intent);
                         finish();
                     }
                 }).setNegativeButton("돌아가기", new DialogInterface.OnClickListener() {
@@ -102,6 +102,8 @@ public class PopupActivity extends Activity {
                 alertdialog.show();
             }
         });
+
+        //선택 완료할건지 묻기
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,6 +120,7 @@ public class PopupActivity extends Activity {
                         setResult(POP_RESULT, intent);
                         //파이어베이스에 사진 업로드
                         UploadPhotoinFB();
+                        finish();
                     }
                 }).setNegativeButton("돌아가기", new DialogInterface.OnClickListener() {
                     @Override
@@ -181,7 +184,6 @@ public class PopupActivity extends Activity {
                                     downloadUrl = uri.toString();
                                     ImageUpload imageUpload = new ImageUpload(filename, downloadUrl, family);
                                     int fcount = Login.getUserFamilyCount() + 1;
-                                    int fcount2 = Login.getUserFamilyCount2() + 1;
 
                                     mDatabaseRef.child(Login.getUserFamilyID()).child(Integer.toString(fcount)).setValue(imageUpload);
                                     Log.v("된거야?", imageUpload.getUrl() + " " + imageUpload.getName() + " " + imageUpload.getFamily());
@@ -196,9 +198,7 @@ public class PopupActivity extends Activity {
                                     networkTask.execute();
 
                                     Infomation.getDatabase("User").child(Login.getUserFamilyID()).child("familyCount").setValue(fcount);
-                                    Infomation.getDatabase("User").child(Login.getUserFamilyID()).child("familyCount2").setValue(fcount2);
                                     Login.setFamilyCount(fcount);
-                                    Login.setFamilyCount2(fcount2);
                                 }
                             });
                         }
@@ -219,19 +219,16 @@ public class PopupActivity extends Activity {
                     }
                 }
             });
-            finish();
         } else {
             Toast.makeText(this, "Please select image", Toast.LENGTH_SHORT).show();
         }
     }
 
+    //PopupInitSet으로 부터 받아오는 정보
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             imgUri = data.getParcelableExtra("photoUri");
-            Log.e("imgURIRIRI", imgUri.toString());
-            boolean isCamera = data.getBooleanExtra("isCamera", false);
-
             setInitPhoto.setImageURI(imgUri);
         }
     }

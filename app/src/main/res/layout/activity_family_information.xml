@@ -1,10 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FamilyInformation">
-    <include layout="@layout/content_family_information"/>
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="4dp"
+        android:background="#F69042"
+        android:theme="@style/AppTheme.OverFlow"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:id="@+id/show_photo_toolbar">
+    </android.support.v7.widget.Toolbar>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/family1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_margin="30dp"
+            android:textSize="25dp"
+            android:backgroundTint="#deb887"
+            android:text="우리 가족"/>
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/family2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_margin="30dp"
+            android:backgroundTint="#6495ed"
+            android:textSize="25dp"
+            android:text="친가"/>
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/family3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_margin="30dp"
+            android:backgroundTint="#ffb6c1"
+            android:textSize="25dp"
+            android:text="외가"/>
+    </LinearLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>
