@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.capstonee.Adapter.MessageAdapter;
+import com.example.capstonee.Model.Infomation;
+import com.example.capstonee.Model.Login;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.Random;
@@ -39,6 +41,8 @@ public class TranskmitKeyKakao extends AppCompatActivity {
             public void onClick(View v) {
                 if(editText.getText().toString().equals(message)){
                     MessageAdapter.keyFlag = true; //복호화 가능해짐
+                    Infomation.getDatabase("User").child(Login.getUserID()).child("visible").setValue(true);
+                    Login.setVisible(true);
                     Toast.makeText(TranskmitKeyKakao.this, "키 값 일치. 대화 잠금장치가 풀립니다.", Toast.LENGTH_SHORT).show();
                     onBackPressed();
                 }else{

@@ -159,8 +159,8 @@ public class SignIn extends AppCompatActivity {
                                     if (correctNumber == 3) {
                                         //캡차 띄우기.
                                         Toast.makeText(SignIn.this, "자동로그인 방지를 위해 인증화면으로 이동합니다.", Toast.LENGTH_SHORT).show();
-                                        Infomation.getDatabase("User").child(ID).child("visible").setValue(false);
                                         Intent intent = new Intent(SignIn.this, CapchaTwActivity.class);
+                                        intent.putExtra("ID", ID);
                                         startActivity(intent);
                                     }
                                 }
