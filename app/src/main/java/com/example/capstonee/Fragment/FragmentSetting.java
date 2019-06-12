@@ -192,25 +192,6 @@ public class FragmentSetting extends Fragment {
             try{
                 photoUri = data.getData();
                 cropImage(photoUri);
-//                InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
-//                Bitmap img = BitmapFactory.decodeStream(in);
-
-//                // uri 얻어서 스토리지 + DB 에 저장
-//                Uri uri = getImageUri(getContext(), img);
-//                Infomation.getStorageRef("Profile").child(Login.getUserID()).putFile(uri);
-//                Infomation.getDatabase("User").child(Login.getUserID()).child("profileUri").setValue(uri.toString());
-//
-//                // 캐쉬(?) 도 변경
-//                Login.setProfileUri(uri.toString());
-//
-//                in.close();
-//                // 이미지 표시
-//                profile_imageView.setImageBitmap(img);
-//                profile_imageView.setAdjustViewBounds(true);
-//                profile_imageView.setLayoutParams(new RelativeLayout.LayoutParams(
-//                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
-
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -242,6 +223,7 @@ public class FragmentSetting extends Fragment {
     private void cropImage(Uri photoUri) {
         CropImage.activity(photoUri).start(getContext(), this);
     }
+
     //bitmap 으로 uri 얻기
     private Uri getImageUri(Context context, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();

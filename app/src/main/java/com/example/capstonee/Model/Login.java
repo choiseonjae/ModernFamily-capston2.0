@@ -97,7 +97,7 @@ public class Login {
 
     public static void setDefaultFamily(int DEFAULT_FAMILY) {
         MY_DEFAULT_FAMILY = DEFAULT_FAMILY;
-        Infomation.getDatabase("User").child(MY_ID).child("Default_family").setValue(DEFAULT_FAMILY);
+        Infomation.getDatabase("User").child(MY_ID).child("default_family").setValue(DEFAULT_FAMILY);
     }
 
     public static void setFamilyID(String FAMILYID) {

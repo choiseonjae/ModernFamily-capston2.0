@@ -6,6 +6,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.example.capstonee.Adapter.ViewPagerAdapter;
 import com.example.capstonee.Album.FragmentAlbum;
@@ -55,11 +58,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1 && resultCode == RESULT_CANCELED) {
+        if(resultCode == RESULT_CANCELED) {
             Intent intent = new Intent(this, PopupActivity.class);
             startActivityForResult(intent, 1);
-        }else if(requestCode == 1 && resultCode == POP_RESULT){
+        }else if(resultCode == POP_RESULT){
             Boolean keep = (Boolean) data.getBooleanExtra("keep", false);
             if(keep){
                 Intent intent = new Intent(this, PopupActivity.class);

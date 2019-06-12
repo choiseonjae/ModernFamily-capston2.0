@@ -156,12 +156,6 @@ public class PopupActivity extends Activity {
         }
     }
 
-    public String getImageExt(Uri uri) {
-        ContentResolver contentResolver = getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
-
     public void UploadPhotoinFB() {
         if (imgUri != null) {
             dialog = new ProgressDialog(this);
@@ -174,7 +168,7 @@ public class PopupActivity extends Activity {
             filename = sdf.format(date)+ ".png";
 
             //Get the storage reference
-            final StorageReference ref = mStorageRef.child(FB_STORAGE_PATH + Login.getUserID() + "/" + filename);
+            final StorageReference ref = mStorageRef.child(FB_STORAGE_PATH + Login.getUserFamilyID() + "/" + filename);
 
             //Add file to reference
             ref.putFile(imgUri)
@@ -192,7 +186,7 @@ public class PopupActivity extends Activity {
                                     mDatabaseRef.child(Login.getUserFamilyID()).child(Integer.toString(fcount)).setValue(imageUpload);
                                     Log.v("된거야?", imageUpload.getUrl() + " " + imageUpload.getName() + " " + imageUpload.getFamily());
 
-                                    String url = "http://34.97.246.11/makedir.py";
+                                    String url = "http://104.155.130.175/makedir.py";
                                     ContentValues contentValues = new ContentValues();
                                     contentValues.put("filename", filename);
                                     contentValues.put("ui", Login.getUserFamilyID());
@@ -201,8 +195,8 @@ public class PopupActivity extends Activity {
                                     NetworkTask networkTask = new NetworkTask(url, contentValues);
                                     networkTask.execute();
 
-                                    Infomation.getDatabase("User").child(Login.getUserID()).child("familyCount").setValue(fcount);
-                                    Infomation.getDatabase("User").child(Login.getUserID()).child("familyCount2").setValue(fcount2);
+                                    Infomation.getDatabase("User").child(Login.getUserFamilyID()).child("familyCount").setValue(fcount);
+                                    Infomation.getDatabase("User").child(Login.getUserFamilyID()).child("familyCount2").setValue(fcount2);
                                     Login.setFamilyCount(fcount);
                                     Login.setFamilyCount2(fcount2);
                                 }

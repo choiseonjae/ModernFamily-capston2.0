@@ -171,6 +171,7 @@ public class ShowPhotoActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (From.equals("PhotoView")) {
+                            // 초기 사진 설정하는 부분임!!!!!! 나중에 분류할 사진 삭제는 밑에 있음!!
                             StorageReference storageRef = FirebaseStorage.getInstance().getReference("Main");
                             StorageReference pictureRef = storageRef.child(Login.getUserFamilyID()).child(fileName);
                             pictureRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -188,7 +189,8 @@ public class ShowPhotoActivity extends AppCompatActivity {
                                                     Kind = snapshot.getKey();
                                                     RemoveFamilyData(Kind);
                                                     Move();
-                                                    String url = "http://34.97.246.11/removefile.py";
+                                                    // VM에서 해당 사진 삭제해주는 url
+                                                    String url = "http://104.155.130.175/removefile.py";
 
                                                     ContentValues contentValues = new ContentValues();
                                                     contentValues.put("filename", Kind+".png");
@@ -198,14 +200,15 @@ public class ShowPhotoActivity extends AppCompatActivity {
                                                     networkTask.execute();
 
                                                     final int count = Login.getUserFamilyCount2()-1;
-                                                    Infomation.getDatabase("User").child(Login.getUserID()).child("familyCount").setValue(Login.getUserFamilyCount());
-                                                    Infomation.getDatabase("User").child(Login.getUserID()).child("familyCount2").setValue(count)
+                                                    Infomation.getDatabase("User").child(Login.getUserFamilyID()).child("familyCount2").setValue(count)
                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override
                                                         public void onSuccess(Void aVoid) {
                                                             Login.setFamilyCount2(count);
                                                         }
                                                     });
+
+
                                                     break;
                                                 }
                                             }
@@ -222,7 +225,7 @@ public class ShowPhotoActivity extends AppCompatActivity {
                                 public void onFailure(@NonNull Exception e) { }
                             });
                         } else {
-                            //RoleClickAdapter에서 클릭시
+                            //RoleClickAdapter에서 클릭시, 즉 분류된 사진 삭제시
                             StorageReference storageRef = FirebaseStorage.getInstance().getReference("Album");
                             StorageReference pictureRef = storageRef.child(Login.getUserFamilyID()).child(fileName);
                             pictureRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {

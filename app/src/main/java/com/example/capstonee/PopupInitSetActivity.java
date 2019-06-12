@@ -112,25 +112,27 @@ public class PopupInitSetActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case PICK_FROM_ALBUM: {
-                photoUri = data.getData();
-                Log.d("CAMERA", "PICK_FROM_ALBUM photoUri : " + photoUri);
-                cropImage(photoUri);
-                break;
-            }
-            case PICK_FROM_CAMERA: {
-                photoUri = Uri.fromFile(tempFile);
-                Log.d("ALBUM", "takePhoto photoUri : " + photoUri);
-                cropImage(photoUri);
-                break;
-            }
-            case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE: {
-                CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                photoUri = result.getUri();
-                Log.e("이건뭐냐", photoUri.toString());
+        if(resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PICK_FROM_ALBUM: {
+                    photoUri = data.getData();
+                    Log.d("CAMERA", "PICK_FROM_ALBUM photoUri : " + photoUri);
+                    cropImage(photoUri);
+                    break;
+                }
+                case PICK_FROM_CAMERA: {
+                    photoUri = Uri.fromFile(tempFile);
+                    Log.d("ALBUM", "takePhoto photoUri : " + photoUri);
+                    cropImage(photoUri);
+                    break;
+                }
+                case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE: {
+                    CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                    photoUri = result.getUri();
+                    Log.e("이건뭐냐", photoUri.toString());
 
-                setImage();
+                    setImage();
+                }
             }
         }
     }

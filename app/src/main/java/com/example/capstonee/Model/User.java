@@ -7,13 +7,18 @@ public class User {
     private String BirthDate;
     private int FamilyCount;
     private int FamilyCount2;
+//    private int FamilyCount3;
+//    private int FamilyCount4;
+    //FamilyCount가 두 개 더 추가된 이유
+    //현재 FamilyID1이 만약 내 계정일 경우
+    //가족이나, 외가, 친가를 선택했을 때, 현재 나의 Count값들이 덮어씌워지기 때문에,
+    //FamilyID1의 FC를 저장할 공간이 필요하다.
     private String FamilyID, FamilyID1, FamilyID2, FamilyID3;
     private String profileUri;
     private boolean Visible;
     private int Default_family;
 
-    private User() {
-    }
+    private User() { }
 
     public User(String phone, String name, String password, String birthDate, int familyCount, int familyCount2, String familyID, String familyID1, String familyID2, String familyID3, int default_family, boolean visible) {
         Phone = phone;
@@ -31,13 +36,9 @@ public class User {
         Visible = visible;
     }
 
-    public boolean isVisible() {
-        return Visible;
-    }
+    public boolean isVisible() { return Visible; }
 
-    public void setVisible(boolean visible) {
-        Visible = visible;
-    }
+    public void setVisible(boolean visible) { Visible = visible; }
 
     public String getName() {
         return Name;
@@ -71,9 +72,7 @@ public class User {
         BirthDate = birthDate;
     }
 
-    public int getFamilyCount() {
-        return FamilyCount;
-    }
+    public int getFamilyCount() { return FamilyCount; }
 
     public void setFamilyCount(int familyCount) {
         FamilyCount = familyCount;

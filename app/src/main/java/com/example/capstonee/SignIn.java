@@ -29,6 +29,8 @@ public class SignIn extends AppCompatActivity {
     static boolean loginStop = false;
     static long failureTime;
     long retryTime;
+    private User user;
+    private Intent intent;
 
     EditText logId, logPassword;
     CheckBox edtCheck;
@@ -64,13 +66,11 @@ public class SignIn extends AppCompatActivity {
                         Log.d("LOOOOG", dataSnapshot.toString());
                         if (dataSnapshot.child(ID).exists()) {
                             //아이디 있음?
-                            User user = dataSnapshot.child(ID).getValue(User.class);
+                            user = dataSnapshot.child(ID).getValue(User.class);
 
                             if(Password.equals(user.getPassword())){
                                 if(loginStop == true && correctNumber == -1) {
                                     retryTime = System.currentTimeMillis();
-                                    //long failuretime = (long)Long.parseLong(failureTime);
-                                    //long retrytime = (long)Long.parseLong(retryTime);
                                     Log.d("실패시간 : ", Long.toString(failureTime));
                                     Log.d("재시도시간 : ", Long.toString(retryTime));
                                     long time = (long) ((retryTime - failureTime) / 1000.0);
@@ -92,38 +92,60 @@ public class SignIn extends AppCompatActivity {
                                         editor.apply();
                                     }
                                     Toast.makeText(SignIn.this, user.getName() + "님 환영합니다!!", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(SignIn.this, MainActivity.class);
+                                    intent = new Intent(SignIn.this, MainActivity.class);
+
                                     Login.setID(ID);
                                     Login.setName(user.getName());
                                     Login.setPassword(Password);
                                     Login.setPhone(user.getPhone());
                                     Login.setBirth(user.getBirthDate());
-                                    Login.setFamilyCount(user.getFamilyCount());
-                                    Login.setFamilyCount2(user.getFamilyCount2());
-
                                     // 선재 추가
                                     Login.setFamilyID1(user.getFamilyID1());
                                     Login.setFamilyID2(user.getFamilyID2());
                                     Login.setFamilyID3(user.getFamilyID3());
                                     Login.setDefaultFamily(user.getDefault_family());
                                     Login.setVisible(user.isVisible());
+
                                     // 패밀리 ID 설정과정
+                                    // 처음 로그인시 getFamilyID1가 ""니까, setFamilyID = ""이다.
                                     if (Login.getUserDefaultFamily() == 1)
                                         Login.setFamilyID(user.getFamilyID1());
                                     else if (Login.getUserDefaultFamily() == 2)
                                         Login.setFamilyID(user.getFamilyID2());
                                     else if (Login.getUserDefaultFamily() == 3)
                                         Login.setFamilyID(user.getFamilyID3());
-                                      /////////////////////////////
-                                        Login.setProfileUri(user.getProfileUri());
+
+                                    Login.setProfileUri(user.getProfileUri());
+
+                                    Log.e("씨바아아알", user.getFamilyID());
+                                    if(!user.getFamilyID().equals("")) {
+                                        DatabaseReference db = FirebaseDatabase.getInstance().getReference("User").child(user.getFamilyID());
+                                        db.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                User user1 = dataSnapshot.getValue(User.class);
+                                                Login.setFamilyCount(user1.getFamilyCount());
+                                                Login.setFamilyCount2(user1.getFamilyCount2());
+                                                Log.e("fc", user1.getFamilyCount() + " " + user1.getFamilyCount2());
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
                                         startActivity(intent);
+                                    }
+                                    else{
+                                        Login.setFamilyCount(0);
+                                        Login.setFamilyCount2(0);
+                                        startActivity(intent);
+                                    }
                                 }
                             }
                             else{
                                 if(loginStop == true && correctNumber == -1){
                                     retryTime = System.currentTimeMillis();
-                                    //long failuretime = (long)Long.parseLong(failureTime);
-                                    //long retrytime = (long)Long.parseLong(retryTime);
                                     Log.d("실패시간 : ", Long.toString(failureTime));
                                     Log.d("재시도시간 : ", Long.toString(retryTime));
                                     long time = (long) ((retryTime-failureTime)/1000.0);

@@ -52,6 +52,7 @@ import com.google.firebase.storage.UploadTask;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.soundcloud.android.crop.Crop;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
 import java.io.IOException;
@@ -272,18 +273,19 @@ public class ClickRoleActivity extends AppCompatActivity {
     // 이미지 크롭
     private void cropImage(Uri photoUri) {
         Log.d("Tag", "TEMPFILE : " + tempFile);
-        if (tempFile == null) {
-            try {
-                tempFile = createImageFile();
-            } catch (Exception e) {
-                Toast.makeText(ClickRoleActivity.this, "이미지 처리 오류!", Toast.LENGTH_SHORT).show();
-                finish();
-                e.printStackTrace();
-            }
-        }
-        Uri savingUri = Uri.fromFile(tempFile);
-        Crop.of(photoUri, savingUri).asSquare().start(this);
+//        if (tempFile == null) {
+//            try {
+//                tempFile = createImageFile();
+//            } catch (Exception e) {
+//                Toast.makeText(getActivity(), "이미지 처리 오류!", Toast.LENGTH_SHORT).show();
+//                getActivity().finish();
+//                e.printStackTrace();
+//            }
+//        }
+//        Uri savingUri = Uri.fromFile(tempFile);
+        CropImage.activity(photoUri).start(this);
     }
+
 
     // 이미지 파일 생성
     private File createImageFile() throws IOException {
@@ -302,24 +304,28 @@ public class ClickRoleActivity extends AppCompatActivity {
     //카메라나 갤러리에서 사진 가져온 거 처리해주는 부분
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case PICK_FROM_ALBUM: {
-                photoUri = data.getData();
-                Log.d("CAMERA", "PICK_FROM_ALBUM photoUri : " + photoUri);
-                cropImage(photoUri);
-                break;
-            }
-            case PICK_FROM_CAMERA: {
-                photoUri = Uri.fromFile(tempFile);
-                Log.d("ALBUM", "takePhoto photoUri : " + photoUri);
-                cropImage(photoUri);
-                break;
-            }
-            case Crop.REQUEST_CROP: {
-                UploadPicture_alert();
-            }
-            case SHOW_PHOTO_FINISH: {
-                //TODO
+        if(resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PICK_FROM_ALBUM: {
+                    photoUri = data.getData();
+                    Log.d("CAMERA", "PICK_FROM_ALBUM photoUri : " + photoUri);
+                    cropImage(photoUri);
+                    break;
+                }
+                case PICK_FROM_CAMERA: {
+                    photoUri = Uri.fromFile(tempFile);
+                    Log.d("ALBUM", "takePhoto photoUri : " + photoUri);
+                    cropImage(photoUri);
+                    break;
+                }
+                case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE: {
+                    CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                    photoUri = result.getUri();
+                    UploadPicture_alert();
+                }
+                case SHOW_PHOTO_FINISH: {
+                    //TODO
+                }
             }
         }
     }
@@ -327,6 +333,7 @@ public class ClickRoleActivity extends AppCompatActivity {
     // 사진 업로드 할 지 물어보는 알람
     public void UploadPicture_alert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.ic_cloud_upload_black_24dp);
         builder.setTitle("사진 업로드");
         builder.setMessage("사진을 Cloud에 업로드 하시겠습니까?\n'아니오' 선택 시 사진은 삭제됩니다.");
         builder.setPositiveButton("예",
@@ -415,13 +422,6 @@ public class ClickRoleActivity extends AppCompatActivity {
         });
     }
 
-    //이미지 확장자
-    public String getImageExt(Uri uri) {
-        ContentResolver contentResolver = getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
-
     // 사진 업로드
     private void uploadPicture() {
         // 진행상황 보여줌.
@@ -432,7 +432,7 @@ public class ClickRoleActivity extends AppCompatActivity {
         long now = System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        filename = sdf.format(date) + "." + getImageExt(photoUri);
+        filename = sdf.format(date) + ".png";
 
         // 사용자 폴더에 사진 파일 저장을 위한 서버 저장 공간 참조 가져옴.
         final StorageReference storageRef = Infomation.getAlbum(Login.getUserFamilyID() + "/" + filename);

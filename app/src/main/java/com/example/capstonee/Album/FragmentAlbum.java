@@ -85,7 +85,7 @@ public class FragmentAlbum extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         // 해당 view 설정 : 자바 파일 <---바인딩---> fragment
-        if(Login.getUserVisible()) {
+        if (Login.getUserVisible()) {
             view = inflater.inflate(R.layout.album_fragment, container, false);
 
             recyclerView = view.findViewById(R.id.album_recyclerview);
@@ -95,8 +95,6 @@ public class FragmentAlbum extends Fragment {
             recyclerView.setAdapter(recyclerViewAdapter);
             RecyclerPhotoViewAdapter.setMode = 1;
 
-            getData();
-
             fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
             fab_close = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
 
@@ -104,6 +102,7 @@ public class FragmentAlbum extends Fragment {
             fab1 = view.findViewById(R.id.fab_sub1);
             fab2 = view.findViewById(R.id.fab_sub2);
 
+            getData();
             tedPermission();
 
             fab.setOnClickListener(new View.OnClickListener() {
@@ -137,8 +136,7 @@ public class FragmentAlbum extends Fragment {
                 }
             });
             return view;
-        }
-        else{
+        } else {
             view = inflater.inflate(R.layout.confidential_album, container, false);
             return view;
         }
@@ -166,9 +164,8 @@ public class FragmentAlbum extends Fragment {
         @Override
         protected void onPostExecute(final String s) {
             super.onPostExecute(s);
-            Log.e("!!?? : ", s);
-            int idx = s.indexOf(".");
 
+            int idx = s.indexOf('.');
             String dist = s.substring(0, idx);
             if (dist.equals("unknown")) {
                 setRoleFamily("미분류");
@@ -182,12 +179,12 @@ public class FragmentAlbum extends Fragment {
                         role = imageUpload.getFamily();
                         setRoleFamily(role);
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
                 });
+
             }
         }
     }
@@ -202,7 +199,7 @@ public class FragmentAlbum extends Fragment {
         long now = System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        filename = sdf.format(date) +".png";
+        filename = sdf.format(date) + ".png";
 
         // 사용자 폴더에 사진 파일 저장을 위한 서버 저장 공간 참조 가져옴.
         final StorageReference storageRef = Infomation.getAlbum(Login.getUserFamilyID() + "/" + filename);
@@ -268,8 +265,6 @@ public class FragmentAlbum extends Fragment {
                                                         }
                                                     });
                                                     pictureRef.setValue(picture);
-
-
                                                 } catch (Exception e) {
                                                     e.printStackTrace();
                                                 }
@@ -278,7 +273,7 @@ public class FragmentAlbum extends Fragment {
                                         thread.start();
                                     }
                                     Toast.makeText(getContext(), "업로드 완료!", Toast.LENGTH_SHORT).show();
-                                    String url = "http://34.97.246.11/recognition.py";
+                                    String url = "http://104.155.130.175/recognition.py";
 
                                     ContentValues contentValues = new ContentValues();
                                     contentValues.put("filename", filename);
@@ -408,16 +403,6 @@ public class FragmentAlbum extends Fragment {
     // 이미지 크롭
     private void cropImage(Uri photoUri) {
         Log.d("Tag", "TEMPFILE : " + tempFile);
-//        if (tempFile == null) {
-//            try {
-//                tempFile = createImageFile();
-//            } catch (Exception e) {
-//                Toast.makeText(getActivity(), "이미지 처리 오류!", Toast.LENGTH_SHORT).show();
-//                getActivity().finish();
-//                e.printStackTrace();
-//            }
-//        }
-//        Uri savingUri = Uri.fromFile(tempFile);
         CropImage.activity(photoUri).start(getContext(), this);
     }
 
@@ -448,9 +433,10 @@ public class FragmentAlbum extends Fragment {
     }
 
     // DB의 변경을 바로 바로 업데이트 한 뒤 xml 에 뿌려주기 위한 Listener
-    private void getData() {
+    public void getData() {
         Log.d("USERFAMILYID: ", Login.getUserFamilyID());
         if (Login.getUserFamilyCount2() > 0) {
+            Log.e("씨바아아알!", Login.getUserFamilyCount2()+ " ");
             // 현재 사용자의 Family DB 에서 역할가져온다.
             DatabaseReference roleRef = Infomation.getDatabase("Family").child(Login.getUserFamilyID());
             Log.e("roleRef = ", roleRef.getKey());
@@ -462,7 +448,6 @@ public class FragmentAlbum extends Fragment {
 
                     recyclerViewAdapter.addItem(imageUpload.getName(), imageUpload.getUrl(), imageUpload.getFamily());
                     recyclerViewAdapter.notifyDataSetChanged();
-
                 }
 
                 @Override
