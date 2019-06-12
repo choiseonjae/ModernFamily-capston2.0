@@ -2,6 +2,7 @@ package com.example.capstonee.Adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -30,18 +32,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     //keyFlag는 항상 트루 그러나, 캡차 5번 실패시 false로 변환됨.
     public static boolean keyFlag = true;
-
-
     // chat 모음
     ArrayList<Chat> chatList = new ArrayList<>();
     Context context;
-    View view;
-    String message;
+    public static final int MSG_TYPE_LEFT = 0;
+    public static final int MSG_TYPE_RIGHT = 1;
+    private final String myID = Login.getUserID();
 
     public MessageAdapter(Context context) {
         this.context = context;
     }
-
 
     @NonNull
     @Override
@@ -71,19 +71,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         chatList.add(chat);
     }
 
-
-    public static final int MSG_TYPE_LEFT = 0;
-    public static final int MSG_TYPE_RIGHT = 1;
-    private final String myID = Login.getUserID();
-
-    FirebaseUser firebaseUser;
-
-
     @Override
     public int getItemCount() {
         return chatList.size();
     }
-
 
     @Override
     public int getItemViewType(int position) {
@@ -101,7 +92,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         private Chat chat;
         private TextView message_textView, userName_textView;
         Set<String> readerList;
-        String readersText;
+        private String message, readersText;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -142,7 +133,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     // chat의 reader 의
                     readerList = chat.getReader().keySet();
 
-                    Log.e("s",readerList.size()+"");
+                    Log.e("s", readerList.size() + "");
 
                     if (readerList.size() == 0 || readerList.isEmpty()) {
                         readersText = "읽은 사람이 없습니다.";
@@ -152,8 +143,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                         // 창 띄우기
                         ad.show();
 
-                    }
-                    else
+                    } else
 
                         Infomation.getDatabase("User").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -184,13 +174,31 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         void onBind(final Chat chat) {
             this.chat = chat;
-            try{
+            if (profile_image != null) {
+                Infomation.getDatabase("User").child(chat.getSender()).child("profileUri").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue().toString().equals(""))
+                            profile_image.setImageResource(R.drawable.default_profile);
+                        else
+                            Picasso.with(context).load(dataSnapshot.getValue().toString()).fit().into(profile_image);
+                        ;
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+            try {
                 AES256Util aes = new AES256Util();
                 message = chat.getMessage();
-                if(keyFlag == true){   //키 플래그는 항상 트루. 그러나 만약, 캡차에서 5번 틀릴시에는 false로 바꾸게 했다.
+                if (keyFlag == true) {   //키 플래그는 항상 트루. 그러나 만약, 캡차에서 5번 틀릴시에는 false로 바꾸게 했다.
                     message = aes.decrypt(message);
                 }
-            } catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             // 이름 설정 가능 하면 이름 넣어준다. -> 왼쪽 상대라는 소리지!

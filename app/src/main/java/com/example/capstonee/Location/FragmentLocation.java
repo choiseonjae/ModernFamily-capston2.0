@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
@@ -77,7 +78,7 @@ public class FragmentLocation extends Fragment {
         // 내가 데이터를 넣어줄 어뎁터 생성
         adapter = new GPSAdapter(getContext());
         // 현재 xml 에 보여질 recycler 설정
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // recycler 에 보여질 객체 하나를 뜻하는 어뎁터 연결
         recyclerView.setAdapter(adapter);
     }
