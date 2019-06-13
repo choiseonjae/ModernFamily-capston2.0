@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="#eeeeee"
     android:orientation="vertical"
-    android:layout_width="300dp"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <!-- 타이틀바 -->
     <LinearLayout
@@ -59,6 +59,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:orientation="horizontal"
         android:layout_marginStart="16dp">
         <TextView
@@ -68,25 +69,20 @@
             android:textSize="16sp"
             android:layout_marginEnd="16dp"
             android:text="사진"/>
-        <LinearLayout
+        <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginEnd="16dp">
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxHeight="220dp"
-                android:id="@+id/setInitPhoto"/>
-            <Button
-                android:id="@+id/setInitButton"
-                android:backgroundTint="#38d999"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="사진등록" />
-
-        </LinearLayout>
+            android:layout_height="220dp"
+            android:maxHeight="220dp"
+            android:id="@+id/setInitPhoto"/>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/setInitButton"
+        android:backgroundTint="#38d999"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="사진등록" />
     <View
         android:background="#66bdbdbd"
         android:layout_width="match_parent"
